@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RF Tecnologia 3D | Impressão 3D sob demanda, modelagem e peças personalizadas</title>
   <meta name="description" content="Impressão 3D FDM sob demanda em São José do Rio Preto e todo o Brasil: peças personalizadas, protótipos, peças de reposição, luminárias autorais e modelagem 3D. Orçamento pelo WhatsApp.">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="RF Tecnologia 3D | Impressão 3D sob demanda, modelagem e peças personalizadas">
+  <meta property="og:description" content="Impressão 3D FDM sob demanda em São José do Rio Preto e todo o Brasil: peças personalizadas, protótipos, peças de reposição, luminárias autorais e modelagem 3D. Orçamento pelo WhatsApp.">
+  <meta property="og:image" content="https://rafaelgfavero.github.io/template_sites3dprint/assets/img/logo-rf3d.png">
+  <meta property="og:locale" content="pt_BR">
   <link rel="icon" href="assets/img/logo-icone.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +18,14 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
   <script type="module" src="assets/js/main.js"></script>
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LocalBusiness","name":"RF Tecnologia 3D",
+"description":"Impressão 3D FDM sob demanda, modelagem 3D, peças personalizadas e luminárias autorais.",
+"telephone":"+55-17-99791-2726","email":"rftec3d@gmail.com",
+"sameAs":["https://instagram.com/rf_tec3d"],
+"address":{"@type":"PostalAddress","addressLocality":"São José do Rio Preto","addressRegion":"SP","addressCountry":"BR"},
+"areaServed":"BR"}
+  </script>
 </head>
 <body>
 
@@ -380,7 +394,65 @@
     </section>
 
     <section class="section" id="orcamento">
-      <!-- Task 4 -->
+      <div class="container">
+        <p class="eyebrow">// orçamento</p>
+        <h2 class="section-title">Peça seu orçamento em um minuto</h2>
+        <p class="section-lead">Preencha e a mensagem já sai pronta no seu WhatsApp. Respondemos em horário comercial.</p>
+
+        <form id="quoteForm" class="quote-form reveal" novalidate>
+          <div class="field">
+            <label for="nome">Seu nome</label>
+            <input type="text" id="nome" name="nome" required autocomplete="name">
+          </div>
+
+          <div class="field">
+            <label for="tipo">Tipo de peça</label>
+            <select id="tipo" name="tipo">
+              <option>Peça sob demanda</option>
+              <option>Protótipo</option>
+              <option>Peça de reposição</option>
+              <option>Modelagem 3D</option>
+              <option>Luminária</option>
+              <option>Miniatura ou colecionável</option>
+              <option>Brinde personalizado</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="material">Material</label>
+            <select id="material" name="material">
+              <option>Não sei, me indiquem</option>
+              <option>PLA</option>
+              <option>PETG</option>
+              <option>ABS / ASA</option>
+              <option>TPU flexível</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="quantidade">Quantidade</label>
+            <input type="text" id="quantidade" name="quantidade" inputmode="numeric" placeholder="Ex.: 1, 10, 50">
+          </div>
+
+          <div class="field">
+            <label for="temArquivo">Você já tem o arquivo 3D?</label>
+            <select id="temArquivo" name="temArquivo">
+              <option>Sim</option>
+              <option>Não, preciso de modelagem</option>
+            </select>
+          </div>
+
+          <div class="field field-wide">
+            <label for="descricao">Conte sobre a peça</label>
+            <textarea id="descricao" name="descricao" rows="4" placeholder="Uso da peça, medidas aproximadas, cor, prazo…"></textarea>
+          </div>
+
+          <div class="field-wide form-actions">
+            <button type="submit" class="btn btn-primary">Enviar pelo WhatsApp</button>
+            <p id="quoteFallback" class="form-note" hidden>Se o WhatsApp não abriu, <a id="quoteFallbackLink" href="#" target="_blank" rel="noopener">clique aqui</a>.</p>
+          </div>
+        </form>
+      </div>
     </section>
 
     <section class="section section-deep" id="faq">
@@ -421,9 +493,54 @@
         </div>
       </div>
     </section>
+
+    <section class="section cta-final">
+      <div class="container">
+        <h2 class="section-title">Tem uma peça na cabeça?</h2>
+        <p class="section-lead">Manda uma mensagem. Sem compromisso, sem formulário longo.</p>
+        <a class="btn btn-primary" href="https://wa.me/5517997912726?text=Ol%C3%A1%2C%20RF%20Tecnologia%203D!%20Quero%20um%20or%C3%A7amento." target="_blank" rel="noopener">Falar no WhatsApp</a>
+      </div>
+    </section>
   </main>
 
-  <footer class="footer"><!-- Task 4 --></footer>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand footer-brand" href="#inicio">
+          <img src="assets/img/logo-icone.jpg" width="40" height="40" alt="RF Tecnologia 3D">
+          <span>RF Tecnologia 3D</span>
+        </a>
+        <p>Impressão 3D sob demanda com acabamento artesanal.</p>
+      </div>
+
+      <div>
+        <h3>Contato</h3>
+        <ul class="footer-list">
+          <li><a href="https://wa.me/5517997912726" target="_blank" rel="noopener">WhatsApp (17) 99791-2726</a></li>
+          <li><a href="mailto:rftec3d@gmail.com">rftec3d@gmail.com</a></li>
+          <li><a href="https://instagram.com/rf_tec3d" target="_blank" rel="noopener">Instagram @rf_tec3d</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Atendimento</h3>
+        <ul class="footer-list">
+          <li>Segunda a sexta, 9h às 18h</li>
+          <li>São José do Rio Preto, SP · envios para todo o Brasil</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container">
+      <p class="footer-copy">© 2026 RF Tecnologia 3D</p>
+    </div>
+  </footer>
+
+  <a class="whats-float" href="https://wa.me/5517997912726?text=Ol%C3%A1%2C%20RF%20Tecnologia%203D!%20Quero%20um%20or%C3%A7amento." aria-label="Falar no WhatsApp" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true">
+      <path d="M12.04 2A9.9 9.9 0 0 0 2.1 11.9a9.8 9.8 0 0 0 1.35 4.96L2 22l5.3-1.39a9.9 9.9 0 0 0 4.74 1.2h.01A9.9 9.9 0 0 0 22 11.92 9.9 9.9 0 0 0 12.04 2Zm5.8 14.06c-.24.69-1.42 1.32-1.96 1.37-.5.05-.98.23-3.3-.69-2.78-1.1-4.54-3.94-4.68-4.13-.13-.19-1.11-1.48-1.11-2.82 0-1.34.7-2 .95-2.27.25-.27.54-.34.72-.34l.52.01c.17 0 .39-.06.61.47.24.56.8 1.93.87 2.07.07.14.12.3.02.49-.1.19-.14.3-.28.47-.14.16-.3.37-.42.49-.14.14-.29.29-.12.57.16.28.73 1.2 1.57 1.95 1.08.96 1.99 1.26 2.27 1.4.28.14.44.12.6-.07.17-.19.7-.81.88-1.09.19-.28.37-.23.62-.14.25.09 1.61.76 1.89.9.28.14.46.21.53.32.07.12.07.66-.18 1.35Z"></path>
+    </svg>
+  </a>
 
 </body>
 </html>

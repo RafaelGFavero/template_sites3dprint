@@ -649,10 +649,168 @@ h3 {
 /* o giro do "+" é indicador de estado: vale sempre. Só a transição é motion. */
 .faq-item[open] summary::after { transform: rotate(45deg); }
 
+/* --------------------------------------------------------- orçamento ---- */
+
+.quote-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 40px;
+  max-width: 800px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.quote-form input,
+.quote-form select,
+.quote-form textarea {
+  min-height: 48px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0 14px;
+  border-radius: var(--radius);
+  font: inherit;
+  transition: border-color .3s var(--ease);
+}
+
+.quote-form textarea {
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.quote-form input:focus,
+.quote-form select:focus,
+.quote-form textarea:focus { border-color: var(--amber); }
+
+.quote-form input:user-invalid,
+.quote-form select:user-invalid,
+.quote-form textarea:user-invalid { border-color: var(--primary); }
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.form-note {
+  font-size: .9375rem;
+  color: var(--text-muted);
+}
+
+.form-note a { color: var(--amber); }
+
+.cta-final { text-align: center; }
+
+.cta-final .section-lead {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .quote-form { grid-template-columns: 1fr 1fr; }
+
+  .field-wide { grid-column: 1 / -1; }
+}
+
+/* ------------------------------------------------------------ footer ---- */
+
+.footer {
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border);
+  padding: 48px 0 32px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  color: var(--text-muted);
+}
+
+.footer-brand {
+  margin-right: 0;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.footer h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: .9375rem;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.footer-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.footer-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--text-muted);
+  transition: color .3s var(--ease);
+}
+
+.footer-list a:hover { color: var(--amber); }
+
+.footer-copy {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+  .footer-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ------------------------------------------------ whatsapp flutuante ---- */
+
+.whats-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  display: grid;
+  place-items: center;
+  z-index: 40;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+  transition: filter .3s var(--ease);
+}
+
+.whats-float:hover { filter: brightness(1.1); }
+
 /* ------------------------------------------------------------ motion ---- */
 
 @media (prefers-reduced-motion: no-preference) {
   .btn-primary:hover { transform: translateY(-1px); }
+
+  .whats-float:hover { transform: translateY(-2px); }
 
   .card { transition: border-color .3s var(--ease), transform .3s var(--ease); }
 

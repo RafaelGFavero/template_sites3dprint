@@ -1,3 +1,5 @@
+import { buildWhatsappMessage, buildWhatsappUrl } from './whatsapp.js';
+
 export function setupMobileMenu(toggle, nav) {
   toggle.addEventListener('click', () => {
     const open = nav.classList.toggle('open');
@@ -30,8 +32,25 @@ export function setupReveal(elements) {
   elements.forEach((el) => io.observe(el));
 }
 
+export function setupQuoteForm(form, fallback, fallbackLink) {
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = Object.fromEntries(new FormData(form));
+    const url = buildWhatsappUrl(buildWhatsappMessage(data));
+    fallbackLink.href = url;
+    fallback.hidden = false;
+    window.open(url, '_blank', 'noopener');
+  });
+}
+
 if (typeof document !== 'undefined') {
   setupMobileMenu(document.getElementById('mobileToggle'), document.getElementById('navMenu'));
   setupHeaderScroll(document.querySelector('.header'));
   setupReveal(document.querySelectorAll('.reveal'));
+  setupQuoteForm(
+    document.getElementById('quoteForm'),
+    document.getElementById('quoteFallback'),
+    document.getElementById('quoteFallbackLink'),
+  );
 }
