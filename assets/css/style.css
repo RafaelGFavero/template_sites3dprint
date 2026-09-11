@@ -408,8 +408,16 @@ h3 {
 .marquee-track {
   display: flex;
   align-items: center;
-  gap: 32px;
   width: max-content;
+}
+
+/* o gap vive dentro do grupo, com padding-right igual ao gap: assim o
+   translateX(-50%) cai exatamente na emenda entre as duas metades. */
+.marquee-group {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding-right: 32px;
 }
 
 .marquee .dot { color: var(--primary); }
@@ -421,6 +429,91 @@ h3 {
 
 @media (prefers-reduced-motion: no-preference) {
   .marquee-track { animation: marquee 40s linear infinite; }
+}
+
+/* ----------------------------------------------------------- soluções --- */
+
+.section-lead {
+  margin-top: 16px;
+  font-size: 1.0625rem;
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+
+.bento {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+  margin-top: 40px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  transition: border-color .3s var(--ease), transform .3s var(--ease);
+}
+
+.card:hover {
+  border-color: var(--amber);
+  transform: translateY(-2px);
+}
+
+.card svg { color: var(--amber); }
+
+.card h3 { margin: 16px 0 8px; }
+
+.card p { color: var(--text-muted); }
+
+.card-wide { border-top: 2px solid var(--primary); }
+
+@media (min-width: 768px) {
+  .bento { grid-template-columns: repeat(2, 1fr); }
+
+  .card-wide { grid-column: span 2; }
+}
+
+@media (min-width: 1024px) {
+  .bento { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ------------------------------------------------------ como funciona --- */
+
+.steps {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.step-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: .875rem;
+  letter-spacing: .12em;
+  color: var(--amber);
+}
+
+.step h3 { margin: 12px 0 8px; }
+
+.step p { color: var(--text-muted); }
+
+.steps-cta { margin-top: 40px; }
+
+@media (min-width: 768px) {
+  .steps { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .steps { grid-template-columns: repeat(4, 1fr); }
+
+  .step {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
 }
 
 /* ------------------------------------------------------------ reveal ---- */
