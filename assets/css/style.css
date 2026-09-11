@@ -144,7 +144,7 @@ h3 {
   border-radius: var(--radius);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all .3s var(--ease);
+  transition: background-color .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease), filter .3s var(--ease);
 }
 
 .btn-primary {
@@ -339,6 +339,8 @@ h3 {
   place-items: center;
   min-height: 320px;
   isolation: isolate;
+  overflow: hidden;
+  overflow: clip;
 }
 
 .hero-grid {
@@ -589,6 +591,11 @@ h3 {
   color: var(--text-muted);
 }
 
+/* cor de borda no hover: estado, nao movimento — fica fora da guarda de motion */
+.gallery-ph { transition: border-color .3s var(--ease); }
+
+.gallery-item:hover .gallery-ph { border-color: var(--amber); }
+
 .gallery figcaption {
   font-family: var(--font-mono);
   font-size: .8rem;
@@ -650,10 +657,6 @@ h3 {
   .card { transition: border-color .3s var(--ease), transform .3s var(--ease); }
 
   .card:hover { transform: translateY(-2px); }
-
-  .gallery-ph { transition: border-color .3s var(--ease); }
-
-  .gallery-item:hover .gallery-ph { border-color: var(--amber); }
 
   .faq-item summary::after { transition: transform .3s var(--ease); }
 }
