@@ -27,3 +27,9 @@ test('url aponta para o número da RF com texto codificado', () => {
   const url = buildWhatsappUrl('Olá & tchau');
   assert.equal(url, 'https://wa.me/5517997912726?text=Ol%C3%A1%20%26%20tchau');
 });
+
+test('chave ausente e nome só com espaços caem em "não informado"', () => {
+  const msg = buildWhatsappMessage({ nome: '  ', tipo: 'Protótipo', material: 'PLA', quantidade: '1', temArquivo: 'Sim' });
+  assert.match(msg, /Nome: não informado/);
+  assert.match(msg, /Descrição: não informado/);
+});

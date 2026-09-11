@@ -14,7 +14,7 @@ Spec: `docs/superpowers/specs/2026-09-11-site-rf-tecnologia-3d-design.md`. Desig
 
 - Idioma do site: pt-BR. Prosa normal (sem estilo telegráfico) em todo texto visível.
 - Empresa: **RF Tecnologia 3D**. Instagram `@rf_tec3d` (`https://instagram.com/rf_tec3d`). WhatsApp `+55 17 99791-2726` → link `https://wa.me/5517997912726`. E-mail `rftec3d@gmail.com`.
-- Tokens obrigatórios em `:root`: `--bg:#1a1a1a; --bg-deep:#141414; --card:#2a2a2a; --muted:#252525; --border:#4a4a4a; --primary:#e53935; --amber:#ffa000; --blue:#64b5f6; --earth:#a1887f; --text:#f5f5f5; --text-muted:#b3b3b3; --on-primary:#fff; --radius:2px`. Nenhum hex cru fora de `:root`.
+- Tokens obrigatórios em `:root`: `--bg:#1a1a1a; --bg-deep:#141414; --card:#2a2a2a; --muted:#252525; --border:#4a4a4a; --primary:#d93430; --amber:#ffa000; --blue:#64b5f6; --earth:#a1887f; --text:#f5f5f5; --text-muted:#b3b3b3; --on-primary:#fff; --radius:2px`. Nenhum hex cru fora de `:root`.
 - Fontes: `Oxanium` (títulos, `text-transform: uppercase`, peso 700/800), `Inter` (texto), `Source Code Pro` (eyebrows, numeração, specs). Uma única tag `<link>` do Google Fonts.
 - Sem verde em lugar nenhum. O botão do WhatsApp usa `--primary` (vermelho), não a cor da marca WhatsApp.
 - Ícones: SVG inline (traço 2px, `viewBox 0 0 24 24`, estilo Lucide). Proibido emoji e Font Awesome (remover o CDN do template).

@@ -18,7 +18,7 @@ Transformar o protótipo em um site de vendas para a **RF Tecnologia 3D**: gerar
 | Item | Decisão | Motivo |
 |---|---|---|
 | Stack | HTML + CSS + JS vanilla, sem build | Workflow do GitHub Pages já publica a raiz; YAGNI |
-| Paleta | Doom 64 remix sem verde: fundo `#1a1a1a`, fundo profundo `#141414`, card `#2a2a2a`, muted `#252525`, borda `#4a4a4a`, primário `#e53935`, âmbar `#ffa000`, azul `#64b5f6` (só detalhe), terra `#a1887f`, texto `#f5f5f5` / muted `#b3b3b3` | Pedido do usuário; vermelho e âmbar casam com o logo (gradiente vermelho + friso dourado) |
+| Paleta | Doom 64 remix sem verde: fundo `#1a1a1a`, fundo profundo `#141414`, card `#2a2a2a`, muted `#252525`, borda `#4a4a4a`, primário `#d93430` (Doom 64 usa `#e53935`; escurecido em 11/09/2026 para contraste 4,5:1 do texto branco do botão), âmbar `#ffa000`, azul `#64b5f6` (só detalhe), terra `#a1887f`, texto `#f5f5f5` / muted `#b3b3b3` | Pedido do usuário; vermelho e âmbar casam com o logo (gradiente vermelho + friso dourado) |
 | Raio | 2px (cantos quase retos) | Tema Doom 64 usa 0; 2px evita serrilhado |
 | Fontes | Display `Oxanium` (títulos, uppercase), texto `Inter`, rótulos técnicos `Source Code Pro` | Tema Doom 64 + legibilidade |
 | Ícones | SVG inline (Lucide), sem emoji | Regra ui-ux-pro-max |

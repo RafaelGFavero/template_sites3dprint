@@ -1,4 +1,6 @@
 {
+  "name": "rf-tecnologia-3d-site",
+  "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test assets/js/*.test.js"

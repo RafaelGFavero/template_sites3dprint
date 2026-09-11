@@ -359,8 +359,8 @@ h3 {
 .hero-glow {
   position: absolute;
   inset: 8% -6%;
-  /* única exceção de rgba com o hex do primário (#e53935): glow radial */
-  background: radial-gradient(circle, rgba(229, 57, 53, .35), transparent 60%);
+  /* glow radial derivado do token --primary via color-mix, sem hex cru */
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 35%, transparent), transparent 60%);
   filter: blur(8px);
   z-index: -1;
   pointer-events: none;
