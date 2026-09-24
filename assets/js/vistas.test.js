@@ -13,11 +13,17 @@ test('órbita com azimute e elevação zero é a vista frontal', () => {
   assert.deepEqual([u, v, p].map((n) => Math.round(n * 1e6) / 1e6), [1, -3, -2]);
 });
 
+test('órbita nos ângulos canônicos coincide com as vistas', () => {
+  const r = (a) => a.map((n) => Math.round(n * 1e6) / 1e6 + 0);
+  assert.deepEqual(r(orbita(0, 90)(1, 2, 3)), VISTAS.superior(1, 2, 3));
+  assert.deepEqual(r(orbita(-90, 0)(1, 2, 3)), VISTAS.lateral(1, 2, 3));
+});
+
 test('isométrica mostra os três eixos com o mesmo encurtamento', () => {
   const proj = orbita(ISO.az, ISO.el);
-  const comp = ([x, y, z]) => { const [u, v] = proj(x, y, z); return Math.hypot(u, v).toFixed(3); };
-  assert.equal(comp([1, 0, 0]), comp([0, 1, 0]));
-  assert.equal(comp([0, 1, 0]), comp([0, 0, 1]));
+  const comp = ([x, y, z]) => { const [u, v] = proj(x, y, z); return Math.hypot(u, v); };
+  assert.ok(Math.abs(comp([1, 0, 0]) - comp([0, 1, 0])) < 1e-9);
+  assert.ok(Math.abs(comp([0, 1, 0]) - comp([0, 0, 1])) < 1e-9);
 });
 
 test('recorte do triângulo abaixo de uma altura', () => {

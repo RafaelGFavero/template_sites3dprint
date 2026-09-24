@@ -22,6 +22,7 @@ test('arestas vivas: um cubo tem 12, cada uma entre duas faces', () => {
   const arestas = featureEdgeList(parseSTL(cubeSTL()), 30);
   assert.equal(arestas.length, 12);
   assert.ok(arestas.every((e) => e.faces.length === 2));
+  assert.ok(arestas.every(({ a, b }) => Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]) === 1));
 });
 
 test('corte horizontal do cubo a meia altura é um quadrado', () => {
@@ -41,6 +42,14 @@ test('o corte A-A da trava (x = 0,05, fora do plano de simetria) fecha todos os 
   const lacos = loops(segs);
   assert.ok(lacos.length >= 1);
   assert.equal(lacos.reduce((n, l) => n + l.length, 0), segs.length / 4);
+});
+
+test('cadeia aberta não vira laço', () => {
+  assert.deepEqual(loops([0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1]), []);
+});
+
+test('corte em x devolve (y, z)', () => {
+  assert.deepEqual(sliceAxis({ count: 1, positions: new Float32Array([0, 0, 0, 2, 4, 0, 2, 0, 6]) }, 0, 1), [2, 0, 0, 3]);
 });
 
 // Cubo unitário em STL binário: 12 triângulos, cada face quadrada dividida por uma diagonal.
