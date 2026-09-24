@@ -25,7 +25,7 @@
 @media (prefers-color-scheme: dark) {
   :root { --papel: #17355f; --tinta: #eef3f8; --grafite: #b9c9dc; --construcao: #6f9fd0; }
 }
-@media (min-width: 1024px) { :root { --moldura: 12px; --margem: 28px; --carimbo-h: 0px; --reserva: 11rem; } }
+@media (min-width: 1024px) { :root { --moldura: 12px; --margem: 28px; --carimbo-h: 0px; --reserva: 11rem; scroll-padding-bottom: 11rem; /* foco nunca cai sob o carimbo */ } }
 
 /* base */
 
@@ -66,8 +66,8 @@ h1, h2 {
   word-spacing: -.18em;
   text-wrap: balance;
 }
-h1 { font-size: clamp(2.25rem, .25rem + 3.2vw, 3rem); line-height: 1.05; }
-h2 { font-size: clamp(1.5rem, 1rem + 1.2vw, 2.25rem); line-height: 1.1; }
+h1 { font-size: clamp(2rem, .25rem + 3.2vw, 3rem); line-height: 1.05; }
+h2 { font-size: clamp(1.375rem, .5rem + 1.6vw, 2.25rem); line-height: 1.1; }
 h3 { font: 400 1.125rem/1.3 var(--letra); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; }
 .lead { font-size: 1.1875rem; }
 
@@ -124,6 +124,7 @@ figcaption, .carimbo, .notas h3 {
   inset: var(--moldura) var(--moldura) var(--moldura) var(--margem);
   border: 1.5px solid var(--tinta);
   outline: 28px solid var(--papel); /* mascara a margem: nada aparece fora da folha ao rolar */
+  forced-color-adjust: none; /* tema de alto contraste não pode pintar a máscara */
   pointer-events: none;
   z-index: 2;
 }
@@ -387,14 +388,17 @@ figcaption {
       "des   des     escala  unidade"
       "acao  acao    acao    acao";
   }
-  /* faixa de papel à esquerda e acima: nenhuma lasca de texto encosta no carimbo */
+  /* faixa de papel só à esquerda: nenhuma lasca encosta no carimbo, e o que rola por cima é cortado na linha de tinta do topo */
   .carimbo::before {
     content: "";
     position: absolute;
     z-index: -1;
-    inset: calc(-1.5rem - 1.5px) 0 0 calc(-1.5rem - 1.5px);
-    border-top: 1.5rem solid var(--papel);
-    border-left: 1.5rem solid var(--papel);
+    top: -1.5px;
+    bottom: 0;
+    left: calc(-1.5rem - 1.5px);
+    width: 1.5rem;
+    background: var(--papel);
+    forced-color-adjust: none;
     pointer-events: none;
   }
   /* a imagem é a própria célula: preenche a área e o R fica contido dentro do padding */

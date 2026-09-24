@@ -31,13 +31,21 @@ export function enviarPedido(form, aviso, link) {
 // Red marks one thing per screen: the carimbo's action steps back while another action is visible.
 export function vermelhoUnico(acoes, carimbo) {
   const visiveis = new Set();
-  // The mobile bar covers the bottom of the screen: a button behind it does not count as visible.
-  const barra = getComputedStyle(document.documentElement).getPropertyValue('--carimbo-h').trim() || '0px';
-  const io = new IntersectionObserver((entradas) => {
-    for (const e of entradas) e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target);
-    carimbo.toggleAttribute('data-acao-visivel', visiveis.size > 0);
-  }, { rootMargin: `0px 0px -${barra} 0px` });
-  acoes.forEach((a) => io.observe(a));
+  const largo = matchMedia('(min-width: 1024px)');
+  let io;
+  const observar = () => {
+    io?.disconnect();
+    visiveis.clear();
+    // Below 1024px the carimbo is a bottom bar: whatever sits behind it (bar plus frame inset) does not count as visible.
+    const barra = largo.matches ? 0 : Math.ceil(innerHeight - carimbo.getBoundingClientRect().top);
+    io = new IntersectionObserver((entradas) => {
+      for (const e of entradas) e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target);
+      carimbo.toggleAttribute('data-acao-visivel', visiveis.size > 0);
+    }, { rootMargin: `0px 0px -${barra}px 0px` });
+    acoes.forEach((a) => io.observe(a));
+  };
+  observar();
+  largo.addEventListener('change', observar);
 }
 
 if (typeof document !== 'undefined') {
