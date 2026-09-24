@@ -36,8 +36,8 @@ export function bounds({ positions }) {
 }
 
 // Edges a draftsman would draw: where the two faces meet at more than `angleDeg`,
-// plus open or non-manifold edges. Returns flat [x1,y1,z1,x2,y2,z2, ...].
-export function featureEdges({ count, positions, normals }, angleDeg = 30) {
+// plus open or non-manifold edges. Returns { a:[x,y,z], b:[x,y,z], faces } per edge.
+export function featureEdgeList({ count, positions, normals }, angleDeg = 30) {
   const key = (i) => `${positions[i].toFixed(4)},${positions[i + 1].toFixed(4)},${positions[i + 2].toFixed(4)}`;
   const edges = new Map();
   for (let f = 0; f < count; f++) {
@@ -57,7 +57,59 @@ export function featureEdges({ count, positions, normals }, angleDeg = 30) {
       const dot = normals[f * 3] * normals[g * 3] + normals[f * 3 + 1] * normals[g * 3 + 1] + normals[f * 3 + 2] * normals[g * 3 + 2];
       if (dot > cos) continue;
     }
-    out.push(positions[a], positions[a + 1], positions[a + 2], positions[b], positions[b + 1], positions[b + 2]);
+    out.push({ a: [positions[a], positions[a + 1], positions[a + 2]], b: [positions[b], positions[b + 1], positions[b + 2]], faces });
   }
   return out;
+}
+
+// Where the plane (coordinate `axis` = value) cuts the mesh, as flat 2D segments
+// in the two remaining coordinates, in x, y, z order.
+export function sliceAxis({ count, positions }, axis, value) {
+  const [ua, va] = [0, 1, 2].filter((c) => c !== axis);
+  const out = [];
+  for (let f = 0; f < count; f++) {
+    const p = [0, 1, 2].map((k) => positions.subarray(f * 9 + k * 3, f * 9 + k * 3 + 3));
+    const d = p.map((q) => q[axis] - value);
+    const hits = [];
+    for (let k = 0; k < 3; k++) {
+      const i = k, j = (k + 1) % 3;
+      if ((d[i] < 0) === (d[j] < 0)) continue;
+      const t = d[i] / (d[i] - d[j]);
+      hits.push(p[i][ua] + t * (p[j][ua] - p[i][ua]), p[i][va] + t * (p[j][va] - p[i][va]));
+    }
+    if (hits.length === 4 && Math.hypot(hits[2] - hits[0], hits[3] - hits[1]) > 1e-9) out.push(...hits);
+  }
+  return out;
+}
+
+// Chain unordered segments into closed loops by matching endpoints within `tol`.
+export function loops(segments, tol = 1e-3) {
+  const segs = [];
+  for (let i = 0; i < segments.length; i += 4) segs.push([[segments[i], segments[i + 1]], [segments[i + 2], segments[i + 3]]]);
+  const same = (p, q) => Math.abs(p[0] - q[0]) <= tol && Math.abs(p[1] - q[1]) <= tol;
+  const used = new Array(segs.length).fill(false);
+  const out = [];
+  for (let s = 0; s < segs.length; s++) {
+    if (used[s]) continue;
+    used[s] = true;
+    const loop = [segs[s][0], segs[s][1]];
+    for (let grew = true; grew && !same(loop[0], loop[loop.length - 1]);) {
+      grew = false;
+      const tail = loop[loop.length - 1];
+      for (let t = 0; t < segs.length; t++) {
+        if (used[t]) continue;
+        const [p, q] = segs[t];
+        if (same(p, tail)) { loop.push(q); used[t] = grew = true; break; }
+        if (same(q, tail)) { loop.push(p); used[t] = grew = true; break; }
+      }
+    }
+    if (!same(loop[0], loop[loop.length - 1])) continue; // open chain: not a loop
+    loop.pop();
+    if (loop.length >= 3) out.push(loop);
+  }
+  return out;
+}
+
+export function layerCount(mesh, layer = 0.2) {
+  return Math.ceil(bounds(mesh).size[2] / layer - 1e-6);
 }
