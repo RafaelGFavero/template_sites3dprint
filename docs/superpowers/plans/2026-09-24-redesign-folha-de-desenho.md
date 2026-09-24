@@ -78,7 +78,7 @@ test('arestas vivas: um cubo tem 12, cada uma entre duas faces', () => {
 test('corte horizontal do cubo a meia altura é um quadrado', () => {
   const lacos = loops(sliceAxis(parseSTL(cubeSTL()), 2, 0.5));
   assert.equal(lacos.length, 1);
-  assert.equal(lacos[0].length, 4);
+  assert.equal(lacos[0].length, 8); // 4 cantos + o meio de cada face, onde passa a diagonal
   const perimetro = lacos[0].reduce((s, p, i, l) => { const q = l[(i + 1) % l.length]; return s + Math.hypot(q[0] - p[0], q[1] - p[1]); }, 0);
   assert.equal(perimetro.toFixed(3), '4.000');
 });
@@ -87,8 +87,8 @@ test('a trava sobe em 132 camadas de 0,2 mm', () => {
   assert.equal(layerCount(parseSTL(buffer), 0.2), 132);
 });
 
-test('o corte A-A da trava (x = 0) fecha em laços', () => {
-  const lacos = loops(sliceAxis(parseSTL(buffer), 0, 0));
+test('o corte A-A da trava (x = 0,05, fora do plano de simetria) fecha em laços', () => {
+  const lacos = loops(sliceAxis(parseSTL(buffer), 0, 0.05));
   assert.ok(lacos.length >= 1);
   assert.ok(lacos.every((l) => l.length >= 3));
 });
@@ -220,7 +220,7 @@ export function sliceAxis({ count, positions }, axis, value) {
       const t = d[i] / (d[i] - d[j]);
       hits.push(p[i][ua] + t * (p[j][ua] - p[i][ua]), p[i][va] + t * (p[j][va] - p[i][va]));
     }
-    if (hits.length === 4) out.push(...hits);
+    if (hits.length === 4 && Math.hypot(hits[2] - hits[0], hits[3] - hits[1]) > 1e-9) out.push(...hits);
   }
   return out;
 }
@@ -330,7 +330,7 @@ Expected: PASS em todos os testes de `stl.test.js`, `vistas.test.js` e `whatsapp
 - [ ] **Step 5: Provar por mutação**
 
 Uma mutação por arquivo, rodar `npm test`, ver a falha esperada, desfazer, ver verde. Colar as três saídas no relatório:
-1. `loops`: trocar `if (same(loop[0], loop[loop.length - 1])) loop.pop();` por nada (remover a linha). Espera-se falha no teste do quadrado (5 pontos).
+1. `loops`: trocar `if (same(loop[0], loop[loop.length - 1])) loop.pop();` por nada (remover a linha). Espera-se falha no teste do quadrado (9 pontos).
 2. `VISTAS.superior`: trocar `-y` por `y`. Espera-se falha no teste do primeiro diedro.
 3. `buildWhatsappMessage`: trocar `'Tenho uma peça para fazer.'` por `'Tenho uma peça.'`. Espera-se falha no teste do link padrão.
 
@@ -668,7 +668,7 @@ git commit -m "feat: folha de desenho técnico com carimbo, pedido e fontes loca
 2. Cores lidas a cada desenho de `getComputedStyle(document.documentElement)` (`--papel`, `--tinta`, `--grafite`, `--construcao`). Redesenhar tudo quando `matchMedia('(prefers-color-scheme: dark)')` mudar e quando o tamanho do canvas mudar (`ResizeObserver`). Canvas com `width = clientWidth * dpr`, `dpr = Math.min(devicePixelRatio, 2)`, e `ctx.setTransform(dpr, 0, 0, dpr, 0, 0)`.
 3. Traços (em px CSS): linha visível 1,6 em `--tinta`; linha oculta tracejada 0,8 em `--grafite` com `setLineDash([4, 3])`; cota e linha de chamada 0,8 em `--grafite`; construção 1 em `--construcao`; linha de corte traço-ponto 0,8 com `setLineDash([10, 3, 2, 3])`; hachura 0,7 em `--tinta` a 45° com passo de 5px. Setas de cota cheias, 9px de comprimento por 3px de meia largura. Números em `13px osifont`, com `mm()`.
 4. Remoção de linhas ocultas (algoritmo do pintor): para cada vista, projetar os triângulos, descartar os de costas (normal · direção de quem olha ≤ 0), ordenar de trás para frente pela profundidade média, e para cada triângulo preencher com `--papel` e traçar as arestas de `featureEdgeList` que tocam esse triângulo. Nas três vistas estáticas do hero, depois de tudo, desenhar as arestas ocultas: amostrar cada aresta a cada 0,4 mm, marcar como oculto o ponto coberto por algum triângulo de frente com profundidade maior que a do ponto + 0,05 mm, e traçar só os trechos ocultos, tracejados. Na perspectiva que gira, sem linhas ocultas.
-5. Composição do hero (canvas 4:3 no desktop, 1:1 no celular), em primeiro diedro: vista frontal no alto à esquerda; vista superior abaixo dela, alinhada em x; vista lateral esquerda à direita da frontal, alinhada em z; perspectiva isométrica (`ISO`) no quadrante de baixo à direita. Uma escala única para as três vistas ortográficas, calculada para caber com margem de 12% e espaço para cotas. Rótulos pequenos em letra técnica, cor `--grafite`, abaixo de cada vista: "Frontal", "Superior", "Lateral esquerda", "Perspectiva". Cotas: largura total (x) abaixo da vista superior, altura total (z) à esquerda da frontal, profundidade total (y) abaixo da lateral, valores de `caixa.size`. Linha de corte A-A na vista superior, em x = 0, passando 4mm além do contorno, com setas curtas nas pontas e a letra "A" em cada ponta. No celular (canvas 1:1) a composição vira: frontal em cima à esquerda, lateral em cima à direita, superior embaixo à esquerda, perspectiva embaixo à direita, mantendo o primeiro diedro.
+5. Composição do hero (canvas 4:3 no desktop, 1:1 no celular), em primeiro diedro: vista frontal no alto à esquerda; vista superior abaixo dela, alinhada em x; vista lateral esquerda à direita da frontal, alinhada em z; perspectiva isométrica (`ISO`) no quadrante de baixo à direita. Uma escala única para as três vistas ortográficas, calculada para caber com margem de 12% e espaço para cotas. Rótulos pequenos em letra técnica, cor `--grafite`, abaixo de cada vista: "Frontal", "Superior", "Lateral esquerda", "Perspectiva". Cotas: largura total (x) abaixo da vista superior, altura total (z) à esquerda da frontal, profundidade total (y) abaixo da lateral, valores de `caixa.size`. Linha de corte A-A na vista superior, em x = 0,05, passando 4mm além do contorno, com setas curtas nas pontas e a letra "A" em cada ponta. No celular (canvas 1:1) a composição vira: frontal em cima à esquerda, lateral em cima à direita, superior embaixo à esquerda, perspectiva embaixo à direita, mantendo o primeiro diedro.
 6. Momento autoral (só com `prefers-reduced-motion: no-preference`, uma vez, quando o hero fica 40% visível), em camadas registradas sobre a linha-mestra fixa, com `requestAnimationFrame`:
    - 0 a 700 ms, `--ease-out`: as arestas visíveis das três vistas se desenham do começo ao fim de cada segmento (proporção do comprimento), a frontal começa em 0 ms, a superior em 120 ms e a lateral em 240 ms.
    - 600 a 1100 ms: cotas, rótulos e linha de corte entram por opacidade (`globalAlpha` de 0 a 1).
@@ -680,7 +680,7 @@ git commit -m "feat: folha de desenho técnico com carimbo, pedido e fontes loca
    - `cotas`: vista frontal em tinta com as cotas de largura e altura.
    - `mesa`: vista superior em tinta com a área da primeira camada (`loops(sliceAxis(mesh, 2, 0.1))`) hachurada e a legenda "Base na mesa" em letra técnica.
    - `camadas`: perspectiva isométrica com todas as linhas de camada em `--grafite` 0,5 e a legenda "132 camadas de 0,2 mm" (o 132 vem de `parte.camadas`).
-9. Corte A-A (`#corte`): laços de `sliceAxis(mesh, 0, 0)` desenhados no plano (y, z) visto da esquerda (u = -y, v = -z), contorno em tinta 1,6 e hachura a 45° recortada pelos laços com `clip('evenodd')`; atrás do corte, a silhueta da metade de x < 0 em `--grafite` 0,8 sem preenchimento; cotas de profundidade e altura; é o maior bloco escuro da página.
+9. Corte A-A (`#corte`): laços de `sliceAxis(mesh, 0, 0.05)` (0,05 mm fora do plano de simetria, para não passar por vértices) desenhados no plano (y, z) visto da esquerda (u = -y, v = -z), contorno em tinta 1,6 e hachura a 45° recortada pelos laços com `clip('evenodd')`; atrás do corte, a silhueta da metade de x < 0 em `--grafite` 0,8 sem preenchimento; cotas de profundidade e altura; é o maior bloco escuro da página.
 10. Nada no canvas usa vermelho.
 
 - [ ] **Step 1: Implementar `assets/js/desenho.js`** conforme o comportamento acima.
