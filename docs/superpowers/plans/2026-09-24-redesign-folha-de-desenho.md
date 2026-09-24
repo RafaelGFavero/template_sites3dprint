@@ -57,7 +57,7 @@
 - Consumes: `parseSTL(buffer) -> { count, positions: Float32Array(9 por triângulo), normals: Float32Array(3 por triângulo) }` e `bounds(mesh) -> { min:[x,y,z], max:[x,y,z], size:[x,y,z] }`, já existentes em `assets/js/stl.js`.
 - Produces:
   - `stl.js`: `featureEdgeList(mesh, angleDeg = 30) -> Array<{ a:[x,y,z], b:[x,y,z], faces:number[] }>` (substitui `featureEdges`); `sliceAxis(mesh, axis, value) -> number[]` segmentos planos `[u1,v1,u2,v2,…]` nas duas coordenadas restantes em ordem (eixo 0 → (y,z); 1 → (x,z); 2 → (x,y)); `loops(segments, tol = 1e-3) -> Array<Array<[u,v]>>` laços fechados sem repetir o primeiro ponto; `layerCount(mesh, layer = 0.2) -> number`.
-  - `vistas.js`: `VISTAS = { frontal, superior, lateral }`, cada uma `(x,y,z) -> [u, v, profundidade]` (u para a direita, v para baixo, profundidade maior = mais perto de quem olha); `orbita(azGraus, elGraus) -> (x,y,z) -> [u, v, profundidade]`; `ISO = { az: 45, el: 35.264 }`; `recortaAbaixo(tri, h) -> Array<[x,y,z]>` (polígono do triângulo com z ≤ h, 0, 3 ou 4 pontos); `mm(valor) -> string` com vírgula e uma casa.
+  - `vistas.js`: `VISTAS = { frontal, superior, lateral }`, cada uma `(x,y,z) -> [u, v, profundidade]` (u para a direita, v para baixo, profundidade maior = mais perto de quem olha); `orbita(azGraus, elGraus) -> (x,y,z) -> [u, v, profundidade]`; `ISO = { az: 45, el: asin(1/√3) em graus (35,26439°) }`; `recortaAbaixo(tri, h) -> Array<[x,y,z]>` (polígono do triângulo com z ≤ h, 0, 3 ou 4 pontos); `mm(valor) -> string` com vírgula e uma casa.
   - `whatsapp.js`: `WHATSAPP_NUMBER`, `buildWhatsappMessage({ nome, peca, medida } = {}) -> string`, `buildWhatsappUrl(message) -> string`.
 
 A frente da trava no STL é o lado de y menor (y vai de -0,60 a 25,77); as orelhas inclinam para trás (y maior); a base está em z = 0; x é simétrico (-16,41 a 16,41).
@@ -87,10 +87,11 @@ test('a trava sobe em 132 camadas de 0,2 mm', () => {
   assert.equal(layerCount(parseSTL(buffer), 0.2), 132);
 });
 
-test('o corte A-A da trava (x = 0,05, fora do plano de simetria) fecha em laços', () => {
-  const lacos = loops(sliceAxis(parseSTL(buffer), 0, 0.05));
+test('o corte A-A da trava (x = 0,05, fora do plano de simetria) fecha todos os segmentos em laços', () => {
+  const segs = sliceAxis(parseSTL(buffer), 0, 0.05);
+  const lacos = loops(segs);
   assert.ok(lacos.length >= 1);
-  assert.ok(lacos.every((l) => l.length >= 3));
+  assert.equal(lacos.reduce((n, l) => n + l.length, 0), segs.length / 4);
 });
 ```
 
@@ -246,7 +247,8 @@ export function loops(segments, tol = 1e-3) {
         if (same(q, tail)) { loop.push(p); used[t] = grew = true; break; }
       }
     }
-    if (same(loop[0], loop[loop.length - 1])) loop.pop();
+    if (!same(loop[0], loop[loop.length - 1])) continue; // open chain: not a loop
+    loop.pop();
     if (loop.length >= 3) out.push(loop);
   }
   return out;
@@ -268,7 +270,7 @@ export const VISTAS = {
   lateral: (x, y, z) => [-y, -z, -x],  // left view (seen from -X), drawn to the right of the front view
 };
 
-export const ISO = { az: 45, el: 35.264 };
+export const ISO = { az: 45, el: (Math.asin(1 / Math.sqrt(3)) * 180) / Math.PI }; // isométrica exata
 
 // Free view around the part: azimuth turns around Z starting from the front, elevation lifts the eye.
 export function orbita(azGraus, elGraus) {
@@ -330,7 +332,7 @@ Expected: PASS em todos os testes de `stl.test.js`, `vistas.test.js` e `whatsapp
 - [ ] **Step 5: Provar por mutação**
 
 Uma mutação por arquivo, rodar `npm test`, ver a falha esperada, desfazer, ver verde. Colar as três saídas no relatório:
-1. `loops`: trocar `if (same(loop[0], loop[loop.length - 1])) loop.pop();` por nada (remover a linha). Espera-se falha no teste do quadrado (9 pontos).
+1. `loops`: remover a linha `loop.pop();`. Espera-se falha no teste do quadrado (9 pontos).
 2. `VISTAS.superior`: trocar `-y` por `y`. Espera-se falha no teste do primeiro diedro.
 3. `buildWhatsappMessage`: trocar `'Tenho uma peça para fazer.'` por `'Tenho uma peça.'`. Espera-se falha no teste do link padrão.
 
