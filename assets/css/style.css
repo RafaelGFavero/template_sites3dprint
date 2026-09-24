@@ -19,7 +19,7 @@
   --moldura: 6px; --margem: 6px; --carimbo-h: 64px;
   --topo-h: 64px;
   --hero-topo: clamp(3rem, 8svh, 6rem);
-  --legenda-h: 4.5rem; /* legenda de até três linhas sob o desenho */
+  --legenda-h: 5.25rem; /* legenda de até quatro linhas sob o desenho */
   --reserva: calc(var(--carimbo-h) + 2rem);
 }
 @media (prefers-color-scheme: dark) {
@@ -37,6 +37,7 @@ html {
   color: var(--tinta);
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: 1.5rem;
+  scroll-padding-bottom: calc(var(--carimbo-h) + var(--moldura) + 1rem);
   caret-color: var(--tinta);
   scrollbar-color: var(--grafite) var(--papel);
 }
@@ -45,6 +46,7 @@ body { font: 400 1.0625rem/1.6 var(--texto); }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
 ::selection { background: var(--construcao); color: var(--tinta); }
+@media (prefers-color-scheme: dark) { ::selection { background: var(--tinta); color: var(--papel); } }
 :focus-visible { outline: 2px solid var(--tinta); outline-offset: 3px; }
 
 img, svg, canvas { display: block; max-width: 100%; }
@@ -65,7 +67,7 @@ h1, h2 {
   text-wrap: balance;
 }
 h1 { font-size: clamp(2.25rem, .25rem + 3.2vw, 3rem); line-height: 1.05; }
-h2 { font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem); line-height: 1.1; }
+h2 { font-size: clamp(1.5rem, 1rem + 1.2vw, 2.25rem); line-height: 1.1; }
 h3 { font: 400 1.125rem/1.3 var(--letra); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; }
 .lead { font-size: 1.1875rem; }
 
@@ -79,6 +81,7 @@ figcaption, .carimbo, .notas h3 {
   word-spacing: -.1em;
   color: var(--grafite);
 }
+.unidade { text-transform: none; } /* símbolo de unidade fica em minúsculas */
 
 .link, .aviso a, .rodape a { text-decoration: underline 1px; text-underline-offset: .2em; }
 .link { display: inline-flex; align-items: center; min-height: 44px; }
@@ -120,6 +123,7 @@ figcaption, .carimbo, .notas h3 {
   position: fixed;
   inset: var(--moldura) var(--moldura) var(--moldura) var(--margem);
   border: 1.5px solid var(--tinta);
+  outline: 28px solid var(--papel); /* mascara a margem: nada aparece fora da folha ao rolar */
   pointer-events: none;
   z-index: 2;
 }
@@ -215,8 +219,8 @@ main > .folha:last-child { padding-bottom: 0; }
 figcaption {
   display: grid;
   gap: .35rem 1.5rem;
-  margin-top: .75rem;
-  padding-top: .5rem;
+  margin-top: .5rem;
+  padding-top: .375rem;
   border-top: 1px solid var(--grafite);
 }
 
@@ -229,7 +233,7 @@ figcaption {
     width: min(100%, calc((100svh - var(--topo-h) - var(--hero-topo) - 11rem - var(--legenda-h)) * 4 / 3));
   }
   .desenho canvas { aspect-ratio: 4 / 3; }
-  .desenho figcaption { grid-template-columns: 1.3fr 1fr 2.4fr; }
+  .desenho figcaption { grid-template-columns: 1.2fr 1.2fr 2.2fr; }
 }
 
 /* 2 como eu faço */
@@ -247,7 +251,7 @@ figcaption {
 .estados p { margin-top: .375rem; }
 
 .caso { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 2.5rem; margin-top: 1.5rem; }
-#corte { width: 100%; aspect-ratio: 16 / 9; }
+.corte canvas { width: 100%; aspect-ratio: 16 / 9; }
 .notas ol { list-style: none; padding: 0; margin-top: .75rem; counter-reset: nota; }
 .notas li {
   counter-increment: nota;
@@ -282,9 +286,9 @@ figcaption {
 
 .pedido { row-gap: 3rem; }
 .pedido-form h2 + p { margin-top: 1rem; }
-#pedido-form { margin-top: .5rem; }
-#pedido-form label { display: block; margin-top: 1.5rem; font-size: .9375rem; font-weight: 600; }
-#pedido-form input, #pedido-form textarea {
+.formulario { margin-top: .5rem; }
+.formulario label { display: block; margin-top: 1.5rem; font-size: .9375rem; font-weight: 600; }
+.formulario input, .formulario textarea {
   display: block;
   width: 100%;
   min-height: 48px;
@@ -296,11 +300,11 @@ figcaption {
   border-radius: 0;
   font: 400 1.0625rem/1.5 var(--texto);
 }
-#pedido-form textarea { resize: none; field-sizing: content; }
-#pedido-form ::placeholder { color: var(--grafite); opacity: 1; }
-#pedido-form :is(input, textarea):focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
+.formulario textarea { resize: none; field-sizing: content; }
+.formulario ::placeholder { color: var(--grafite); opacity: 1; }
+.formulario :is(input, textarea):focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
 .dica { margin-top: 1rem; font-size: .9375rem; color: var(--grafite); }
-#pedido-form .acao { margin-top: 1.5rem; }
+.formulario .acao { margin-top: 1.5rem; }
 .aviso { margin-top: 1rem; font-size: .9375rem; }
 
 .mandar ul { margin-top: .75rem; padding-left: 1.1rem; list-style: square; }
@@ -337,27 +341,18 @@ figcaption {
   background: var(--papel);
 }
 .carimbo > :not(.acao) { background: var(--papel); }
-/* flex, não grid: uma trilha auto cresceria até a imagem e o centro sairia do lugar */
-.carimbo-marca-caixa { display: flex; align-items: center; justify-content: center; overflow: hidden; --marca: 3rem; }
-/* o PNG traz a arte completa; recorta o R registrado (x 31 a 153, y 0 a 111 de 200 por 146) e o centraliza */
-.carimbo-marca {
-  flex: none;
-  width: calc(var(--marca) * 200 / 122);
-  max-width: none;
-  clip-path: inset(0 23.5% 24% 15.5%);
-  translate: 4% 12%;
-}
 .carimbo-nome { display: flex; align-items: center; padding: 0 .625rem; font-size: 1.125rem; color: var(--tinta); }
-/* células de 35px: o carimbo inteiro fica abaixo das 11rem que o hero reserva */
-.carimbo-campo { display: flex; flex-direction: column; justify-content: center; gap: .0625rem; min-width: 0; padding: .25rem .625rem; }
-.carimbo-campo span:first-child { font-size: .6875rem; line-height: 1; }
-.carimbo-campo span:last-child { color: var(--tinta); line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.carimbo-acao { display: flex; padding: 0 .75rem 0 .625rem; border-width: 0; }
+/* células de 36px: o carimbo inteiro fica abaixo das 11rem que o hero reserva */
+.carimbo-campo { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding: .25rem .625rem; }
+.carimbo-campo span:first-child { font-size: .6875rem; line-height: .9; }
+/* a osifont usa as métricas typo (ascendente 0,75em) e o acento sobe a 0,98em: o recorte das reticências precisa de folga em cima */
+.carimbo-campo span:last-child { color: var(--tinta); line-height: 1.05; padding-top: .35em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.carimbo-acao { display: flex; padding: 0 .75rem 0 .625rem; }
 .carimbo-acao svg:last-child { margin-left: auto; }
 .carimbo[data-acao-visivel] .carimbo-acao { background: var(--papel); color: var(--tinta); border-color: var(--tinta); }
 @media (hover: hover) { .carimbo[data-acao-visivel] .carimbo-acao:hover { background: color-mix(in srgb, var(--tinta) 8%, var(--papel)); } }
 @media (prefers-reduced-motion: no-preference) {
-  .carimbo-acao { transition: background-color 150ms ease, color 150ms ease, transform 120ms var(--ease-out); }
+  .carimbo-acao { transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out); }
 }
 
 @media (max-width: 1023.98px) {
@@ -371,9 +366,8 @@ figcaption {
     gap: .25rem;
     padding: 0 .5rem;
   }
-  /* ordem no HTML: marca, nome, peça, cliente, desenho, escala, unidade, folha, ação */
-  .carimbo > :nth-child(n + 2):nth-child(-n + 7) { display: none; }
-  .carimbo-marca-caixa { --marca: 1.75rem; width: var(--marca); height: calc(var(--marca) * 111 / 122); }
+  .carimbo-nome, .carimbo-campo:not(.campo-folha) { display: none; }
+  .carimbo-marca { width: 1.75rem; height: auto; }
   .carimbo-acao { padding: 0 .875rem; }
   .carimbo-acao svg:last-child { display: none; }
 }
@@ -393,13 +387,24 @@ figcaption {
       "des   des     escala  unidade"
       "acao  acao    acao    acao";
   }
-  .carimbo > :nth-child(1) { grid-area: marca; }
-  .carimbo > :nth-child(2) { grid-area: nome; }
-  .carimbo > :nth-child(3) { grid-area: peca; }
-  .carimbo > :nth-child(4) { grid-area: cliente; }
-  .carimbo > :nth-child(5) { grid-area: des; }
-  .carimbo > :nth-child(6) { grid-area: escala; }
-  .carimbo > :nth-child(7) { grid-area: unidade; }
-  .carimbo > :nth-child(8) { grid-area: folha; }
-  .carimbo > :nth-child(9) { grid-area: acao; }
+  /* faixa de papel à esquerda e acima: nenhuma lasca de texto encosta no carimbo */
+  .carimbo::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: calc(-1.5rem - 1.5px) 0 0 calc(-1.5rem - 1.5px);
+    border-top: 1.5rem solid var(--papel);
+    border-left: 1.5rem solid var(--papel);
+    pointer-events: none;
+  }
+  /* a imagem é a própria célula: preenche a área e o R fica contido dentro do padding */
+  .carimbo-marca { grid-area: marca; width: 100%; height: 100%; min-height: 0; padding: .75rem; object-fit: contain; }
+  .carimbo-nome { grid-area: nome; }
+  .campo-peca { grid-area: peca; }
+  .campo-cliente { grid-area: cliente; }
+  .campo-desenho { grid-area: des; }
+  .campo-escala { grid-area: escala; }
+  .campo-unidade { grid-area: unidade; }
+  .campo-folha { grid-area: folha; }
+  .carimbo-acao { grid-area: acao; border-width: 0; } /* aqui os filetes fazem a borda */
 }

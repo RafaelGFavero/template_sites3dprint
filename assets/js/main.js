@@ -11,7 +11,7 @@ export function acompanharFolha(secoes, alvo) {
 }
 
 export function carimboAoVivo(form, peca, cliente) {
-  const curto = (t, n) => (t.length > n ? `${t.slice(0, n - 1).trimEnd()}…` : t);
+  const curto = (t, n) => (t.length > n ? `${t.slice(0, n - 3).trimEnd()}...` : t);
   form.addEventListener('input', () => {
     peca.textContent = curto(form.peca.value.trim(), 28) || PECA_PADRAO;
     cliente.textContent = curto(form.nome.value.trim(), 20) || CLIENTE_PADRAO;
@@ -31,10 +31,12 @@ export function enviarPedido(form, aviso, link) {
 // Red marks one thing per screen: the carimbo's action steps back while another action is visible.
 export function vermelhoUnico(acoes, carimbo) {
   const visiveis = new Set();
+  // The mobile bar covers the bottom of the screen: a button behind it does not count as visible.
+  const barra = getComputedStyle(document.documentElement).getPropertyValue('--carimbo-h').trim() || '0px';
   const io = new IntersectionObserver((entradas) => {
     for (const e of entradas) e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target);
     carimbo.toggleAttribute('data-acao-visivel', visiveis.size > 0);
-  });
+  }, { rootMargin: `0px 0px -${barra} 0px` });
   acoes.forEach((a) => io.observe(a));
 }
 

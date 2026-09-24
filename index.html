@@ -45,7 +45,7 @@
 <main id="principal">
   <section class="folha hero" id="inicio" data-folha="1" aria-labelledby="t-inicio">
     <div class="hero-texto">
-      <h1 id="t-inicio">Não acha a peça? Eu desenho e imprimo.</h1>
+      <h1 id="t-inicio">Não acha a peça?<br>Eu desenho e imprimo.</h1>
       <p class="lead">Mande uma foto e uma medida pelo WhatsApp. Eu redesenho a peça em milímetros e imprimo em 3D.</p>
       <div class="hero-acoes">
         <a class="acao" href="https://wa.me/5517997912726?text=Ol%C3%A1%2C%20Rafael!%20Vim%20pelo%20site%20da%20RF%20Tecnologia%203D.%0ATenho%20uma%20pe%C3%A7a%20para%20fazer.%0AVou%20mandar%20as%20fotos%20aqui." target="_blank" rel="noopener"><svg aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></svg> Mandar foto da peça</a>
@@ -57,7 +57,7 @@
         aria-label="Desenho da trava do conector de combustível em vista frontal, superior e lateral, com 32,8 por 26,4 por 26,4 milímetros, e uma perspectiva impressa camada por camada."></canvas>
       <figcaption>
         <span>Trava do conector de combustível</span>
-        <span>1º diedro, medidas em mm</span>
+        <span>Primeiro diedro, medidas em <span class="unidade">mm</span></span>
         <span id="desenho-dica">Arraste a perspectiva para girar. No teclado, use as setas.</span>
       </figcaption>
     </figure>
@@ -106,7 +106,7 @@
     <div class="pedido-form">
       <h2 id="t-pedido">Mande a foto da peça</h2>
       <p>Se quiser, adiante o pedido aqui. A conversa continua no WhatsApp, onde você anexa as fotos.</p>
-      <form id="pedido-form" novalidate>
+      <form id="pedido-form" class="formulario" novalidate>
         <label for="nome">Seu nome</label>
         <input id="nome" name="nome" type="text" autocomplete="name">
         <label for="peca">Que peça é, e de onde?</label>
@@ -115,7 +115,7 @@
         <input id="medida" name="medida" type="text" placeholder="Ex.: 32 mm de largura">
         <p class="dica">Tudo aqui é opcional.</p>
         <button class="acao" type="submit"><svg aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></svg> Mandar foto da peça</button>
-        <p class="aviso" id="pedido-aviso" hidden>Se o WhatsApp não abriu, <a id="pedido-link" href="https://wa.me/5517997912726?text=Ol%C3%A1%2C%20Rafael!%20Vim%20pelo%20site%20da%20RF%20Tecnologia%203D.%0ATenho%20uma%20pe%C3%A7a%20para%20fazer.%0AVou%20mandar%20as%20fotos%20aqui." target="_blank" rel="noopener">abra por aqui</a>.</p>
+        <p class="aviso" id="pedido-aviso" role="status" hidden>Se o WhatsApp não abriu, <a id="pedido-link" href="https://wa.me/5517997912726?text=Ol%C3%A1%2C%20Rafael!%20Vim%20pelo%20site%20da%20RF%20Tecnologia%203D.%0ATenho%20uma%20pe%C3%A7a%20para%20fazer.%0AVou%20mandar%20as%20fotos%20aqui." target="_blank" rel="noopener">abra por aqui</a>.</p>
       </form>
     </div>
     <aside class="mandar" aria-labelledby="t-mandar">
@@ -136,15 +136,15 @@
   <p>© 2026 RF Tecnologia 3D</p>
 </footer>
 
-<aside class="carimbo" aria-label="Carimbo da folha">
-  <span class="carimbo-marca-caixa"><img class="carimbo-marca" src="assets/img/marca-r.png" width="200" height="146" alt=""></span>
+<aside class="carimbo" aria-label="Carimbo da folha" data-acao-visivel>
+  <img class="carimbo-marca" src="assets/img/marca-r.png" width="120" height="109" alt="">
   <p class="carimbo-nome">RF Tecnologia 3D</p>
-  <p class="carimbo-campo"><span>Peça</span> <span data-carimbo="peca">Trava do conector</span></p>
-  <p class="carimbo-campo"><span>Cliente</span> <span data-carimbo="cliente">Você</span></p>
-  <p class="carimbo-campo"><span>Desenho</span> <span>Rafael Favero</span></p>
-  <p class="carimbo-campo"><span>Escala</span> <span>Sem escala</span></p>
-  <p class="carimbo-campo"><span>Unidade</span> <span>mm</span></p>
-  <p class="carimbo-campo"><span>Folha</span> <span data-carimbo="folha">1/4</span></p>
+  <p class="carimbo-campo campo-peca"><span>Peça</span> <span data-carimbo="peca">Trava do conector</span></p>
+  <p class="carimbo-campo campo-cliente"><span>Cliente</span> <span data-carimbo="cliente">Você</span></p>
+  <p class="carimbo-campo campo-desenho"><span>Desenho</span> <span>Rafael Favero</span></p>
+  <p class="carimbo-campo campo-escala"><span>Escala</span> <span>Sem escala</span></p>
+  <p class="carimbo-campo campo-unidade"><span>Unidade</span> <span class="unidade">mm</span></p>
+  <p class="carimbo-campo campo-folha"><span>Folha</span> <span data-carimbo="folha">1/4</span></p>
   <a class="acao carimbo-acao" href="https://wa.me/5517997912726?text=Ol%C3%A1%2C%20Rafael!%20Vim%20pelo%20site%20da%20RF%20Tecnologia%203D.%0ATenho%20uma%20pe%C3%A7a%20para%20fazer.%0AVou%20mandar%20as%20fotos%20aqui." target="_blank" rel="noopener"><svg aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></svg> Mandar foto da peça <svg aria-hidden="true" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
 </aside>
 </body>
