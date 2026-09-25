@@ -406,7 +406,7 @@
           "color": "{colors.construcao}",
           "dash": null,
           "cap": "round",
-          "uso": "Só o esboço do quadro da foto."
+          "uso": "O esboço do quadro da foto e o da abertura do hero, que some sob a tinta."
         },
         {
           "name": "hachura",

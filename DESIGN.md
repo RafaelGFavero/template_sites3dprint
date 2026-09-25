@@ -239,7 +239,7 @@ Paleta de prancha: três materiais de desenho sobre papel frio e um único verme
 - **Branco sobre Vermelho** (#ffffff): texto e ícone dentro da ação vermelha, e em nenhum outro lugar.
 
 ### Secondary
-- **Azul de Construção** (#7fb3dd): o azul não fotográfico do esboço. Desenha só as linhas de construção do quadro "Você manda a foto" e o fundo da seleção de texto, com tinta por cima (7,97:1). Sobre o papel fica em 2,02:1, por isso nunca carrega texto nem informação que precise ser lida.
+- **Azul de Construção** (#7fb3dd): o azul não fotográfico do esboço. Desenha as linhas de construção do quadro "Você manda a foto", o esboço da perspectiva na abertura do hero, que some sob a tinta no fim, e o fundo da seleção de texto, com tinta por cima (7,97:1). Sobre o papel fica em 2,02:1, por isso nunca carrega texto nem informação que precise ser lida.
 - **Azul de Construção da Cópia** (#6f9fd0): o mesmo material no esquema escuro, 4,41:1 sobre o azul heliográfico.
 
 ### Neutral
@@ -380,7 +380,7 @@ Quatro quadros quadrados da mesma peça, um por etapa do serviço.
 - **Hachura:** linhas a 45°, subindo para a direita, de 1,1px em tinta com passo de 3px, recortadas pela área cortada. É o campo mais denso da página, e o mesmo padrão marca a base na mesa.
 
 ### Legendas, rótulos e notas
-- **Legenda de figura:** régua de 1px em grafite em cima, .5rem abaixo do desenho e .375rem de folga até a letra; letra técnica pequena, vertical, em grafite. No hero do desktop são três partes lado a lado (1.65fr, 1.55fr e 1fr), empilhadas quando a figura tem menos de 41.5rem.
+- **Legenda de figura:** régua de 1px em grafite em cima, .5rem abaixo do desenho e .375rem de folga até a letra; letra técnica pequena, vertical, em grafite. No hero do desktop são duas partes lado a lado (1.65fr e 2.55fr), empilhadas quando a figura tem menos de 41.5rem.
 - **Rótulo de vista:** o h3 de cada quadro, osifont itálica .9375rem em tinta, com a mesma régua de 1px.
 - **Notas:** título NOTAS na letra pequena inclinada; lista numerada com o número em osifont .8125rem em grafite numa coluna de 1.5rem e o texto em Overpass .9375rem, com .75rem entre as notas.
 - **Lista "O que mandar":** marcador quadrado em grafite, .5rem entre os itens.
