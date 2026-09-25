@@ -20,12 +20,23 @@ test('cubo: medidas, camadas e o contorno da vista frontal', () => {
   assert.equal(comprimento(d.frontal.visiveis).toFixed(2), '4.00');
 });
 
+test('cubo: a frontal esconde a face de trás, e a isométrica mostra 9 das 12 arestas', () => {
+  const d = cubo();
+  assert.equal(d.frontal.ocultos.length, 16); // as quatro arestas da face de trás, cobertas pela da frente
+  // 9 arestas de 1 mm, cada uma encurtada para √(2/3) na isométrica: ≈ 7,35 mm. Mede 7,38 com os tocos de ~0,01 mm
+  // que as três arestas ocultas deixam onde encostam no contorno.
+  const visivel = comprimento(d.iso.visiveis);
+  assert.ok(Math.abs(visivel - 9 * Math.sqrt(2 / 3)) < 0.1, `${visivel} mm`);
+});
+
 test('cubo: cada camada tem só as duas linhas das faces que a isométrica mostra', () => {
   assert.deepEqual(cubo().iso.camadas.map((c) => c.length), [8, 8, 8, 8, 8]);
 });
 
-test('cubo: o corte A-A fecha um laço', () => {
-  assert.equal(cubo().corte.lacos.length, 1);
+test('cubo: o corte A-A fecha um laço, com o z para cima', () => {
+  const { lacos } = cubo().corte;
+  assert.equal(lacos.length, 1);
+  assert.deepEqual(lacos[0].filter((n, i) => i % 2 && n > 0), []); // v = -z e cresce para baixo: nada abaixo da base
 });
 
 test('plano de corte que não passa pela peça é recusado', () => {
