@@ -354,7 +354,7 @@
       {
         "name": "legenda-empilhada",
         "value": "@container (width < 41.5rem)",
-        "purpose": "A legenda do hero empilha em três linhas."
+        "purpose": "A legenda do hero empilha em duas linhas."
       }
     ],
     "drawing": {
@@ -366,7 +366,7 @@
           "color": "{colors.tinta}",
           "dash": null,
           "cap": "round",
-          "uso": "Arestas visíveis, contorno da seção, tampa da impressão em andamento. Na perspectiva, afina com a escala abaixo de 4px por mm, até 0,8px, para as nervuras não se fundirem."
+          "uso": "Arestas visíveis e contorno da seção. Na perspectiva, afina com a escala abaixo de 4px por mm, até 0,8px, para as nervuras não se fundirem."
         },
         {
           "name": "oculta",
@@ -432,7 +432,7 @@
         "cifra": "osifont 13px, 4px acima da linha, vírgula decimal e uma casa, sem unidade"
       },
       "rotulos": "osifont 11px em grafite, caixa alta, centrados sob cada vista",
-      "faces": "preenchidas com papel de trás para a frente; o canvas pinta o papel antes de traçar; densidade de pixel até 2"
+      "faces": "linhas ocultas já separadas das visíveis, calculadas fora do site; o canvas pinta o papel antes de traçar; densidade de pixel até 2"
     }
   },
   "components": [
