@@ -406,7 +406,7 @@
           "color": "{colors.construcao}",
           "dash": null,
           "cap": "round",
-          "uso": "O esboço do quadro da foto e o da abertura do hero, que some sob a tinta."
+          "uso": "O esboço do quadro da foto e o da abertura do hero, que some sob a tinta. O esboço do hero acompanha a largura da aresta da perspectiva quando ela fica abaixo de 1px."
         },
         {
           "name": "hachura",

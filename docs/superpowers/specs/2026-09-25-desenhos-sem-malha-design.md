@@ -26,6 +26,8 @@ Medido no protótipo: o JSON com duas casas decimais tem 65 KB, 16 KB com gzip, 
 
 Tudo em mm, no plano de cada vista (u para a direita, v para baixo), arredondado a 0,01 mm. Nenhum ponto com três coordenadas.
 
+Isso não quer dizer que o JSON não carregue informação 3D. As três vistas cotadas, com ocultas e corte, definem a peça, como todo desenho técnico. E as linhas de camada da isométrica, com a altura de cada camada conhecida e a projeção publicada em `tools/vistas.js`, permitem recuperar pontos exatos da superfície visível: cerca de 3 550, a menos de 0,013 mm das fatias reais. Não é um modelo imprimível. A página desenha no máximo uma camada a cada duas, e o JSON leva as 132. Manter essas linhas é uma escolha à espera da confirmação do dono. A alternativa é tirar `iso.camadas` e desenhar a impressão sem as camadas reais da peça.
+
 - `medidas`: largura, profundidade e altura da caixa da peça. São as cotas que o desenho já mostra.
 - `camada` (0,2) e `camadas` (132).
 - `frontal`, `superior` e `lateral`: `ext` (os pontos extremos esq, dir, cima e baixo), `visiveis` e `ocultos` (segmentos `[u0, v0, u1, v1]` já sem linha oculta e fundidos onde são colineares). A superior leva também `base`, os laços da base em z = 0,1 para a hachura do quadro "Confiro se imprime".
