@@ -37,10 +37,10 @@ test('a trava sobe em 132 camadas de 0,2 mm', () => {
   assert.equal(layerCount(parseSTL(buffer), 0.2), 132);
 });
 
-test('o corte A-A da trava (x = 0,05, fora do plano de simetria) fecha todos os segmentos em laços', () => {
-  const segs = sliceAxis(parseSTL(buffer), 0, 0.05);
+test('o corte A-A da trava (y = 12,8, pelo eixo do furo) fecha todos os segmentos em laços', () => {
+  const segs = sliceAxis(parseSTL(buffer), 1, 12.8);
   const lacos = loops(segs);
-  assert.ok(lacos.length >= 1);
+  assert.equal(lacos.length, 2);
   assert.equal(lacos.reduce((n, l) => n + l.length, 0), segs.length / 4);
 });
 

@@ -1,42 +1,52 @@
-// A trava desenhada a partir do STL: três vistas em primeiro diedro com cotas e a linha de corte,
+// A trava desenhada a partir do STL: três vistas em primeiro diedro com cotas, eixos e a linha de corte,
 // a perspectiva que se imprime camada por camada e gira sob o ponteiro, os quatro estados e o corte A-A.
 import { parseSTL, bounds, featureEdgeList, sliceAxis, loops, layerCount } from './stl.js';
 import { VISTAS, orbita, ISO, recortaAbaixo, mm } from './vistas.js';
 
 const CAMADA = 0.2;
-const PLANO_AA = 0.05; // x do corte A-A, fora do plano de simetria para não passar por vértices
+const FURO = { x: 0, y: 12.75, raio: 5.5, placa: 1.6 }; // das notas de projeto da peça; a placa em volta do furo, medida na malha
+const PLANO_AA = 12.8; // y do corte A-A: pelo eixo do furo, 0,05 mm fora do centro para não passar por vértices
 const TRACO = { visivel: 1.6, oculta: 0.8, cota: 0.8, construcao: 1, corte: 0.8, hachura: 0.7, camada: 0.5 };
 const FONTE = { cota: '13px osifont', rotulo: '11px osifont' };
 const ESP_COTA = 40; // px reservados para uma cota ao lado de uma vista
+const COTA = 22, ROTULO = 20; // px: do contorno à linha de cota; da linha de cota à base do rótulo abaixo dela
+const EIXO = 3, ALEM = 4; // mm que a linha de centro e a linha de corte passam do contorno
 const PASSO_AMOSTRA = 0.4; // mm entre amostras na busca de linhas ocultas
+const NOMES = { frontal: 'FRONTAL', superior: 'SUPERIOR', lateral: 'LATERAL ESQUERDA', perspectiva: 'PERSPECTIVA' };
 const EASE_OUT = bezier(0.23, 1, 0.32, 1);
 const limita = (v) => Math.min(1, Math.max(0, v));
 
 export async function iniciar() {
   const principal = document.getElementById('desenho-principal');
   if (!principal) return;
-  const t0 = performance.now();
-  const [buffer] = await Promise.all([
-    fetch('assets/models/trava-conector.stl').then((r) => r.arrayBuffer()),
-    document.fonts.load(FONTE.cota).catch(() => {}),
-  ]);
-  const parte = montarParte(parseSTL(buffer));
-  performance.measure('desenho:dados', { start: t0 });
-  const redesenhos = [];
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => redesenhos.forEach((f) => f()));
-
-  montarHero(principal, parte, redesenhos);
-  const lateral = projetar(parte, VISTAS.lateral);
-  const iso = projetar(parte, orbita(ISO.az, ISO.el));
-  const estados = {
-    foto: (c) => desenharFoto(c, parte, iso),
-    cotas: (c) => desenharCotas(c, parte, projetar(parte, VISTAS.frontal)),
-    mesa: (c) => desenharMesa(c, parte, projetar(parte, VISTAS.superior)),
-    camadas: (c) => desenharCamadas(c, parte, iso),
-  };
-  for (const c of document.querySelectorAll('canvas.estado')) preguicoso(c, () => estados[c.dataset.estado]?.(c), redesenhos);
-  const corte = document.getElementById('corte');
-  if (corte) preguicoso(corte, () => desenharCorte(corte, parte, lateral), redesenhos);
+  try {
+    const [buffer] = await Promise.all([
+      fetch('assets/models/trava-conector.stl').then((r) => { if (!r.ok) throw new Error(`STL ${r.status}`); return r.arrayBuffer(); }),
+      document.fonts.load(FONTE.cota).catch(() => {}),
+    ]);
+    const parte = montarParte(parseSTL(buffer));
+    const vistas = {
+      frontal: projetar(parte, VISTAS.frontal), superior: projetar(parte, VISTAS.superior),
+      lateral: projetar(parte, VISTAS.lateral), iso: projetar(parte, orbita(ISO.az, ISO.el)),
+    };
+    const redesenhos = [];
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => redesenhos.forEach((f) => f()));
+    montarHero(principal, parte, vistas, redesenhos);
+    const estados = {
+      foto: (c) => desenharFoto(c, parte, vistas.iso),
+      cotas: (c) => desenharCotas(c, parte, vistas.frontal),
+      mesa: (c) => desenharMesa(c, parte, vistas.superior),
+      camadas: (c) => desenharCamadas(c, parte, vistas.iso),
+    };
+    for (const c of document.querySelectorAll('canvas.estado')) preguicoso(c, () => estados[c.dataset.estado]?.(c), redesenhos);
+    const corte = document.getElementById('corte');
+    if (corte) { // já no quadro seguinte, sem esperar rolagem; fora da tarefa do primeiro desenho do hero
+      const desenhar = montarCorte(corte, parte);
+      requestAnimationFrame(() => { dimensionar(corte); desenhar(); acompanhar(corte, desenhar, redesenhos); });
+    }
+  } catch (e) {
+    console.warn(`desenho: ${e.message}`); // sem o modelo, os canvas ficam em branco
+  }
 }
 
 function montarParte(mesh) {
@@ -47,6 +57,18 @@ function montarParte(mesh) {
   const porFace = Array.from({ length: mesh.count }, () => []);
   todas.forEach((e, i) => e.faces.forEach((f) => porFace[f].push(i)));
   return { mesh, caixa: bounds(mesh), arestas, camadas: layerCount(mesh, CAMADA), todas, porFace };
+}
+
+// A parte da malha com y >= plano, com os triângulos que cruzam o plano recortados nele.
+function alemDoPlano(parte, plano) {
+  const { positions: P, normals: N, count } = parte.mesh, pos = [], nor = [];
+  for (let f = 0; f < count; f++) {
+    const tri = [0, 3, 6].map((k) => [P[f * 9 + k], P[f * 9 + k + 1], P[f * 9 + k + 2]]);
+    // recortaAbaixo guarda z <= h; trocando (x, y, z) por (x, z, -y), "y >= plano" vira "z' <= -plano"
+    const poligono = recortaAbaixo(tri.map(([x, y, z]) => [x, z, -y]), -plano).map(([x, z, ny]) => [x, -ny, z]);
+    for (let i = 1; i + 1 < poligono.length; i++) { pos.push(...poligono[0], ...poligono[i], ...poligono[i + 1]); nor.push(N[f * 3], N[f * 3 + 1], N[f * 3 + 2]); }
+  }
+  return montarParte({ count: pos.length / 9, positions: Float32Array.from(pos), normals: Float32Array.from(nor) });
 }
 
 // Projeta a malha numa vista: vértices em (u, v, profundidade), faces de frente ordenadas de trás para a
@@ -81,11 +103,18 @@ function encaixar(vista, rect) {
   const s = Math.min(rect.w / w, rect.h / h);
   return { s, x: rect.x + (rect.w - w * s) / 2 - esq[0] * s, y: rect.y + (rect.h - h * s) / 2 - cima[1] * s };
 }
+// Encaixa a vista em W×H com margem m, reservando ESP_COTA à esquerda e embaixo para as cotas (e `eixo` mm
+// embaixo para a linha de centro que passa do contorno), e centra o conjunto.
+function encaixarComCotas(vista, W, H, m, eixo = 0) {
+  const { esq, dir, cima, baixo } = vista.ext, w = dir[0] - esq[0], h = baixo[1] - cima[1] + eixo;
+  const s = Math.min((W - 2 * m - ESP_COTA) / w, (H - 2 * m - ESP_COTA) / h);
+  return { s, x: (W - ESP_COTA - w * s) / 2 + ESP_COTA - esq[0] * s, y: (H - ESP_COTA - h * s) / 2 - cima[1] * s };
+}
 
 // Algoritmo do pintor: cada face de frente, de trás para a frente, é preenchida com papel e recebe as arestas
 // que a tocam. `p` traça cada aresta só até essa fração do comprimento; `h` recorta a peça abaixo dessa altura
 // (a impressão em andamento) e fecha a tampa; `camadas` traça as linhas de camada nas faces visíveis.
-function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = false, filtro, corAresta = cor.tinta, largura = TRACO.visivel } = {}) {
+function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = false } = {}) {
   const { mesh, todas, porFace, caixa } = parte, P = mesh.positions;
   const { pv, ordem, desenha, proj } = vista;
   const M = (q) => ponto(mapa, q);
@@ -93,7 +122,6 @@ function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = f
   ctx.lineJoin = ctx.lineCap = 'round';
   ctx.setLineDash([]);
   for (const f of ordem) {
-    if (filtro && !filtro(f)) continue;
     const o = f * 9;
     let poligono;
     if (recorta) {
@@ -105,9 +133,8 @@ function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = f
     ctx.beginPath();
     poligono.forEach((q, i) => (i ? ctx.lineTo(...M(q)) : ctx.moveTo(...M(q))));
     ctx.closePath();
-    ctx.fillStyle = ctx.strokeStyle = cor.papel;
-    ctx.lineWidth = 1; // cobre a emenda entre faces vizinhas, por onde vazaria o que está atrás
-    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = cor.papel;
+    ctx.fill(); ctx.fill(); // duas vezes: pela emenda com a face vizinha vaza 6% do que está atrás, não 25%
     if (camadas) {
       const zMin = Math.min(P[o + 2], P[o + 5], P[o + 8]), zMax = Math.min(h, Math.max(P[o + 2], P[o + 5], P[o + 8]));
       const face = { count: 1, positions: P.subarray(o, o + 9) };
@@ -118,11 +145,12 @@ function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = f
         if (!seg.length) continue;
         const [ax, ay] = M(proj(seg[0], seg[1], z)), [bx, by] = M(proj(seg[2], seg[3], z));
         const c = Math.hypot(bx - ax, by - ay) || 1, ex = (0.7 * (bx - ax)) / c, ey = (0.7 * (by - ay)) / c;
-        ctx.moveTo(ax - ex, ay - ey); // 0,7px além da face: repõe o que a emenda da face vizinha apaga
+        ctx.moveTo(ax - ex, ay - ey); // 0,7px além da face: repõe o que a emenda da face vizinha atenua
         ctx.lineTo(bx + ex, by + ey);
       }
       ctx.strokeStyle = cor.grafite; ctx.lineWidth = TRACO.camada; ctx.stroke();
     }
+    if (p <= 0) continue;
     ctx.beginPath();
     for (const i of porFace[f]) {
       if (!desenha[i]) continue;
@@ -136,7 +164,7 @@ function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = f
       ctx.moveTo(...M(A));
       ctx.lineTo(...M([A[0] + p * (B[0] - A[0]), A[1] + p * (B[1] - A[1])]));
     }
-    ctx.strokeStyle = corAresta; ctx.lineWidth = largura; ctx.stroke();
+    ctx.strokeStyle = cor.tinta; ctx.lineWidth = TRACO.visivel; ctx.stroke();
   }
   if (recorta) {
     ctx.beginPath();
@@ -155,8 +183,9 @@ function cortaEm(a, b, h) {
   return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]), h];
 }
 
-// Trechos ocultos e visíveis das arestas da vista: amostra cada aresta a cada 0,4 mm e marca o ponto coberto
-// por alguma face de frente mais próxima de quem olha. Devolve segmentos [u0, v0, u1, v1] em mm.
+// Trechos ocultos e visíveis das arestas da vista: amostra cada aresta a cada 0,4 mm, marca o ponto coberto por
+// alguma face de frente mais próxima de quem olha e refina cada transição por bissecção (~0,05 mm).
+// Devolve segmentos [u0, v0, u1, v1] em mm, já fundidos onde são colineares.
 function trechos(parte, vista) {
   const { pv, ordem, desenha, proj } = vista;
   const faces = ordem.map((f) => {
@@ -181,41 +210,65 @@ function trechos(parte, vista) {
     const A = proj(...a), B = proj(...b);
     const n = Math.max(1, Math.ceil(Math.hypot(B[0] - A[0], B[1] - A[1], B[2] - A[2]) / PASSO_AMOSTRA));
     const em = (t) => [A[0] + t * (B[0] - A[0]), A[1] + t * (B[1] - A[1])];
-    let estado = null, inicio = 0; // corrida atual: oculta ou visível, desde a amostra `inicio`
-    for (let k = 0; k <= n; k++) {
-      const oculto = coberto(...em(k / n), A[2] + (k / n) * (B[2] - A[2]));
-      if (estado === null) estado = oculto;
-      if (oculto !== estado || k === n) {
-        const fim = oculto !== estado ? k - 1 : k;
-        (estado ? ocultos : visiveis).push(...em(Math.max(0, (inicio - 0.5) / n)), ...em(Math.min(1, (fim + 0.5) / n)));
-        estado = oculto; inicio = k;
-      }
+    const oculto = (t) => coberto(...em(t), A[2] + t * (B[2] - A[2]));
+    let estado = oculto(0), inicio = 0; // corrida atual e o t onde começou
+    for (let k = 1; k <= n; k++) {
+      if (oculto(k / n) === estado) continue;
+      let lo = (k - 1) / n, hi = k / n;
+      for (let j = 0; j < 3; j++) { const meio = (lo + hi) / 2; if (oculto(meio) === estado) lo = meio; else hi = meio; }
+      const t = (lo + hi) / 2;
+      (estado ? ocultos : visiveis).push(...em(inicio), ...em(t));
+      estado = !estado; inicio = t;
     }
+    (estado ? ocultos : visiveis).push(...em(inicio), ...em(1));
   });
-  return { ocultos, visiveis };
+  return { ocultos: fundir(ocultos), visiveis: fundir(visiveis) };
+}
+const corridas = (parte, vista) => (vista.trechos ??= trechos(parte, vista));
+
+// Une trechos colineares que se sobrepõem numa mesma linha de suporte e devolve cada um uma vez, da esquerda
+// para a direita: sem isso o tracejado recomeça a cada trecho e trechos coincidentes em sentidos opostos
+// viram uma linha contínua.
+function fundir(segs) {
+  const linhas = []; // { p, d: direção unitária, trechos: [[t0, t1], ...] }
+  for (let i = 0; i < segs.length; i += 4) {
+    const a = [segs[i], segs[i + 1]], b = [segs[i + 2], segs[i + 3]], c = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (c < 1e-6) continue;
+    const d = [(b[0] - a[0]) / c, (b[1] - a[1]) / c];
+    let linha = linhas.find((l) => Math.abs(l.d[0] * d[1] - l.d[1] * d[0]) < 2e-3 && Math.abs((a[0] - l.p[0]) * l.d[1] - (a[1] - l.p[1]) * l.d[0]) < 0.03);
+    if (!linha) linhas.push(linha = { p: a, d: d[0] < 0 || (d[0] === 0 && d[1] < 0) ? [-d[0], -d[1]] : d, trechos: [] });
+    const t = (q) => (q[0] - linha.p[0]) * linha.d[0] + (q[1] - linha.p[1]) * linha.d[1];
+    linha.trechos.push([Math.min(t(a), t(b)), Math.max(t(a), t(b))]);
+  }
+  const out = [];
+  for (const { p, d, trechos: ts } of linhas) {
+    ts.sort((x, y) => x[0] - y[0]);
+    const emitir = (t0, t1) => out.push(p[0] + t0 * d[0], p[1] + t0 * d[1], p[0] + t1 * d[0], p[1] + t1 * d[1]);
+    let [ini, fim] = ts[0];
+    for (const [t0, t1] of ts.slice(1)) {
+      if (t0 <= fim + 0.05) fim = Math.max(fim, t1);
+      else { emitir(ini, fim); [ini, fim] = [t0, t1]; }
+    }
+    emitir(ini, fim);
+  }
+  return out;
 }
 
-// Linhas ocultas tracejadas; por cima, os trechos visíveis outra vez em tinta, porque onde uma aresta oculta
-// coincide com uma visível quem aparece é a visível.
-function tracejar(ctx, parte, vista, mapa, cor) {
-  vista.trechos ??= trechos(parte, vista);
-  const tracar = (segs) => {
-    ctx.beginPath();
-    for (let i = 0; i < segs.length; i += 4) {
-      ctx.moveTo(...ponto(mapa, [segs[i], segs[i + 1]]));
-      ctx.lineTo(...ponto(mapa, [segs[i + 2], segs[i + 3]]));
-    }
-    ctx.stroke();
-  };
-  ctx.strokeStyle = cor.grafite; ctx.lineWidth = TRACO.oculta; ctx.lineCap = 'butt'; ctx.setLineDash([4, 3]);
-  tracar(vista.trechos.ocultos);
-  ctx.strokeStyle = cor.tinta; ctx.lineWidth = TRACO.visivel; ctx.lineCap = 'round'; ctx.setLineDash([]);
-  tracar(vista.trechos.visiveis);
+function tracar(ctx, segs, mapa, p = 1) { // cada trecho da esquerda para a direita, até a fração p
+  if (p <= 0) return;
+  ctx.beginPath();
+  for (let i = 0; i < segs.length; i += 4) {
+    const [x0, y0] = ponto(mapa, [segs[i], segs[i + 1]]), [x1, y1] = ponto(mapa, [segs[i + 2], segs[i + 3]]);
+    ctx.moveTo(x0, y0); ctx.lineTo(x0 + p * (x1 - x0), y0 + p * (y1 - y0));
+  }
+  ctx.stroke();
 }
+const estiloOculta = (ctx, cor) => { ctx.strokeStyle = cor.grafite; ctx.lineWidth = TRACO.oculta; ctx.lineCap = 'butt'; ctx.setLineDash([4, 3]); };
+const estiloVisivel = (ctx, cor, largura = TRACO.visivel, corTraco = cor.tinta) => { ctx.strokeStyle = corTraco; ctx.lineWidth = largura; ctx.lineCap = 'round'; ctx.setLineDash([]); };
 
 // Só as arestas, sem faces: o esboço em linha de construção.
 function arame(ctx, parte, vista, mapa, cor) {
-  ctx.strokeStyle = cor.construcao; ctx.lineWidth = TRACO.construcao; ctx.lineCap = 'round'; ctx.setLineDash([]);
+  estiloVisivel(ctx, cor, TRACO.construcao, cor.construcao);
   ctx.beginPath();
   parte.todas.forEach(({ a, b }, i) => {
     if (!vista.desenha[i]) return;
@@ -252,18 +305,32 @@ function cota(ctx, cor, p, q, eixo, nivel, valor) {
   else { ctx.save(); ctx.translate(nivel - 4, (lo + hi) / 2); ctx.rotate(-Math.PI / 2); ctx.fillText(valor, 0, 0); ctx.restore(); }
 }
 
-// Linha de corte vertical em x, traço-ponto, extremos grossos, setas no sentido de quem olha e a letra A.
-function linhaDeCorte(ctx, cor, x, y0, y1) {
-  ctx.strokeStyle = ctx.fillStyle = cor.tinta; ctx.lineCap = 'butt';
-  ctx.lineWidth = TRACO.corte; ctx.setLineDash([10, 3, 2, 3]);
-  ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y1); ctx.stroke();
-  ctx.setLineDash([]); ctx.lineWidth = TRACO.visivel;
-  ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y0 + 8); ctx.moveTo(x, y1); ctx.lineTo(x, y1 - 8); ctx.stroke();
+// Traço-ponto com o meio da linha no meio de um traço longo: dois eixos se cruzam em traços, não em pontos.
+function tracoPonto(ctx, x0, y0, x1, y1) {
+  ctx.setLineDash([10, 3, 2, 3]);
+  ctx.lineDashOffset = 5 - (Math.hypot(x1 - x0, y1 - y0) / 2) % 18;
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  ctx.setLineDash([]); ctx.lineDashOffset = 0;
+}
+
+// Linha de centro (NBR 8403): traço-ponto fino em grafite, de a até b (px).
+function linhaDeCentro(ctx, cor, a, b) {
+  ctx.strokeStyle = cor.grafite; ctx.lineWidth = TRACO.cota; ctx.lineCap = 'butt';
+  tracoPonto(ctx, ...a, ...b);
+}
+
+// Linha de corte horizontal em y, de x0 a x1: traço-ponto, extremos grossos, setas no sentido de quem olha o
+// corte (+y, para cima na vista superior) e a letra A junto de cada ponta de seta.
+function linhaDeCorte(ctx, cor, y, x0, x1) {
+  ctx.strokeStyle = ctx.fillStyle = cor.tinta; ctx.lineCap = 'butt'; ctx.lineWidth = TRACO.corte;
+  tracoPonto(ctx, x0, y, x1, y);
+  ctx.lineWidth = TRACO.visivel;
+  ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0 + 8, y); ctx.moveTo(x1, y); ctx.lineTo(x1 - 8, y); ctx.stroke();
   ctx.lineWidth = TRACO.cota;
-  for (const y of [y0, y1]) {
-    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 12, y); ctx.stroke();
-    ponta(ctx, x + 14, y, 1, 0);
-    rotulo(ctx, cor.tinta, FONTE.cota, 'A', x - 5, y, 'right', 'middle');
+  for (const x of [x0, x1]) {
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 12); ctx.stroke();
+    ponta(ctx, x, y - 14, 0, -1);
+    rotulo(ctx, cor.tinta, FONTE.cota, 'A', x, y - 18);
   }
 }
 
@@ -318,94 +385,110 @@ function contexto(canvas, papel) {
   return ctx;
 }
 
-// Desenha quando o canvas se aproxima da tela; depois acompanha o tamanho e o tema.
+// Redesenha quando o tema ou o tamanho do canvas mudam.
+function acompanhar(canvas, desenhar, redesenhos) {
+  redesenhos.push(desenhar);
+  new ResizeObserver(() => { if (dimensionar(canvas)) desenhar(); }).observe(canvas);
+}
+
+// Desenha quando o canvas se aproxima da tela; depois acompanha tema e tamanho.
 function preguicoso(canvas, desenhar, redesenhos) {
   const io = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return;
     io.disconnect();
     dimensionar(canvas); desenhar();
-    redesenhos.push(desenhar);
-    new ResizeObserver(() => { if (dimensionar(canvas)) desenhar(); }).observe(canvas);
+    acompanhar(canvas, desenhar, redesenhos);
   }, { rootMargin: '200px' });
   io.observe(canvas);
 }
 
-// --- o hero: três vistas, cotas, corte e a perspectiva impressa ---
+// --- o hero: três vistas, cotas, eixos, corte e a perspectiva impressa ---
 
-function montarHero(canvas, parte, redesenhos) {
-  const vistas = { frontal: projetar(parte, VISTAS.frontal), superior: projetar(parte, VISTAS.superior), lateral: projetar(parte, VISTAS.lateral) };
-  const [X, Y, Z] = parte.caixa.size;
+function montarHero(canvas, parte, { frontal, superior, lateral, iso }, redesenhos) {
+  const tres = { frontal, superior, lateral }, nomes = Object.keys(tres);
+  const [X, Y, Z] = parte.caixa.size, topo = parte.caixa.max[2];
   const centro = parte.caixa.min.map((v, i) => (v + parte.caixa.max[i]) / 2);
   const diagonal = Math.hypot(X, Y, Z);
   const angulo = { az: ISO.az, el: ISO.el };
   const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let comp, persp, fase = reduzido ? 'pronto' : 'espera', pedido = 0;
+  let comp, persp = iso, fase = reduzido ? 'pronto' : 'espera', pedido = 0, ultimoT = 0;
   const perspectiva = () => (persp ??= projetar(parte, orbita(angulo.az, angulo.el)));
   const estado = (t) => ({
     p: [0, 120, 240].map((inicio) => EASE_OUT(limita((t - inicio) / 460))),
-    alfa: limita((t - 600) / 500),
+    alfa: EASE_OUT(limita((t - 600) / 500)),
     h: Z * limita((t - 900) / 1700),
   });
   const FINAL = estado(Infinity);
 
   // Composição em primeiro diedro: frontal no alto à esquerda, superior abaixo dela, lateral esquerda à
   // direita da frontal, perspectiva no quadrante de baixo à direita. Uma escala para as três vistas.
+  // Pilha da esquerda: frontal, eixo EIXO mm além, rótulo (15), folga (11), superior, cota (COTA), rótulo (ROTULO).
   function compor() {
     const W = canvas.clientWidth, H = canvas.clientHeight, mx = 0.06 * W, my = 0.06 * H;
-    const s = Math.min((H - 2 * my - 75) / (Z + Y + 8), (W - 2 * mx - ESP_COTA - 24) / (X + Y));
-    const sobra = W - 2 * mx - ESP_COTA - (X + Y) * s - 24;
-    const vao = 24 + sobra / 3;
-    const xf = mx + ESP_COTA, yf = (H - (s * (Z + Y + 8) + 75)) / 2;
-    const coluna = { x: xf + X * s + vao, w: W - mx - (xf + X * s + vao) };
+    const s = Math.min((H - 2 * my - 68) / (Z + Y + EIXO), (W - 2 * mx - ESP_COTA - 13) / (X + Y + ALEM));
+    const sobra = W - 2 * mx - ESP_COTA - (X + Y + ALEM) * s - 13;
+    const vao = ALEM * s + 13 + sobra / 3; // entre a frontal e a coluna da direita: cabe a letra A do corte
+    const xf = mx + ESP_COTA, yf = (H - (s * (Z + Y + EIXO) + 68)) / 2;
+    const fundoF = yf + Z * s; // base da frontal e da lateral (alinhadas em z)
+    const ys = fundoF + EIXO * s + 26, fundoS = ys + Y * s; // topo e base da superior
+    const coluna = { x: xf + X * s + vao, w: W - mx - (xf + X * s + vao) }, lx = coluna.x + (coluna.w - Y * s) / 2;
+    const base = fundoS + COTA + ROTULO; // base dos rótulos SUPERIOR e PERSPECTIVA
+    const rotuloLateral = fundoF + EIXO * s + COTA + ROTULO;
+    const quadrante = { x: xf + (X + ALEM) * s + 13, y: rotuloLateral + 6 };
+    quadrante.w = W - quadrante.x; quadrante.h = base - 17 - quadrante.y;
+    const sp = (0.96 * Math.min(coluna.w, quadrante.h)) / diagonal;
+    const cx = coluna.x + coluna.w / 2, cy = quadrante.y + quadrante.h / 2;
     const mapa = (vista, x, y) => ({ s, x: x - vista.ext.esq[0] * s, y: y - vista.ext.cima[1] * s });
-    const baseRotulos = yf + s * (Z + Y + 8) + 75;
-    const quadrante = { x: coluna.x - vao / 2, y: yf + Z * s + 48, w: W - (coluna.x - vao / 2), h: H - (yf + Z * s + 48) };
-    const sp = 0.92 * Math.min(coluna.w, baseRotulos - 17 - quadrante.y) / diagonal;
-    const cx = coluna.x + coluna.w / 2, cy = (quadrante.y + baseRotulos - 17) / 2;
     comp = {
-      s, mx, my, baseRotulos, quadrante, cx,
-      frontal: mapa(vistas.frontal, xf, yf),
-      superior: mapa(vistas.superior, xf, yf + Z * s + 28 + 4 * s),
-      lateral: mapa(vistas.lateral, coluna.x + (coluna.w - Y * s) / 2, yf),
+      s, quadrante,
+      frontal: mapa(frontal, xf, yf), superior: mapa(superior, xf, ys), lateral: mapa(lateral, lx, yf),
+      cotas: { altura: xf - COTA, largura: fundoS + COTA, profundidade: fundoF + EIXO * s + COTA },
+      rotulos: { frontal: [xf + (X * s) / 2, fundoF + EIXO * s + 15], superior: [xf + (X * s) / 2, base], lateral: [lx + (Y * s) / 2, rotuloLateral], perspectiva: [cx, base] },
       mapaPersp: (vista) => { const c = vista.proj(...centro); return { s: sp, x: cx - c[0] * sp, y: cy - c[1] * sp }; },
     };
   }
 
   function desenharTudo(est) {
-    const t = performance.now(), cor = cores(), ctx = contexto(canvas, cor.papel), { s } = comp;
-    const nomes = ['frontal', 'superior', 'lateral'];
-    nomes.forEach((n, k) => pintar(ctx, parte, vistas[n], comp[n], cor, { p: est.p[k] }));
-    if (est.alfa > 0) {
+    const cor = cores(), ctx = contexto(canvas, cor.papel), { s } = comp;
+    nomes.forEach((n, k) => pintar(ctx, parte, tres[n], comp[n], cor, { p: est.p[k] }));
+    if (est.alfa > 0) { // os tracejados ficam por baixo da tinta: onde uma oculta coincide com uma visível, vence a visível
       ctx.globalAlpha = est.alfa;
-      for (const n of nomes) tracejar(ctx, parte, vistas[n], comp[n], cor);
-      const F = mapear(vistas.frontal.ext, comp.frontal), S = mapear(vistas.superior.ext, comp.superior), L = mapear(vistas.lateral.ext, comp.lateral);
-      cota(ctx, cor, F.cima, F.baixo, 'y', F.esq[0] - 22, mm(Z));
-      cota(ctx, cor, S.esq, S.dir, 'x', S.baixo[1] + 4 * s + 27, mm(X));
-      cota(ctx, cor, L.esq, L.dir, 'x', L.baixo[1] + 22, mm(Y));
-      linhaDeCorte(ctx, cor, comp.superior.x + PLANO_AA * s, S.cima[1] - 4 * s, S.baixo[1] + 4 * s);
-      rotulo(ctx, cor.grafite, FONTE.rotulo, 'FRONTAL', (F.esq[0] + F.dir[0]) / 2, F.baixo[1] + 17);
-      rotulo(ctx, cor.grafite, FONTE.rotulo, 'SUPERIOR', (S.esq[0] + S.dir[0]) / 2, comp.baseRotulos);
-      rotulo(ctx, cor.grafite, FONTE.rotulo, 'LATERAL ESQUERDA', (L.esq[0] + L.dir[0]) / 2, L.baixo[1] + 42);
+      estiloOculta(ctx, cor);
+      for (const n of nomes) tracar(ctx, corridas(parte, tres[n]).ocultos, comp[n]);
       ctx.globalAlpha = 1;
     }
-    if (est.h > 0) desenharPerspectiva(ctx, cor, est.h, est.alfa);
-    performance.measure('desenho:quadro', { start: t });
+    estiloVisivel(ctx, cor); // a linha-mestra em peso cheio por cima das faces, desde o primeiro quadro
+    nomes.forEach((n, k) => tracar(ctx, corridas(parte, tres[n]).visiveis, comp[n], est.p[k]));
+    if (est.alfa > 0) {
+      ctx.globalAlpha = est.alfa;
+      const F = mapear(frontal.ext, comp.frontal), S = mapear(superior.ext, comp.superior), L = mapear(lateral.ext, comp.lateral);
+      cota(ctx, cor, F.cima, F.baixo, 'y', comp.cotas.altura, mm(Z));
+      cota(ctx, cor, S.esq, S.dir, 'x', comp.cotas.largura, mm(X));
+      cota(ctx, cor, L.esq, L.dir, 'x', comp.cotas.profundidade, mm(Y));
+      // eixos: a simetria na frontal, o furo na superior (o horizontal é a própria A-A) e na lateral, pela placa
+      linhaDeCentro(ctx, cor, ponto(comp.frontal, [0, -(topo + EIXO)]), ponto(comp.frontal, [0, EIXO]));
+      linhaDeCentro(ctx, cor, ponto(comp.superior, [FURO.x, -(FURO.y + FURO.raio + EIXO)]), ponto(comp.superior, [FURO.x, -(FURO.y - FURO.raio - EIXO)]));
+      linhaDeCentro(ctx, cor, ponto(comp.lateral, [-FURO.y, -(FURO.placa + EIXO)]), ponto(comp.lateral, [-FURO.y, EIXO]));
+      linhaDeCorte(ctx, cor, ponto(comp.superior, [0, -PLANO_AA])[1], S.esq[0] - ALEM * s, S.dir[0] + ALEM * s);
+      for (const [n, [x, y]] of Object.entries(comp.rotulos)) rotulo(ctx, cor.grafite, FONTE.rotulo, NOMES[n], x, y);
+      ctx.globalAlpha = 1;
+    }
+    if (est.h > 0) desenharPerspectiva(ctx, cor, est.h);
   }
 
-  function desenharPerspectiva(ctx, cor, h, alfa) {
+  function desenharPerspectiva(ctx, cor, h) {
     const q = comp.quadrante;
     ctx.save(); ctx.beginPath(); ctx.rect(q.x, q.y, q.w, q.h); ctx.clip();
     ctx.fillStyle = cor.papel; ctx.fillRect(q.x, q.y, q.w, q.h);
     const vista = perspectiva();
     pintar(ctx, parte, vista, comp.mapaPersp(vista), cor, { h, camadas: true });
-    ctx.globalAlpha = alfa;
-    rotulo(ctx, cor.grafite, FONTE.rotulo, 'PERSPECTIVA', comp.cx, comp.baseRotulos);
     ctx.restore();
   }
 
   function redesenhar() {
     if (fase === 'pronto') desenharTudo(FINAL);
-    else if (fase === 'espera') contexto(canvas, cores().papel);
+    else if (fase === 'animando') desenharTudo(estado(ultimoT));
+    else contexto(canvas, cores().papel);
   }
 
   function animar() {
@@ -413,9 +496,9 @@ function montarHero(canvas, parte, redesenhos) {
     let t0;
     const quadro = (agora) => {
       t0 ??= agora;
-      const t = agora - t0;
-      desenharTudo(estado(t));
-      if (t < 2600) requestAnimationFrame(quadro);
+      ultimoT = agora - t0;
+      desenharTudo(estado(ultimoT));
+      if (ultimoT < 2600) requestAnimationFrame(quadro);
       else { fase = 'pronto'; desenharTudo(FINAL); }
     };
     requestAnimationFrame(quadro);
@@ -423,7 +506,7 @@ function montarHero(canvas, parte, redesenhos) {
 
   function agendar() { // só a perspectiva, num quadro; durante a animação o laço já a redesenha
     if (fase !== 'pronto' || pedido) return;
-    pedido = requestAnimationFrame(() => { pedido = 0; desenharPerspectiva(contexto(canvas), cores(), Infinity, 1); });
+    pedido = requestAnimationFrame(() => { pedido = 0; desenharPerspectiva(contexto(canvas), cores(), Infinity); });
   }
 
   function girar(dAz, dEl) {
@@ -445,25 +528,27 @@ function montarHero(canvas, parte, redesenhos) {
     io.observe(canvas);
   }
 
+  // Girar: a peça acompanha o ponteiro (arrastar para a direita leva a face da frente para a direita).
   const dentro = (e) => comp && e.offsetX >= comp.quadrante.x && e.offsetY >= comp.quadrante.y;
-  let arrasto = null;
-  canvas.style.touchAction = 'pan-y';
+  let arrasto = null; // { id, x, y }
+  canvas.style.touchAction = 'pan-y pinch-zoom';
   canvas.addEventListener('pointerdown', (e) => {
-    if (!dentro(e)) return;
-    arrasto = [e.clientX, e.clientY];
+    if (arrasto || !e.isPrimary || e.button !== 0 || !dentro(e)) return;
+    arrasto = { id: e.pointerId, x: e.clientX, y: e.clientY };
     canvas.setPointerCapture(e.pointerId);
     canvas.style.cursor = 'grabbing';
   });
   canvas.addEventListener('pointermove', (e) => {
     if (!arrasto) { canvas.style.cursor = dentro(e) ? 'grab' : ''; return; }
-    girar((e.clientX - arrasto[0]) * 0.5, -(e.clientY - arrasto[1]) * 0.3);
-    arrasto = [e.clientX, e.clientY];
+    if (e.pointerId !== arrasto.id) return;
+    girar(-(e.clientX - arrasto.x) * 0.5, (e.clientY - arrasto.y) * 0.3);
+    arrasto.x = e.clientX; arrasto.y = e.clientY;
   });
-  const soltar = (e) => { arrasto = null; canvas.style.cursor = dentro(e) ? 'grab' : ''; };
+  const soltar = (e) => { if (arrasto && e.pointerId === arrasto.id) { arrasto = null; canvas.style.cursor = dentro(e) ? 'grab' : ''; } };
   canvas.addEventListener('pointerup', soltar);
   canvas.addEventListener('pointercancel', soltar);
-  canvas.addEventListener('keydown', (e) => {
-    const passo = { ArrowLeft: [-15, 0], ArrowRight: [15, 0], ArrowUp: [0, 5], ArrowDown: [0, -5] }[e.key];
+  canvas.addEventListener('keydown', (e) => { // cada seta faz o que arrastar naquele sentido faria
+    const passo = { ArrowRight: [-15, 0], ArrowLeft: [15, 0], ArrowDown: [0, 5], ArrowUp: [0, -5] }[e.key];
     if (!passo || !comp) return;
     e.preventDefault();
     girar(...passo);
@@ -478,13 +563,15 @@ function desenharFoto(canvas, parte, iso) {
 }
 
 function desenharCotas(canvas, parte, frontal) {
-  const W = canvas.clientWidth, m = 0.1 * W, cor = cores(), ctx = contexto(canvas, cor.papel);
-  const mapa = encaixar(frontal, { x: m + ESP_COTA, y: m, w: W - 2 * m - ESP_COTA, h: W - 2 * m - ESP_COTA });
+  const W = canvas.clientWidth, cor = cores(), ctx = contexto(canvas, cor.papel);
+  const mapa = encaixarComCotas(frontal, W, W, 0.08 * W, EIXO), { ocultos, visiveis } = corridas(parte, frontal);
   pintar(ctx, parte, frontal, mapa, cor);
-  tracejar(ctx, parte, frontal, mapa, cor);
+  estiloOculta(ctx, cor); tracar(ctx, ocultos, mapa);
+  estiloVisivel(ctx, cor); tracar(ctx, visiveis, mapa);
+  linhaDeCentro(ctx, cor, ponto(mapa, [0, -(parte.caixa.max[2] + EIXO)]), ponto(mapa, [0, EIXO]));
   const F = mapear(frontal.ext, mapa);
-  cota(ctx, cor, F.cima, F.baixo, 'y', F.esq[0] - 22, mm(parte.caixa.size[2]));
-  cota(ctx, cor, F.esq, F.dir, 'x', F.baixo[1] + 22, mm(parte.caixa.size[0]));
+  cota(ctx, cor, F.cima, F.baixo, 'y', F.esq[0] - COTA, mm(parte.caixa.size[2]));
+  cota(ctx, cor, F.esq, F.dir, 'x', F.baixo[1] + EIXO * mapa.s + COTA, mm(parte.caixa.size[0]));
 }
 
 function desenharMesa(canvas, parte, superior) {
@@ -503,26 +590,25 @@ function desenharCamadas(canvas, parte, iso) {
   rotulo(ctx, cor.grafite, FONTE.rotulo, `${parte.camadas} CAMADAS DE ${mm(CAMADA)} mm`, W / 2, W - m + 4);
 }
 
-// --- o corte A-A ---
+// --- o corte A-A: o plano y = PLANO_AA visto da frente (u = x, v = -z) ---
 
-function desenharCorte(canvas, parte, lateral) {
-  const W = canvas.clientWidth, H = canvas.clientHeight, cor = cores(), ctx = contexto(canvas, cor.papel);
-  const [, Y, Z] = parte.caixa.size, P = parte.mesh.positions;
-  const mx = 0.05 * W, my = 0.08 * H;
-  const s = Math.min((W - 2 * mx - ESP_COTA) / Y, (H - 2 * my - ESP_COTA) / Z);
-  const x0 = (W - ESP_COTA - Y * s) / 2 + ESP_COTA, y0 = (H - ESP_COTA - Z * s) / 2;
-  const mapa = { s, x: x0 - lateral.ext.esq[0] * s, y: y0 - lateral.ext.cima[1] * s };
-  // atrás do plano, a metade que fica depois do corte, só em silhueta
-  pintar(ctx, parte, lateral, mapa, cor, { filtro: (f) => P[f * 9] + P[f * 9 + 3] + P[f * 9 + 6] > 3 * PLANO_AA, corAresta: cor.grafite, largura: TRACO.oculta });
-  // o material cortado, visto da esquerda: u = -y, v = -z
-  const lacos = loops(sliceAxis(parte.mesh, 0, PLANO_AA)).map((laco) => laco.map(([y, z]) => [-y, -z]));
-  const { caminho, caixa } = caminhoDosLacos(lacos, mapa);
-  ctx.fillStyle = cor.papel; ctx.fill(caminho, 'evenodd');
-  hachurar(ctx, caminho, caixa, cor.tinta);
-  ctx.strokeStyle = cor.tinta; ctx.lineWidth = TRACO.visivel; ctx.lineJoin = 'round'; ctx.setLineDash([]); ctx.stroke(caminho);
-  const L = mapear(lateral.ext, mapa);
-  cota(ctx, cor, L.cima, L.baixo, 'y', L.esq[0] - 22, mm(Z));
-  cota(ctx, cor, L.esq, L.dir, 'x', L.baixo[1] + 22, mm(Y));
+function montarCorte(canvas, parte) {
+  const fundo = alemDoPlano(parte, PLANO_AA), vista = projetar(fundo, VISTAS.frontal); // o que fica atrás do plano
+  const lacos = loops(sliceAxis(parte.mesh, 1, PLANO_AA)).map((laco) => laco.map(([x, z]) => [x, -z]));
+  const [X, , Z] = parte.caixa.size;
+  return () => {
+    const W = canvas.clientWidth, H = canvas.clientHeight, cor = cores(), ctx = contexto(canvas, cor.papel);
+    const mapa = encaixarComCotas(vista, W, H, 0.06 * Math.min(W, H));
+    estiloVisivel(ctx, cor, TRACO.oculta, cor.grafite); // atrás do corte, só o que se vê, em grafite
+    tracar(ctx, corridas(fundo, vista).visiveis, mapa);
+    const { caminho, caixa } = caminhoDosLacos(lacos, mapa);
+    ctx.fillStyle = cor.papel; ctx.fill(caminho, 'evenodd');
+    hachurar(ctx, caminho, caixa, cor.tinta);
+    ctx.strokeStyle = cor.tinta; ctx.lineWidth = TRACO.visivel; ctx.lineJoin = 'round'; ctx.setLineDash([]); ctx.stroke(caminho);
+    const E = mapear(vista.ext, mapa);
+    cota(ctx, cor, E.cima, E.baixo, 'y', E.esq[0] - COTA, mm(Z));
+    cota(ctx, cor, E.esq, E.dir, 'x', E.baixo[1] + COTA, mm(X));
+  };
 }
 
 // cubic-bezier(x1, y1, x2, y2) como o CSS: acha t para o x pedido por bissecção e devolve y.
