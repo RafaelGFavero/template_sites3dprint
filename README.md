@@ -1,14 +1,14 @@
 # Site da RF Tecnologia 3D
 
-Site de uma página da RF Tecnologia 3D. Rafael Favero redesenha e imprime em 3D peças plásticas que não se vendem mais avulsas, e o site existe para quem tem a peça quebrada na mão mandar a foto pelo WhatsApp. A página imita uma folha de desenho técnico. A peça de exemplo é a trava do conector rápido da linha de combustível, uma peça real, desenhada a partir do próprio arquivo STL em três vistas cotadas no primeiro diedro, com o corte A-A e uma perspectiva que se imprime camada por camada quando a página abre. O pedido sai como mensagem pronta no WhatsApp. Não há back-end: o formulário só monta o texto e abre a conversa.
+Site de uma página da RF Tecnologia 3D. Rafael Favero redesenha e imprime em 3D peças plásticas que não se vendem mais avulsas, e o site existe para quem tem a peça quebrada na mão mandar a foto pelo WhatsApp. A página imita uma folha de desenho técnico. A peça de exemplo é a trava do conector rápido da linha de combustível, uma peça real, desenhada a partir do arquivo STL em três vistas cotadas no primeiro diedro, com o corte A-A e uma perspectiva que se imprime camada por camada quando a página abre. O STL é o modelo que se vende. Ele fica fora do site e deste repositório, e a página recebe só o traço dos desenhos. O pedido sai como mensagem pronta no WhatsApp. Não há back-end: o formulário só monta o texto e abre a conversa.
 
 ## Como o código está organizado
 
-É HTML, CSS e JavaScript puros, sem framework, sem etapa de build e sem dependência para instalar. Quase todo o texto da página fica no `index.html`; as exceções são os rótulos desenhados no canvas, em `desenho.js`, e a mensagem do WhatsApp, em `whatsapp.js`.
+É HTML, CSS e JavaScript puros, sem framework, sem etapa de build e sem dependência para instalar. O traço dos desenhos já vem pronto em `assets/desenhos.json`, gerado uma vez por `tools/desenhos.js` e guardado no repositório. Quase todo o texto da página fica no `index.html`; as exceções são os rótulos desenhados no canvas, em `desenho.js`, e a mensagem do WhatsApp, em `whatsapp.js`.
 
 O visual está em `assets/css/style.css`. As cores são variáveis declaradas no `:root` e no bloco `prefers-color-scheme: dark`, onde a folha vira uma cópia heliográfica, e nenhum código hexadecimal aparece no CSS fora desses dois lugares. O canvas lê as mesmas variáveis a cada desenho. A cor do papel também está repetida nas duas `<meta name="theme-color">` do `index.html`, que precisam mudar junto com ela.
 
-O JavaScript está dividido em módulos pequenos em `assets/js/`: `stl.js` lê o STL binário e fatia a malha, `vistas.js` faz as projeções, `desenho.js` desenha a peça nos canvas (o desenho do topo da página, os quatro quadros de "Da foto à peça impressa" e o corte A-A), `whatsapp.js` monta a mensagem e o link, e `main.js` cuida do resto: o contador de folhas e os campos do carimbo, o envio do pedido e a regra de um só botão vermelho por tela.
+O JavaScript da página está em `assets/js/`: `desenho.js` desenha a peça nos canvas a partir do `desenhos.json` (o desenho do topo da página, os quatro quadros de "Da foto à peça impressa" e o corte A-A), `whatsapp.js` monta a mensagem e o link, e `main.js` cuida do resto: o contador de folhas e os campos do carimbo, o envio do pedido e a regra de um só botão vermelho por tela. A ferramenta que gera o JSON fica em `tools/`, fora do que o site publica: `stl.js` lê o STL binário e fatia a malha, `vistas.js` faz as projeções e `desenhos.js` separa as linhas visíveis das ocultas e grava o traço 2D de cada desenho.
 
 ## Rodar localmente
 
@@ -26,7 +26,7 @@ Depois abra `http://127.0.0.1:8765`. O `--bind` deixa o servidor só nesta máqu
 npm test
 ```
 
-O comando roda `node --test assets/js/*.test.js tools/*.test.js`. Em `tools/`, `stl.test.js` confere a leitura e o fatiamento da malha, `vistas.test.js` as projeções e `desenhos.test.js` o traço que a ferramenta gera. Os testes com a trava de verdade leem o STL de `../impressao-3d/saida/trava_conector_azul.stl` e são pulados onde ele não existe; um deles confere que o `assets/desenhos.json` do repositório é o que esse STL gera. Em `assets/js/`, `whatsapp.test.js` confere a mensagem e o link do WhatsApp, inclusive os quatro links gravados no `index.html`, e `sem-malha.test.js` falha se aparecer um modelo 3D em `assets/`. Não há nada para instalar, porque o `package.json` não tem dependências. Os testes foram rodados no Node 24.
+O comando roda `node --test assets/js/*.test.js tools/*.test.js`. Em `tools/`, `stl.test.js` confere a leitura e o fatiamento da malha, `vistas.test.js` as projeções e `desenhos.test.js` o traço que a ferramenta gera. Os testes com a trava de verdade leem o STL de `../impressao-3d/saida/trava_conector_azul.stl` e são pulados onde ele não existe; um deles confere que o `assets/desenhos.json` do repositório é o que esse STL gera. Em `assets/js/`, `whatsapp.test.js` confere a mensagem e o link do WhatsApp, inclusive os quatro links gravados no `index.html`, `desenho.test.js` confere as cotas e o roteiro da abertura do hero, e `sem-malha.test.js` falha se aparecer um modelo 3D em `assets/`. Não há nada para instalar, porque o `package.json` não tem dependências. Os testes foram rodados no Node 24.
 
 ## Trocar o número do WhatsApp
 
@@ -60,7 +60,7 @@ Em `tools/stl.test.js`, os números medidos da trava viraram expectativa: 854 tr
 
 ## Imagens e a origem de cada uma
 
-As imagens ficam em `assets/img/`. `marca-r.png` é o R da marca, recortado da arte original do logo que o dono forneceu, com fundo transparente, e `favicon-32.png` e `apple-touch-icon.png` foram gerados a partir dele. `rafael-favero.webp` é o retrato que o Rafael forneceu, com uso aprovado em 24/09/2026. `og.png` é a imagem que aparece quando alguém compartilha o link: uma captura do próprio site, o topo da página a 1200 × 630 px com movimento reduzido, para o desenho sair pronto, e sem a navegação do topo nem a dica de arrastar, que não fazem sentido numa imagem parada.
+As imagens ficam em `assets/img/`. `marca-r.png` é o R da marca, recortado da arte original do logo que o dono forneceu, com fundo transparente, e `favicon-32.png` e `apple-touch-icon.png` foram gerados a partir dele. `rafael-favero.webp` é o retrato que o Rafael forneceu, com uso aprovado em 24/09/2026. `og.png` é a imagem que aparece quando alguém compartilha o link: uma captura do próprio site, o topo da página a 1200 × 630 px com movimento reduzido, para o desenho sair pronto, e sem a navegação do topo, que não faz sentido numa imagem parada.
 
 Cada PNG leva a própria origem gravada dentro do arquivo, num bloco de texto. A ferramenta não grava dentro de WebP, então a origem do retrato fica ao lado dele, em `rafael-favero.webp.json`. Para ler a origem de uma imagem ou listar as que estão sem, no PowerShell:
 
@@ -71,7 +71,7 @@ Cada PNG leva a própria origem gravada dentro do arquivo, num bloco de texto. A
 
 No Git Bash, no Linux ou no macOS, o comando é `sh .claude/skills/impeccable/scripts/impeccable` com os mesmos argumentos. Uma imagem nova recebe a origem com `embed-prompt <arquivo> --prompt "de onde ela veio"`. O texto precisa ser só ASCII, sem acento: o bloco de texto do PNG é Latin-1, e um texto acentuado acaba gravado como bytes UTF-8 fora da especificação.
 
-Para gerar a `og.png` de novo, suba o servidor local e capture a janela de 1200 × 630 no Chrome com movimento reduzido, depois que as fontes carregarem, escondendo a navegação do topo, a dica de arrastar e a régua da troca de folha só nessa captura. O Playwright não faz parte do repositório; o trecho abaixo, salvo como `.mjs` numa pasta com o `playwright-core` instalado e rodado da raiz do repositório, faz a captura:
+Para gerar a `og.png` de novo, suba o servidor local e capture a janela de 1200 × 630 no Chrome com movimento reduzido, depois que as fontes carregarem, escondendo a navegação do topo e a régua da troca de folha só nessa captura. O Playwright não faz parte do repositório; o trecho abaixo, salvo como `.mjs` numa pasta com o `playwright-core` instalado e rodado da raiz do repositório, faz a captura:
 
 ```js
 import { chromium } from 'playwright-core';
@@ -80,7 +80,7 @@ const p = await b.newPage({ viewport: { width: 1200, height: 630 }, reducedMotio
 await p.goto('http://127.0.0.1:8765/', { waitUntil: 'networkidle' });
 await p.evaluate(() => document.fonts.ready);
 await p.waitForTimeout(800);
-await p.addStyleTag({ content: '.topo nav, #desenho-dica, .folha + .folha::before { visibility: hidden; }' });
+await p.addStyleTag({ content: '.topo nav, .folha + .folha::before { visibility: hidden; }' });
 await p.screenshot({ path: 'assets/img/og.png' });
 await b.close();
 ```

@@ -316,13 +316,8 @@
       },
       {
         "name": "impressao-por-camadas",
-        "value": "linear, de 900ms a 2600ms",
-        "purpose": "A perspectiva do hero sobe camada por camada até a altura total da peça."
-      },
-      {
-        "name": "giro",
-        "value": "0,5° de azimute e 0,3° de elevação por pixel (elevação de 10° a 70°); setas 15° e 5°",
-        "purpose": "Arrastar ou usar as setas sobre a perspectiva do hero."
+        "value": "linear, de 900ms a 2600ms, sobre o esboço em azul de construção; tinta de 2600ms a 2850ms",
+        "purpose": "As linhas de camada da perspectiva do hero sobem até a altura total da peça, e as arestas ganham a tinta no fim."
       },
       {
         "name": "rolagem-suave",
@@ -332,7 +327,7 @@
       {
         "name": "movimento-reduzido",
         "value": "@media (prefers-reduced-motion: no-preference)",
-        "purpose": "Todo movimento vive dentro desta condição; com movimento reduzido o desenho aparece pronto e o giro continua por arrasto e setas."
+        "purpose": "Todo movimento vive dentro desta condição; com movimento reduzido o desenho aparece pronto."
       }
     ],
     "breakpoints": [
@@ -509,8 +504,8 @@
       "kind": "custom",
       "refersTo": "legenda",
       "description": "Régua de 1px em grafite sob o desenho: a legenda de figura em letra técnica pequena vertical e o rótulo de vista em letra inclinada.",
-      "html": "<div class=\"ds-legendas\"><figure class=\"ds-legenda\"><figcaption><span>Trava do conector de combustível</span><span>Primeiro diedro, medidas em <span class=\"ds-legenda-mm\">mm</span></span><span>Arraste para girar.</span></figcaption></figure><div class=\"ds-vista\"><h3>Eu desenho em milímetros</h3><p>Cada medida vira cota.</p></div></div>",
-      "css": ".ds-legendas { display: grid; gap: 2rem; max-width: 40rem; color: var(--tinta, #15181b); background: var(--papel, #f2f4f3); font: 400 1.0625rem/1.6 var(--texto, Overpass, system-ui, sans-serif); }\n.ds-legenda { margin: 0; }\n.ds-legenda figcaption { display: grid; grid-template-columns: 1.65fr 1.55fr 1fr; gap: .35rem 1.5rem; padding-top: .375rem; border-top: 1px solid var(--grafite, #50575e); color: var(--grafite, #50575e); font: 400 .8125rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-legenda-mm { text-transform: none; }\n.ds-vista h3 { margin: 0; padding-top: .375rem; border-top: 1px solid var(--grafite, #50575e); font: italic 400 .9375rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-vista p { margin: .5rem 0 0; }"
+      "html": "<div class=\"ds-legendas\"><figure class=\"ds-legenda\"><figcaption><span>Trava do conector de combustível</span><span>Primeiro diedro, medidas em <span class=\"ds-legenda-mm\">mm</span></span></figcaption></figure><div class=\"ds-vista\"><h3>Eu desenho em milímetros</h3><p>Cada medida vira cota.</p></div></div>",
+      "css": ".ds-legendas { display: grid; gap: 2rem; max-width: 40rem; color: var(--tinta, #15181b); background: var(--papel, #f2f4f3); font: 400 1.0625rem/1.6 var(--texto, Overpass, system-ui, sans-serif); }\n.ds-legenda { margin: 0; }\n.ds-legenda figcaption { display: grid; grid-template-columns: 1.65fr 2.55fr; gap: .35rem 1.5rem; padding-top: .375rem; border-top: 1px solid var(--grafite, #50575e); color: var(--grafite, #50575e); font: 400 .8125rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-legenda-mm { text-transform: none; }\n.ds-vista h3 { margin: 0; padding-top: .375rem; border-top: 1px solid var(--grafite, #50575e); font: italic 400 .9375rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-vista p { margin: .5rem 0 0; }"
     },
     {
       "name": "Tipos de linha e hachura",
@@ -526,7 +521,7 @@
     "keyCharacteristics": [
       "Papel sulfite frio e traço em tinta; no escuro, cópia heliográfica em azul.",
       "Moldura fixa com margem de encadernação e carimbo ABNT sempre à vista, preenchido ao vivo.",
-      "A peça real, lida do STL, desenhada em primeiro diedro com cotas em milímetros, corte A-A hachurado e perspectiva que se imprime em camadas.",
+      "A peça real, desenhada a partir do STL fora do site, em primeiro diedro com cotas em milímetros, corte A-A hachurado e perspectiva que se imprime em camadas.",
       "Letra técnica ISO 3098 (osifont) no que pertence ao desenho; Overpass na leitura.",
       "Um vermelho por tela, e ele é a ação.",
       "Nenhuma sombra, nenhum cartão, nenhum canto arredondado."
