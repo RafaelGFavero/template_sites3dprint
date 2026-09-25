@@ -4,3 +4,14 @@ node_modules/
 .impeccable/review/
 .impeccable/config.local.json
 .playwright-mcp/
+
+# Modelos 3D das peças nunca entram no repositório, que é público. O site recebe só desenho.
+*.stl
+*.3mf
+*.obj
+*.ply
+*.glb
+*.gltf
+*.blend
+*.step
+*.stp

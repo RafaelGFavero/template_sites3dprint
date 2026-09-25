@@ -1,12 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { parseSTL, bounds, featureEdgeList, sliceAxis, loops, layerCount } from './stl.js';
 
-const file = readFileSync(new URL('../models/trava-conector.stl', import.meta.url));
-const buffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength);
+// O STL da trava é o modelo que se vende e fica fora do repositório, que é público. Os testes com a peça
+// real rodam onde ele existe e são pulados no resto.
+const STL = new URL('../../../impressao-3d/saida/trava_conector_azul.stl', import.meta.url);
+const semSTL = !existsSync(STL) && 'sem o STL da trava em ../impressao-3d/saida';
+const buffer = semSTL ? null : new Uint8Array(readFileSync(STL)).buffer;
 
-test('lê o STL binário da trava com todos os triângulos', () => {
+test('lê o STL binário da trava com todos os triângulos', { skip: semSTL }, () => {
   const mesh = parseSTL(buffer);
   assert.equal(mesh.count, 854);
   assert.equal(mesh.positions.length, 854 * 9);
@@ -20,7 +23,7 @@ test('STL truncado ou sem o cabeçalho inteiro é recusado', () => {
   assert.throws(() => parseSTL(new ArrayBuffer(40)), /STL truncado/); // nem os 84 bytes do cabeçalho
 });
 
-test('a caixa envolvente bate com a peça modelada (mm)', () => {
+test('a caixa envolvente bate com a peça modelada (mm)', { skip: semSTL }, () => {
   const b = bounds(parseSTL(buffer));
   assert.equal(b.size.map((v) => v.toFixed(1)).join(' x '), '32.8 x 26.4 x 26.4');
   assert.equal(b.min[2].toFixed(2), '0.00');
@@ -41,7 +44,7 @@ test('corte horizontal do cubo a meia altura é um quadrado', () => {
   assert.equal(perimetro.toFixed(3), '4.000');
 });
 
-test('a trava sobe em 132 camadas de 0,2 mm', () => {
+test('a trava sobe em 132 camadas de 0,2 mm', { skip: semSTL }, () => {
   assert.equal(layerCount(parseSTL(buffer), 0.2), 132);
 });
 
@@ -49,7 +52,7 @@ test('a camada incompleta do topo também conta: 1,05 mm de altura são 6 camada
   assert.equal(layerCount(parseSTL(cubeSTL(1.05)), 0.2), 6);
 });
 
-test('o corte A-A da trava (y = 12,8, pelo eixo do furo) fecha todos os segmentos em laços', () => {
+test('o corte A-A da trava (y = 12,8, pelo eixo do furo) fecha todos os segmentos em laços', { skip: semSTL }, () => {
   const segs = sliceAxis(parseSTL(buffer), 1, 12.8);
   const lacos = loops(segs);
   assert.equal(lacos.length, 2);
