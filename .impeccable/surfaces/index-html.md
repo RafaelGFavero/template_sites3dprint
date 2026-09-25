@@ -11,7 +11,7 @@ related_targets: []
 
 ## Audience and action
 
-Someone holding a broken plastic part that is not sold on its own, reading on a phone. They must believe this person can redraw their part from a photo and print it, and then send the photo on WhatsApp. Proof on hand: the real fuel-connector lock tab (STL, renders, design notes) and the maker's portrait. Never claim city, shipping, prices, lead times, payment or hours.
+Someone holding a broken plastic part that is not sold on its own, reading on a phone. They must believe this person can redraw their part from a photo and print it, and then send the photo on WhatsApp. Proof on hand: the real fuel-connector lock tab (STL and design notes) and the maker's portrait. Never claim city, shipping, prices, lead times, payment or hours.
 
 ## Direction contract
 
