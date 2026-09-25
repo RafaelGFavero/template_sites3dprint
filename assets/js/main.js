@@ -11,8 +11,8 @@ export function acompanharFolha(secoes, alvo, rodape, topo) {
     marcar();
   }, { rootMargin: '-45% 0px -45% 0px' });
   secoes.forEach((s) => io.observe(s));
-  // Topo à vista é a primeira folha e rodapé à vista é a última, enquanto estiverem à vista: cobre as telas altas,
-  // em que a faixa do meio cai fora da folha 1 no início e entre a folha 4 e o rodapé no fim.
+  // Topo à vista é a primeira folha e rodapé à vista é a última, enquanto estiverem à vista: a faixa do meio
+  // no início pode cair numa folha adiante (tela alta) e no fim cai numa folha anterior (tela alta) ou entre a folha 4 e o rodapé (tela baixa).
   new IntersectionObserver(([e]) => { inicio = e.isIntersecting; marcar(); }).observe(topo);
   new IntersectionObserver(([e]) => { fim = e.isIntersecting; marcar(); }).observe(rodape);
 }

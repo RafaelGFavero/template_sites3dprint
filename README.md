@@ -63,9 +63,9 @@ Cada PNG leva a própria origem gravada dentro do arquivo, num bloco de texto. A
 .\.claude\skills\impeccable\scripts\impeccable.cmd embed-prompt --scan assets/img
 ```
 
-No Git Bash, no Linux ou no macOS, o comando é `sh .claude/skills/impeccable/scripts/impeccable` com os mesmos argumentos. Uma imagem nova recebe a origem com `embed-prompt <arquivo> --prompt "de onde ela veio"`.
+No Git Bash, no Linux ou no macOS, o comando é `sh .claude/skills/impeccable/scripts/impeccable` com os mesmos argumentos. Uma imagem nova recebe a origem com `embed-prompt <arquivo> --prompt "de onde ela veio"`. O texto precisa ser só ASCII, sem acento: o bloco de texto do PNG é Latin-1, e um texto acentuado acaba gravado como bytes UTF-8 fora da especificação.
 
-Para gerar a `og.png` de novo, suba o servidor local e capture a janela de 1200 × 630 no Chrome com movimento reduzido, depois que as fontes carregarem, escondendo a navegação do topo e a dica de arrastar só nessa captura. O Playwright não faz parte do repositório; o trecho abaixo, salvo como `.mjs` numa pasta com o `playwright-core` instalado e rodado da raiz do repositório, faz a captura:
+Para gerar a `og.png` de novo, suba o servidor local e capture a janela de 1200 × 630 no Chrome com movimento reduzido, depois que as fontes carregarem, escondendo a navegação do topo, a dica de arrastar e a régua da troca de folha só nessa captura. O Playwright não faz parte do repositório; o trecho abaixo, salvo como `.mjs` numa pasta com o `playwright-core` instalado e rodado da raiz do repositório, faz a captura:
 
 ```js
 import { chromium } from 'playwright-core';
@@ -74,7 +74,7 @@ const p = await b.newPage({ viewport: { width: 1200, height: 630 }, reducedMotio
 await p.goto('http://127.0.0.1:8765/', { waitUntil: 'networkidle' });
 await p.evaluate(() => document.fonts.ready);
 await p.waitForTimeout(800);
-await p.addStyleTag({ content: '.topo nav, #desenho-dica { visibility: hidden; }' });
+await p.addStyleTag({ content: '.topo nav, #desenho-dica, .folha + .folha::before { visibility: hidden; }' });
 await p.screenshot({ path: 'assets/img/og.png' });
 await b.close();
 ```
@@ -89,7 +89,7 @@ Os ícones são da Phosphor, peso regular, copiados como SVG para dentro do `ind
 
 ## Publicação
 
-O workflow `.github/workflows/static.yml` publica no GitHub Pages a cada push na branch `main`, e também pode ser disparado à mão pela aba Actions. Ele copia só o `index.html` e a pasta `assets/`, tira os arquivos de teste (`assets/js/*.test.js`) e publica o que sobrou; documentação, skills e plano ficam só no repositório. Como não há build, o `index.html` e a pasta `assets/` commitados na `main` são exatamente o que vai para o ar, em https://rafaelgfavero.github.io/template_sites3dprint/. Esse endereço está escrito no `<head>` do `index.html`, na tag `og:image` e no bloco JSON-LD, e os dois precisam mudar se o site mudar de endereço.
+O workflow `.github/workflows/static.yml` publica no GitHub Pages a cada push na branch `main`, e também pode ser disparado à mão pela aba Actions. Ele copia só o `index.html` e a pasta `assets/`, tira os arquivos de teste (`assets/js/*.test.js`) e publica o que sobrou; documentação, skills e plano ficam só no repositório. Como não há build, o `index.html` e a pasta `assets/` commitados na `main` vão para o ar como estão, menos os testes, em https://rafaelgfavero.github.io/template_sites3dprint/. Esse endereço está escrito no `<head>` do `index.html`, na tag `og:image` e no bloco JSON-LD, e os dois precisam mudar se o site mudar de endereço.
 
 ## Arquivos de design e skills
 
