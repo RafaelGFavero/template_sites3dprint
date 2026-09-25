@@ -8,8 +8,13 @@ const FURO = { x: 0, y: 12.75, raio: 5.5, placa: 1.6 }; // das notas de projeto 
 const PLANO_AA = 12.8; // y do corte A-A: pelo eixo do furo, 0,05 mm fora do centro para não passar por vértices
 const TRACO = { visivel: 1.6, oculta: 0.8, cota: 0.8, construcao: 1, corte: 0.8, hachura: 0.7, camada: 0.5 };
 const FONTE = { cota: '13px osifont', rotulo: '11px osifont' };
-const ESP_COTA = 40; // px reservados para uma cota ao lado de uma vista
-const COTA = 22, ROTULO = 20; // px: do contorno à linha de cota; da linha de cota à base do rótulo abaixo dela
+const COTA = 22; // px do contorno à linha de cota
+const ESP_COTA = COTA + 14; // px que a cota vertical ocupa à esquerda de uma vista: linha, 4px de folga e as cifras giradas
+const ROTULO_H = 11, FOLGA = 6; // altura da letra do rótulo; folga entre um elemento e o rótulo
+const ROTULO = 3 + FOLGA + ROTULO_H; // da linha de cota (com 3px de chamada além) à base do rótulo abaixo dela
+const SOB_EIXO = 4 + ROTULO_H; // do fim da linha de centro à base do rótulo
+const ENTRE = SOB_EIXO + ROTULO_H; // do fim da linha de centro ao topo da vista de baixo
+const LETRA_A = 13; // px ao lado da ponta da linha de corte para a letra A
 const EIXO = 3, ALEM = 4; // mm que a linha de centro e a linha de corte passam do contorno
 const PASSO_AMOSTRA = 0.4; // mm entre amostras na busca de linhas ocultas
 const NOMES = { frontal: 'FRONTAL', superior: 'SUPERIOR', lateral: 'LATERAL ESQUERDA', perspectiva: 'PERSPECTIVA' };
@@ -103,12 +108,12 @@ function encaixar(vista, rect) {
   const s = Math.min(rect.w / w, rect.h / h);
   return { s, x: rect.x + (rect.w - w * s) / 2 - esq[0] * s, y: rect.y + (rect.h - h * s) / 2 - cima[1] * s };
 }
-// Encaixa a vista em W×H com margem m, reservando ESP_COTA à esquerda e embaixo para as cotas (e `eixo` mm
-// embaixo para a linha de centro que passa do contorno), e centra o conjunto.
+// Encaixa a vista em W×H com margem m, reservando ESP_COTA à esquerda para a cota vertical, COTA + 3 embaixo
+// para a horizontal e `eixo` mm em cima e embaixo para a linha de centro que passa do contorno; centra o conjunto.
 function encaixarComCotas(vista, W, H, m, eixo = 0) {
-  const { esq, dir, cima, baixo } = vista.ext, w = dir[0] - esq[0], h = baixo[1] - cima[1] + eixo;
-  const s = Math.min((W - 2 * m - ESP_COTA) / w, (H - 2 * m - ESP_COTA) / h);
-  return { s, x: (W - ESP_COTA - w * s) / 2 + ESP_COTA - esq[0] * s, y: (H - ESP_COTA - h * s) / 2 - cima[1] * s };
+  const { esq, dir, cima, baixo } = vista.ext, w = dir[0] - esq[0], h = baixo[1] - cima[1] + 2 * eixo, sob = COTA + 3;
+  const s = Math.min((W - 2 * m - ESP_COTA) / w, (H - 2 * m - sob) / h);
+  return { s, x: (W - ESP_COTA - w * s) / 2 + ESP_COTA - esq[0] * s, y: (H - sob - h * s) / 2 + eixo * s - cima[1] * s };
 }
 
 // Algoritmo do pintor: cada face de frente, de trás para a frente, é preenchida com papel e recebe as arestas
@@ -422,20 +427,21 @@ function montarHero(canvas, parte, { frontal, superior, lateral, iso }, redesenh
 
   // Composição em primeiro diedro: frontal no alto à esquerda, superior abaixo dela, lateral esquerda à
   // direita da frontal, perspectiva no quadrante de baixo à direita. Uma escala para as três vistas.
-  // Pilha da esquerda: frontal, eixo EIXO mm além, rótulo (15), folga (11), superior, cota (COTA), rótulo (ROTULO).
+  // Pilha da esquerda: frontal, eixo EIXO mm além, rótulo, folga (ENTRE), superior, cota (COTA), rótulo (ROTULO).
   function compor() {
     const W = canvas.clientWidth, H = canvas.clientHeight, mx = 0.06 * W, my = 0.06 * H;
-    const s = Math.min((H - 2 * my - 68) / (Z + Y + EIXO), (W - 2 * mx - ESP_COTA - 13) / (X + Y + ALEM));
-    const sobra = W - 2 * mx - ESP_COTA - (X + Y + ALEM) * s - 13;
-    const vao = ALEM * s + 13 + sobra / 3; // entre a frontal e a coluna da direita: cabe a letra A do corte
-    const xf = mx + ESP_COTA, yf = (H - (s * (Z + Y + EIXO) + 68)) / 2;
+    const pilha = ENTRE + COTA + ROTULO; // px que a coluna da esquerda gasta além das vistas e do eixo
+    const s = Math.min((H - 2 * my - pilha) / (Z + Y + EIXO), (W - 2 * mx - ESP_COTA - LETRA_A) / (X + Y + ALEM));
+    const sobra = W - 2 * mx - ESP_COTA - (X + Y + ALEM) * s - LETRA_A;
+    const vao = ALEM * s + LETRA_A + sobra / 3; // entre a frontal e a coluna da direita: cabe a letra A do corte
+    const xf = mx + ESP_COTA, yf = (H - (s * (Z + Y + EIXO) + pilha)) / 2;
     const fundoF = yf + Z * s; // base da frontal e da lateral (alinhadas em z)
-    const ys = fundoF + EIXO * s + 26, fundoS = ys + Y * s; // topo e base da superior
+    const ys = fundoF + EIXO * s + ENTRE, fundoS = ys + Y * s; // topo e base da superior
     const coluna = { x: xf + X * s + vao, w: W - mx - (xf + X * s + vao) }, lx = coluna.x + (coluna.w - Y * s) / 2;
     const base = fundoS + COTA + ROTULO; // base dos rótulos SUPERIOR e PERSPECTIVA
     const rotuloLateral = fundoF + EIXO * s + COTA + ROTULO;
-    const quadrante = { x: xf + (X + ALEM) * s + 13, y: rotuloLateral + 6 };
-    quadrante.w = W - quadrante.x; quadrante.h = base - 17 - quadrante.y;
+    const quadrante = { x: xf + (X + ALEM) * s + LETRA_A, y: rotuloLateral + FOLGA };
+    quadrante.w = W - quadrante.x; quadrante.h = base - (FOLGA + ROTULO_H) - quadrante.y;
     const sp = (0.96 * Math.min(coluna.w, quadrante.h)) / diagonal;
     const cx = coluna.x + coluna.w / 2, cy = quadrante.y + quadrante.h / 2;
     const mapa = (vista, x, y) => ({ s, x: x - vista.ext.esq[0] * s, y: y - vista.ext.cima[1] * s });
@@ -443,14 +449,15 @@ function montarHero(canvas, parte, { frontal, superior, lateral, iso }, redesenh
       s, quadrante,
       frontal: mapa(frontal, xf, yf), superior: mapa(superior, xf, ys), lateral: mapa(lateral, lx, yf),
       cotas: { altura: xf - COTA, largura: fundoS + COTA, profundidade: fundoF + EIXO * s + COTA },
-      rotulos: { frontal: [xf + (X * s) / 2, fundoF + EIXO * s + 15], superior: [xf + (X * s) / 2, base], lateral: [lx + (Y * s) / 2, rotuloLateral], perspectiva: [cx, base] },
+      rotulos: { frontal: [xf + (X * s) / 2, fundoF + EIXO * s + SOB_EIXO], superior: [xf + (X * s) / 2, base], lateral: [lx + (Y * s) / 2, rotuloLateral], perspectiva: [cx, base] },
       mapaPersp: (vista) => { const c = vista.proj(...centro); return { s: sp, x: cx - c[0] * sp, y: cy - c[1] * sp }; },
     };
   }
 
   function desenharTudo(est) {
     const cor = cores(), ctx = contexto(canvas, cor.papel), { s } = comp;
-    nomes.forEach((n, k) => pintar(ctx, parte, tres[n], comp[n], cor, { p: est.p[k] }));
+    // as faces só ocultam (p: 0, sem traçar aresta por aresta); toda a tinta vem das corridas visíveis e ocultas
+    nomes.forEach((n) => pintar(ctx, parte, tres[n], comp[n], cor, { p: 0 }));
     if (est.alfa > 0) { // os tracejados ficam por baixo da tinta: onde uma oculta coincide com uma visível, vence a visível
       ctx.globalAlpha = est.alfa;
       estiloOculta(ctx, cor);
@@ -529,7 +536,7 @@ function montarHero(canvas, parte, { frontal, superior, lateral, iso }, redesenh
   }
 
   // Girar: a peça acompanha o ponteiro (arrastar para a direita leva a face da frente para a direita).
-  const dentro = (e) => comp && e.offsetX >= comp.quadrante.x && e.offsetY >= comp.quadrante.y;
+  const dentro = (e) => { const q = comp?.quadrante; return !!q && e.offsetX >= q.x && e.offsetX <= q.x + q.w && e.offsetY >= q.y && e.offsetY <= q.y + q.h; };
   let arrasto = null; // { id, x, y }
   canvas.style.touchAction = 'pan-y pinch-zoom';
   canvas.addEventListener('pointerdown', (e) => {
@@ -565,7 +572,7 @@ function desenharFoto(canvas, parte, iso) {
 function desenharCotas(canvas, parte, frontal) {
   const W = canvas.clientWidth, cor = cores(), ctx = contexto(canvas, cor.papel);
   const mapa = encaixarComCotas(frontal, W, W, 0.08 * W, EIXO), { ocultos, visiveis } = corridas(parte, frontal);
-  pintar(ctx, parte, frontal, mapa, cor);
+  pintar(ctx, parte, frontal, mapa, cor, { p: 0 }); // as faces só ocultam; a tinta vem das corridas
   estiloOculta(ctx, cor); tracar(ctx, ocultos, mapa);
   estiloVisivel(ctx, cor); tracar(ctx, visiveis, mapa);
   linhaDeCentro(ctx, cor, ponto(mapa, [0, -(parte.caixa.max[2] + EIXO)]), ponto(mapa, [0, EIXO]));
