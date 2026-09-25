@@ -1,56 +1,65 @@
 import { buildWhatsappMessage, buildWhatsappUrl } from './whatsapp.js';
 
-export function setupMobileMenu(toggle, nav) {
-  toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+const PECA_PADRAO = 'Trava do conector';
+const CLIENTE_PADRAO = 'Você';
+
+export function acompanharFolha(secoes, alvo, rodape, topo) {
+  let atual = 1, inicio = false, fim = false;
+  const marcar = () => { alvo.textContent = `${fim ? secoes.length : inicio ? 1 : atual}/${secoes.length}`; };
+  const io = new IntersectionObserver((entradas) => {
+    for (const e of entradas) if (e.isIntersecting) atual = e.target.dataset.folha;
+    marcar();
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  secoes.forEach((s) => io.observe(s));
+  // Topo à vista é a primeira folha e rodapé à vista é a última, enquanto estiverem à vista: a faixa do meio
+  // no início pode cair numa folha adiante (tela alta) e no fim cai numa folha anterior (tela alta) ou entre a folha 4 e o rodapé (tela baixa).
+  new IntersectionObserver(([e]) => { inicio = e.isIntersecting; marcar(); }).observe(topo);
+  new IntersectionObserver(([e]) => { fim = e.isIntersecting; marcar(); }).observe(rodape);
+}
+
+export function carimboAoVivo(form, peca, cliente) {
+  const curto = (t, n) => (t.length > n ? `${t.slice(0, n - 3).trimEnd()}...` : t);
+  form.addEventListener('input', () => {
+    peca.textContent = curto(form.peca.value.trim(), 28) || PECA_PADRAO;
+    cliente.textContent = curto(form.nome.value.trim(), 20) || CLIENTE_PADRAO;
   });
-  nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
-    nav.classList.remove('open');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Abrir menu');
-  }));
 }
 
-export function setupHeaderScroll(header) {
-  const update = () => header.classList.toggle('scrolled', window.scrollY > 24);
-  window.addEventListener('scroll', update, { passive: true });
-  update();
-}
-
-export function setupReveal(elements) {
-  if (!('IntersectionObserver' in window)) {
-    elements.forEach((el) => el.classList.add('is-visible'));
-    return;
-  }
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
-    });
-  }, { threshold: 0.15 });
-  elements.forEach((el) => io.observe(el));
-}
-
-export function setupQuoteForm(form, fallback, fallbackLink) {
+export function enviarPedido(form, aviso, link) {
   form.addEventListener('submit', (ev) => {
     ev.preventDefault();
-    if (!form.reportValidity()) return;
-    const data = Object.fromEntries(new FormData(form));
-    const url = buildWhatsappUrl(buildWhatsappMessage(data));
-    fallbackLink.href = url;
-    fallback.hidden = false;
+    const url = buildWhatsappUrl(buildWhatsappMessage(Object.fromEntries(new FormData(form))));
+    link.href = url;
+    aviso.hidden = false;
     window.open(url, '_blank', 'noopener');
   });
 }
 
+// Red marks one thing per screen: the carimbo's action steps back while another action is visible.
+export function vermelhoUnico(acoes, carimbo) {
+  const visiveis = new Set();
+  const largo = matchMedia('(min-width: 1024px)');
+  let io;
+  const observar = () => {
+    io?.disconnect();
+    visiveis.clear();
+    // Below 1024px the carimbo is a bottom bar: whatever sits behind it (bar plus frame inset) does not count as visible.
+    const barra = largo.matches ? 0 : Math.ceil(innerHeight - carimbo.getBoundingClientRect().top);
+    io = new IntersectionObserver((entradas) => {
+      for (const e of entradas) e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target);
+      carimbo.toggleAttribute('data-acao-visivel', visiveis.size > 0);
+    }, { rootMargin: `0px 0px -${barra}px 0px` });
+    acoes.forEach((a) => io.observe(a));
+  };
+  observar();
+  largo.addEventListener('change', observar);
+}
+
 if (typeof document !== 'undefined') {
-  setupMobileMenu(document.getElementById('mobileToggle'), document.getElementById('navMenu'));
-  setupHeaderScroll(document.querySelector('.header'));
-  setupReveal(document.querySelectorAll('.reveal'));
-  setupQuoteForm(
-    document.getElementById('quoteForm'),
-    document.getElementById('quoteFallback'),
-    document.getElementById('quoteFallbackLink'),
-  );
+  const $ = (s) => document.querySelector(s);
+  acompanharFolha([...document.querySelectorAll('[data-folha]')], $('[data-carimbo="folha"]'), $('.rodape'), $('.topo'));
+  carimboAoVivo($('#pedido-form'), $('[data-carimbo="peca"]'), $('[data-carimbo="cliente"]'));
+  enviarPedido($('#pedido-form'), $('#pedido-aviso'), $('#pedido-link'));
+  vermelhoUnico([...document.querySelectorAll('main .acao')], $('.carimbo'));
+  import('./desenho.js').then((m) => m.iniciar()).catch(() => {});
 }

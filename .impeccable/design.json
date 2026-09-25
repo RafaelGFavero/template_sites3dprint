@@ -1,0 +1,615 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-25T06:06:34.738Z",
+  "title": "Design System: RF Tecnologia 3D",
+  "extensions": {
+    "colorMeta": {
+      "vermelho": {
+        "role": "primary",
+        "displayName": "Vermelho de Revisão",
+        "canonical": "#d93430",
+        "description": "Só a ação \"Mandar foto da peça\", uma por tela. Branco sobre ele: 4,68:1.",
+        "tonalRamp": [
+          "oklch(15% 0.202 27.2)",
+          "oklch(26% 0.202 27.2)",
+          "oklch(38% 0.202 27.2)",
+          "oklch(49% 0.202 27.2)",
+          "oklch(61% 0.202 27.2)",
+          "oklch(72% 0.202 27.2)",
+          "oklch(84% 0.202 27.2)",
+          "oklch(95% 0.202 27.2)"
+        ]
+      },
+      "vermelho-pressionado": {
+        "role": "primary",
+        "displayName": "Vermelho Pressionado",
+        "canonical": "#bb2d29",
+        "description": "Hover da ação: o vermelho a 86% sobre preto. Branco sobre ele: 5,97:1.",
+        "tonalRamp": [
+          "oklch(15% 0.179 27.2)",
+          "oklch(26% 0.179 27.2)",
+          "oklch(38% 0.179 27.2)",
+          "oklch(49% 0.179 27.2)",
+          "oklch(61% 0.179 27.2)",
+          "oklch(72% 0.179 27.2)",
+          "oklch(84% 0.179 27.2)",
+          "oklch(95% 0.179 27.2)"
+        ]
+      },
+      "sobre-vermelho": {
+        "role": "primary",
+        "displayName": "Branco sobre Vermelho",
+        "canonical": "#ffffff",
+        "description": "Texto e ícone dentro da ação vermelha, e em nenhum outro lugar.",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(38% 0.000 89.9)",
+          "oklch(49% 0.000 89.9)",
+          "oklch(61% 0.000 89.9)",
+          "oklch(72% 0.000 89.9)",
+          "oklch(84% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "construcao": {
+        "role": "secondary",
+        "displayName": "Azul de Construção",
+        "canonical": "#7fb3dd",
+        "description": "Esboço e fundo da seleção de texto. 2,02:1 sobre o papel: nunca texto nem informação necessária.",
+        "tonalRamp": [
+          "oklch(15% 0.082 243.5)",
+          "oklch(26% 0.082 243.5)",
+          "oklch(38% 0.082 243.5)",
+          "oklch(49% 0.082 243.5)",
+          "oklch(61% 0.082 243.5)",
+          "oklch(72% 0.082 243.5)",
+          "oklch(84% 0.082 243.5)",
+          "oklch(95% 0.082 243.5)"
+        ]
+      },
+      "construcao-escuro": {
+        "role": "secondary",
+        "displayName": "Azul de Construção da Cópia",
+        "canonical": "#6f9fd0",
+        "description": "O azul de construção no esquema escuro, 4,41:1 sobre o azul heliográfico.",
+        "tonalRamp": [
+          "oklch(15% 0.089 249.7)",
+          "oklch(26% 0.089 249.7)",
+          "oklch(38% 0.089 249.7)",
+          "oklch(49% 0.089 249.7)",
+          "oklch(61% 0.089 249.7)",
+          "oklch(72% 0.089 249.7)",
+          "oklch(84% 0.089 249.7)",
+          "oklch(95% 0.089 249.7)"
+        ]
+      },
+      "papel": {
+        "role": "neutral",
+        "displayName": "Papel Sulfite",
+        "canonical": "#f2f4f3",
+        "description": "Fundo da página, das células do carimbo e de todo canvas. Repetido na meta theme-color clara.",
+        "tonalRamp": [
+          "oklch(15% 0.002 165.1)",
+          "oklch(26% 0.002 165.1)",
+          "oklch(38% 0.002 165.1)",
+          "oklch(49% 0.002 165.1)",
+          "oklch(61% 0.002 165.1)",
+          "oklch(72% 0.002 165.1)",
+          "oklch(84% 0.002 165.1)",
+          "oklch(95% 0.002 165.1)"
+        ]
+      },
+      "papel-escuro": {
+        "role": "neutral",
+        "displayName": "Azul Heliográfico",
+        "canonical": "#17355f",
+        "description": "O papel no esquema escuro, a cópia heliográfica. Repetido na meta theme-color escura.",
+        "tonalRamp": [
+          "oklch(15% 0.083 257.3)",
+          "oklch(26% 0.083 257.3)",
+          "oklch(38% 0.083 257.3)",
+          "oklch(49% 0.083 257.3)",
+          "oklch(61% 0.083 257.3)",
+          "oklch(72% 0.083 257.3)",
+          "oklch(84% 0.083 257.3)",
+          "oklch(95% 0.083 257.3)"
+        ]
+      },
+      "tinta": {
+        "role": "neutral",
+        "displayName": "Tinta Nanquim",
+        "canonical": "#15181b",
+        "description": "Texto, contorno visível, hachura, moldura, carimbo, linha de preenchimento e foco. 16,13:1 sobre o papel.",
+        "tonalRamp": [
+          "oklch(15% 0.008 248.2)",
+          "oklch(26% 0.008 248.2)",
+          "oklch(38% 0.008 248.2)",
+          "oklch(49% 0.008 248.2)",
+          "oklch(61% 0.008 248.2)",
+          "oklch(72% 0.008 248.2)",
+          "oklch(84% 0.008 248.2)",
+          "oklch(95% 0.008 248.2)"
+        ]
+      },
+      "tinta-escuro": {
+        "role": "neutral",
+        "displayName": "Tinta da Cópia",
+        "canonical": "#eef3f8",
+        "description": "A tinta no esquema escuro, 10,99:1; também contorna a ação vermelha no escuro.",
+        "tonalRamp": [
+          "oklch(15% 0.009 247.9)",
+          "oklch(26% 0.009 247.9)",
+          "oklch(38% 0.009 247.9)",
+          "oklch(49% 0.009 247.9)",
+          "oklch(61% 0.009 247.9)",
+          "oklch(72% 0.009 247.9)",
+          "oklch(84% 0.009 247.9)",
+          "oklch(95% 0.009 247.9)"
+        ]
+      },
+      "grafite": {
+        "role": "neutral",
+        "displayName": "Grafite",
+        "canonical": "#50575e",
+        "description": "Cotas, ocultas, eixos, rótulos, legendas, régua de troca de folha, placeholder e dica. 6,63:1 sobre o papel.",
+        "tonalRamp": [
+          "oklch(15% 0.014 248.1)",
+          "oklch(26% 0.014 248.1)",
+          "oklch(38% 0.014 248.1)",
+          "oklch(49% 0.014 248.1)",
+          "oklch(61% 0.014 248.1)",
+          "oklch(72% 0.014 248.1)",
+          "oklch(84% 0.014 248.1)",
+          "oklch(95% 0.014 248.1)"
+        ]
+      },
+      "grafite-escuro": {
+        "role": "neutral",
+        "displayName": "Grafite da Cópia",
+        "canonical": "#b9c9dc",
+        "description": "O grafite no esquema escuro, 7,28:1 sobre o azul heliográfico.",
+        "tonalRamp": [
+          "oklch(15% 0.032 252.7)",
+          "oklch(26% 0.032 252.7)",
+          "oklch(38% 0.032 252.7)",
+          "oklch(49% 0.032 252.7)",
+          "oklch(61% 0.032 252.7)",
+          "oklch(72% 0.032 252.7)",
+          "oklch(84% 0.032 252.7)",
+          "oklch(95% 0.032 252.7)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Manchete",
+        "purpose": "h1 do hero abaixo de 1024px, em duas linhas.",
+        "style": "italic",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.2em"
+      },
+      "display-desktop": {
+        "displayName": "Manchete no desktop",
+        "purpose": "h1 do hero a partir de 1024px; teto medido para a segunda linha caber em cinco colunas.",
+        "style": "italic",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.2em"
+      },
+      "headline": {
+        "displayName": "Título de folha",
+        "purpose": "h2 de cada folha.",
+        "style": "italic",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.18em"
+      },
+      "title": {
+        "displayName": "Título de bloco",
+        "purpose": "h3 de bloco lateral, como \"O que mandar\".",
+        "style": "italic",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      },
+      "title-vista": {
+        "displayName": "Rótulo de vista",
+        "purpose": "h3 sob cada quadro, com régua de 1px em grafite em cima.",
+        "style": "italic",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      },
+      "body": {
+        "displayName": "Texto corrido",
+        "purpose": "Parágrafos em Overpass, até 60ch."
+      },
+      "body-lead": {
+        "displayName": "Lead",
+        "purpose": "A frase de apoio do hero."
+      },
+      "body-small": {
+        "displayName": "Texto de apoio",
+        "purpose": "Navegação, notas, dica, aviso, rodapé e link de pular."
+      },
+      "label-formulario": {
+        "displayName": "Rótulo de campo",
+        "purpose": "Rótulo acima de cada linha de preenchimento."
+      },
+      "campo": {
+        "displayName": "Texto do campo",
+        "purpose": "O que a pessoa digita nas linhas de preenchimento."
+      },
+      "acao": {
+        "displayName": "Letreiro da ação",
+        "purpose": "Rótulo da ação e marca do topo.",
+        "style": "italic",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      },
+      "label": {
+        "displayName": "Letra técnica pequena",
+        "purpose": "Legendas, carimbo, título e números das notas; as cifras de cota do canvas usam o mesmo tamanho (13px).",
+        "style": "normal",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      },
+      "carimbo-rotulo": {
+        "displayName": "Rótulo de célula",
+        "purpose": "Nome do campo no carimbo; os rótulos de vista do canvas usam o mesmo tamanho (11px).",
+        "style": "normal",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      },
+      "carimbo-valor": {
+        "displayName": "Valor de célula",
+        "purpose": "Valor do campo no carimbo, uma linha, com folga de .35em em cima para o acento.",
+        "style": "normal",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      },
+      "carimbo-nome": {
+        "displayName": "Nome no carimbo",
+        "purpose": "RF Tecnologia 3D na célula do nome.",
+        "style": "normal",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      },
+      "carimbo-linha-nome": {
+        "displayName": "Nome no carimbo em linha",
+        "purpose": "Nome no carimbo de uma linha, em laptop baixo.",
+        "style": "normal",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      },
+      "carimbo-linha-valor": {
+        "displayName": "Valor no carimbo em linha",
+        "purpose": "Valores no carimbo de uma linha, em laptop baixo.",
+        "style": "normal",
+        "textTransform": "uppercase",
+        "wordSpacing": "-.1em"
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "A única curva de movimento: aperto da ação e traçado do desenho. Fica em --ease-out."
+      },
+      {
+        "name": "troca-de-cor",
+        "value": "150ms ease",
+        "purpose": "Fundo, texto e borda da ação no hover e quando a ação do carimbo recua ou volta ao vermelho."
+      },
+      {
+        "name": "aperto",
+        "value": "transform: scale(.98) em 120ms cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Ação pressionada."
+      },
+      {
+        "name": "tracado-das-vistas",
+        "value": "460ms por vista, começando em 0, 120 e 240ms, cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Arestas visíveis das três vistas do hero se traçando quando 40% do canvas entra na tela."
+      },
+      {
+        "name": "surgem-as-cotas",
+        "value": "opacidade de 600ms a 1100ms, cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Ocultas, cotas, eixos, linha de corte e rótulos do hero."
+      },
+      {
+        "name": "impressao-por-camadas",
+        "value": "linear, de 900ms a 2600ms",
+        "purpose": "A perspectiva do hero sobe camada por camada até a altura total da peça."
+      },
+      {
+        "name": "giro",
+        "value": "0,5° de azimute e 0,3° de elevação por pixel (elevação de 10° a 70°); setas 15° e 5°",
+        "purpose": "Arrastar ou usar as setas sobre a perspectiva do hero."
+      },
+      {
+        "name": "rolagem-suave",
+        "value": "scroll-behavior: smooth",
+        "purpose": "Âncoras do topo."
+      },
+      {
+        "name": "movimento-reduzido",
+        "value": "@media (prefers-reduced-motion: no-preference)",
+        "purpose": "Todo movimento vive dentro desta condição; com movimento reduzido o desenho aparece pronto e o giro continua por arrasto e setas."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "tablet",
+        "value": "768px",
+        "purpose": "Quadros em 4 colunas, \"Quem faz\" na grade de 12 colunas, navegação completa."
+      },
+      {
+        "name": "desktop",
+        "value": "1024px",
+        "purpose": "Moldura de 12px com margem de encadernação de 28px, carimbo em bloco, grades de 12 colunas, manchete maior, desenho 4:3."
+      },
+      {
+        "name": "laptop-baixo",
+        "value": "(min-width: 1024px) and (max-height: 760px)",
+        "purpose": "Carimbo em linha de 3.5rem e reserva de 5rem."
+      },
+      {
+        "name": "laptop-baixo-estreito",
+        "value": "(min-width: 1024px) and (max-width: 1199.98px) and (max-height: 760px)",
+        "purpose": "A linha do carimbo perde Desenho e Escala (46.75rem)."
+      },
+      {
+        "name": "legenda-empilhada",
+        "value": "@container (width < 41.5rem)",
+        "purpose": "A legenda do hero empilha em três linhas."
+      }
+    ],
+    "drawing": {
+      "projecao": "Primeiro diedro (ABNT NBR 10067): frontal no alto à esquerda, superior abaixo, lateral esquerda à direita, perspectiva isométrica no quadrante de baixo à direita; uma escala para as três vistas.",
+      "tracos": [
+        {
+          "name": "visivel",
+          "width": "1.6px",
+          "color": "{colors.tinta}",
+          "dash": null,
+          "cap": "round",
+          "uso": "Arestas visíveis, contorno da seção, tampa da impressão em andamento."
+        },
+        {
+          "name": "oculta",
+          "width": "0.8px",
+          "color": "{colors.grafite}",
+          "dash": "4 3",
+          "cap": "butt",
+          "uso": "Arestas ocultas, traçadas antes da visível."
+        },
+        {
+          "name": "cota",
+          "width": "0.8px",
+          "color": "{colors.grafite}",
+          "dash": null,
+          "cap": "butt",
+          "uso": "Linhas de cota e de chamada; também o que fica além do plano no corte A-A."
+        },
+        {
+          "name": "eixo",
+          "width": "0.8px",
+          "color": "{colors.grafite}",
+          "dash": "10 3 2 3",
+          "cap": "butt",
+          "uso": "Linhas de centro, 3mm além do contorno, centradas num traço longo."
+        },
+        {
+          "name": "corte",
+          "width": "0.8px",
+          "color": "{colors.tinta}",
+          "dash": "10 3 2 3",
+          "cap": "butt",
+          "uso": "Linha de corte A-A, 4mm além do contorno, pontas de 8px em 1.6px, setas e letra A."
+        },
+        {
+          "name": "construcao",
+          "width": "1px",
+          "color": "{colors.construcao}",
+          "dash": null,
+          "cap": "round",
+          "uso": "Só o esboço do quadro da foto."
+        },
+        {
+          "name": "hachura",
+          "width": "1.1px",
+          "color": "{colors.tinta}",
+          "dash": null,
+          "cap": "butt",
+          "uso": "Área cortada e base na mesa: 45°, subindo para a direita, passo de 3px."
+        },
+        {
+          "name": "camada",
+          "width": "0.5px",
+          "color": "{colors.grafite}",
+          "dash": null,
+          "cap": "butt",
+          "uso": "Linhas de camada de 0,2mm nas faces visíveis, nunca a menos de 1,5px uma da outra."
+        }
+      ],
+      "cota": {
+        "distancia": "22px do contorno",
+        "chamada": "2px de folga do contorno e 3px além da cota",
+        "seta": "cheia, 9px por 6px",
+        "cifra": "osifont 13px, 4px acima da linha, vírgula decimal e uma casa, sem unidade"
+      },
+      "rotulos": "osifont 11px em grafite, caixa alta, centrados sob cada vista",
+      "faces": "preenchidas com papel de trás para a frente; o canvas pinta o papel antes de traçar; densidade de pixel até 2"
+    }
+  },
+  "components": [
+    {
+      "name": "Ação",
+      "kind": "button",
+      "refersTo": "acao",
+      "description": "O único vermelho da tela: \"Mandar foto da peça\", com o ícone do WhatsApp, no hero, no formulário e no carimbo.",
+      "html": "<a class=\"ds-acao\" href=\"#\"><svg aria-hidden=\"true\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z\"/></svg> Mandar foto da peça</a>",
+      "css": ".ds-acao { display: inline-flex; align-items: center; gap: .6rem; min-height: 48px; padding: 0 1.25rem; background: var(--vermelho, #d93430); color: var(--sobre-vermelho, #ffffff); border: 1.5px solid var(--vermelho, #d93430); border-radius: 0; font: italic 400 1rem/1 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; text-decoration: none; cursor: pointer; }\n.ds-acao svg { width: 20px; height: 20px; flex: none; }\n.ds-acao:focus-visible { outline: 2px solid var(--tinta, #15181b); outline-offset: 3px; }\n@media (hover: hover) { .ds-acao:hover { background: var(--vermelho-pressionado, #bb2d29); } }\n@media (prefers-reduced-motion: no-preference) { .ds-acao { transition: background-color 150ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-acao:active { transform: scale(.98); } }\n@media (prefers-color-scheme: dark) { .ds-acao { border-color: var(--tinta, #eef3f8); } }"
+    },
+    {
+      "name": "Ação recuada",
+      "kind": "button",
+      "refersTo": "acao-recuada",
+      "description": "A ação do carimbo enquanto outra ação vermelha está à vista: papel, texto e borda em tinta.",
+      "html": "<a class=\"ds-acao-recuada\" href=\"#\"><svg aria-hidden=\"true\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z\"/></svg> Mandar foto da peça</a>",
+      "css": ".ds-acao-recuada { display: inline-flex; align-items: center; gap: .6rem; min-height: 48px; padding: 0 .875rem; background: var(--papel, #f2f4f3); color: var(--tinta, #15181b); border: 1.5px solid var(--tinta, #15181b); border-radius: 0; font: italic 400 1rem/1 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; text-decoration: none; cursor: pointer; }\n.ds-acao-recuada svg { width: 20px; height: 20px; flex: none; }\n.ds-acao-recuada:focus-visible { outline: 2px solid var(--tinta, #15181b); outline-offset: 3px; }\n@media (hover: hover) { .ds-acao-recuada:hover { background: color-mix(in srgb, var(--tinta, #15181b) 8%, var(--papel, #f2f4f3)); } }\n@media (prefers-reduced-motion: no-preference) { .ds-acao-recuada { transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-acao-recuada:active { transform: scale(.98); } }"
+    },
+    {
+      "name": "Linha de preenchimento",
+      "kind": "input",
+      "refersTo": "campo",
+      "description": "Campo de formulário técnico: rótulo em cima e só uma linha de 1,5px em tinta embaixo.",
+      "html": "<div class=\"ds-campo\"><label for=\"ds-campo-medida\">Tem alguma medida?</label><input id=\"ds-campo-medida\" type=\"text\" placeholder=\"Ex.: 32 mm de largura\"><p class=\"ds-campo-dica\">Tudo aqui é opcional.</p></div>",
+      "css": ".ds-campo { max-width: 32rem; color: var(--tinta, #15181b); font: 400 1.0625rem/1.6 var(--texto, Overpass, system-ui, sans-serif); }\n.ds-campo label { display: block; font-size: .9375rem; font-weight: 600; }\n.ds-campo input { display: block; width: 100%; min-height: 48px; padding: .5rem 0; background: transparent; color: var(--tinta, #15181b); border: 0; border-bottom: 1.5px solid var(--tinta, #15181b); border-radius: 0; font: 400 1.0625rem/1.5 var(--texto, Overpass, system-ui, sans-serif); }\n.ds-campo input::placeholder { color: var(--grafite, #50575e); opacity: 1; }\n.ds-campo input:focus-visible { outline: 2px solid var(--tinta, #15181b); outline-offset: 4px; }\n.ds-campo-dica { margin: 1rem 0 0; font-size: .9375rem; color: var(--grafite, #50575e); }"
+    },
+    {
+      "name": "Topo",
+      "kind": "nav",
+      "refersTo": "topo-link",
+      "description": "Marca em letra técnica inclinada à esquerda, links em Overpass à direita; abaixo de 768px ficam só Pedido e o ícone.",
+      "html": "<header class=\"ds-topo\"><a class=\"ds-topo-marca\" href=\"#\">RF Tecnologia 3D</a><nav aria-label=\"Principal\"><a href=\"#\">Como eu faço</a><a href=\"#\">Quem faz</a><a href=\"#\">Pedido</a><a href=\"#\" aria-label=\"Ver no Instagram\"><svg aria-hidden=\"true\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z\"/></svg><span>Ver no Instagram</span></a></nav></header>",
+      "css": ".ds-topo { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; height: 64px; padding: 0 1rem; background: var(--papel, #f2f4f3); color: var(--tinta, #15181b); font: 400 1.0625rem/1.6 var(--texto, Overpass, system-ui, sans-serif); }\n.ds-topo a { color: var(--tinta, #15181b); }\n.ds-topo a:focus-visible { outline: 2px solid var(--tinta, #15181b); outline-offset: 3px; }\n.ds-topo-marca { display: inline-flex; align-items: center; min-height: 44px; font: italic 400 1rem/1 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; text-decoration: none; }\n.ds-topo nav { display: flex; align-items: center; gap: 1.5rem; }\n.ds-topo nav a { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; font-size: .9375rem; text-decoration: none; }\n.ds-topo nav svg { width: 22px; height: 22px; }\n@media (hover: hover) { .ds-topo nav a:hover { text-decoration: underline 2px; text-underline-offset: .2em; } }"
+    },
+    {
+      "name": "Moldura da folha",
+      "kind": "custom",
+      "description": "Moldura de 1,5px em tinta com a margem de encadernação mais larga à esquerda (medidas do desktop: 12px e 28px) e a régua de 1px em grafite que troca de folha.",
+      "html": "<div class=\"ds-folha\"><section class=\"ds-folha-parte\"><h2>Da foto à peça impressa</h2></section><section class=\"ds-folha-parte\"><h2>Rafael Favero</h2></section></div>",
+      "css": ".ds-folha { position: relative; padding: 12px 12px 12px 28px; background: var(--papel, #f2f4f3); color: var(--tinta, #15181b); }\n.ds-folha::after { content: \"\"; position: absolute; inset: 12px 12px 12px 28px; border: 1.5px solid var(--tinta, #15181b); pointer-events: none; }\n.ds-folha-parte { position: relative; padding: 2.5rem 2rem; }\n.ds-folha-parte + .ds-folha-parte::before { content: \"\"; position: absolute; top: 0; left: 1.5px; right: 1.5px; height: 1px; background: var(--grafite, #50575e); }\n.ds-folha h2 { margin: 0; font: italic 400 1.5rem/1.1 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .02em; word-spacing: -.18em; }"
+    },
+    {
+      "name": "Carimbo em bloco",
+      "kind": "custom",
+      "refersTo": "carimbo-bloco",
+      "description": "Desktop com altura acima de 760px: 30rem no canto da moldura, quatro linhas de células com filetes de 1px (o fundo de tinta nos vãos) e a ação na largura toda. A célula vazia recebe a marca R.",
+      "html": "<aside class=\"ds-carimbo-bloco\" aria-label=\"Carimbo da folha\"><span class=\"ds-cb-marca\" aria-hidden=\"true\"></span><p class=\"ds-cb-nome\">RF Tecnologia 3D</p><p class=\"ds-cb-campo ds-cb-folha\"><span>Folha</span><span>1/4</span></p><p class=\"ds-cb-campo ds-cb-peca\"><span>Peça</span><span>Trava do conector</span></p><p class=\"ds-cb-campo ds-cb-cliente\"><span>Cliente</span><span>Você</span></p><p class=\"ds-cb-campo ds-cb-des\"><span>Desenho</span><span>Rafael Favero</span></p><p class=\"ds-cb-campo ds-cb-escala\"><span>Escala</span><span>Sem escala</span></p><p class=\"ds-cb-campo ds-cb-unidade\"><span>Unidade</span><span class=\"ds-cb-mm\">mm</span></p><a class=\"ds-cb-acao\" href=\"#\"><svg aria-hidden=\"true\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z\"/></svg> Mandar foto da peça <svg aria-hidden=\"true\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z\"/></svg></a></aside>",
+      "css": ".ds-carimbo-bloco { display: grid; width: 30rem; max-width: 100%; gap: 1px; background: var(--tinta, #15181b); border: 1.5px solid var(--tinta, #15181b); grid-template-columns: 4.5rem 1fr 1fr 1fr; grid-template-areas: \"marca nome nome folha\" \"marca peca peca cliente\" \"des des escala unidade\" \"acao acao acao acao\"; color: var(--grafite, #50575e); font: 400 .8125rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-carimbo-bloco > :not(.ds-cb-acao) { margin: 0; background: var(--papel, #f2f4f3); }\n.ds-cb-marca { grid-area: marca; }\n.ds-cb-nome { grid-area: nome; display: flex; align-items: center; padding: 0 .625rem; font-size: 1.125rem; color: var(--tinta, #15181b); }\n.ds-cb-campo { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding: .25rem .625rem; }\n.ds-cb-campo span:first-child { font-size: .6875rem; line-height: .9; }\n.ds-cb-campo span:last-child { color: var(--tinta, #15181b); line-height: 1.05; padding-top: .35em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }\n.ds-cb-mm { text-transform: none; }\n.ds-cb-folha { grid-area: folha; } .ds-cb-peca { grid-area: peca; } .ds-cb-cliente { grid-area: cliente; } .ds-cb-des { grid-area: des; } .ds-cb-escala { grid-area: escala; } .ds-cb-unidade { grid-area: unidade; }\n.ds-cb-acao { grid-area: acao; display: flex; align-items: center; gap: .6rem; min-height: 48px; padding: 0 .75rem 0 .625rem; background: var(--vermelho, #d93430); color: var(--sobre-vermelho, #ffffff); font: italic 400 1rem/1 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; text-decoration: none; white-space: nowrap; }\n.ds-cb-acao svg { width: 20px; height: 20px; flex: none; }\n.ds-cb-acao svg:last-child { margin-left: auto; }\n.ds-cb-acao:focus-visible { outline: 2px solid var(--tinta, #15181b); outline-offset: 3px; }\n@media (hover: hover) { .ds-cb-acao:hover { background: var(--vermelho-pressionado, #bb2d29); } }\n@media (prefers-reduced-motion: no-preference) { .ds-cb-acao { transition: background-color 150ms ease, color 150ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-cb-acao:active { transform: scale(.98); } }"
+    },
+    {
+      "name": "Carimbo em barra",
+      "kind": "custom",
+      "refersTo": "carimbo-barra",
+      "description": "Abaixo de 1024px: faixa de 64px na base da moldura com a marca R (célula vazia aqui), a célula Folha e a ação no resto da largura.",
+      "html": "<aside class=\"ds-carimbo-barra\" aria-label=\"Carimbo da folha\"><span class=\"ds-cbar-marca\" aria-hidden=\"true\"></span><p class=\"ds-cbar-campo\"><span>Folha</span><span>1/4</span></p><a class=\"ds-cbar-acao\" href=\"#\"><svg aria-hidden=\"true\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z\"/></svg> Mandar foto da peça</a></aside>",
+      "css": ".ds-carimbo-barra { display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: center; gap: .25rem; max-width: 24rem; height: 64px; padding: 0 .5rem; background: var(--papel, #f2f4f3); border-top: 1.5px solid var(--tinta, #15181b); color: var(--grafite, #50575e); font: 400 .8125rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-cbar-marca { width: 1.75rem; height: 1.6rem; }\n.ds-cbar-campo { display: flex; flex-direction: column; justify-content: center; margin: 0; padding: .25rem .625rem; }\n.ds-cbar-campo span:first-child { font-size: .6875rem; line-height: .9; }\n.ds-cbar-campo span:last-child { color: var(--tinta, #15181b); line-height: 1.05; padding-top: .35em; }\n.ds-cbar-acao { display: inline-flex; align-items: center; gap: .6rem; min-height: 48px; padding: 0 .875rem; background: var(--vermelho, #d93430); color: var(--sobre-vermelho, #ffffff); border: 1.5px solid var(--vermelho, #d93430); font: italic 400 1rem/1 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; text-decoration: none; }\n.ds-cbar-acao svg { width: 20px; height: 20px; flex: none; }\n.ds-cbar-acao:focus-visible { outline: 2px solid var(--tinta, #15181b); outline-offset: 3px; }\n@media (hover: hover) { .ds-cbar-acao:hover { background: var(--vermelho-pressionado, #bb2d29); } }\n@media (prefers-reduced-motion: no-preference) { .ds-cbar-acao { transition: background-color 150ms ease, transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-cbar-acao:active { transform: scale(.98); } }\n@media (prefers-color-scheme: dark) { .ds-cbar-acao { border-color: var(--tinta, #eef3f8); } }"
+    },
+    {
+      "name": "Carimbo em linha",
+      "kind": "custom",
+      "refersTo": "carimbo-linha",
+      "description": "Desktop com até 760px de altura: todas as células numa linha de 3.5rem e 59rem, ação sem seta. Entre 1024px e 1199px caem Desenho e Escala.",
+      "html": "<div class=\"ds-cl-rolagem\"><aside class=\"ds-carimbo-linha\" aria-label=\"Carimbo da folha\"><span class=\"ds-cl-marca\" aria-hidden=\"true\"></span><p class=\"ds-cl-nome\">RF Tecnologia 3D</p><p class=\"ds-cl-campo\"><span>Peça</span><span>Trava do conector</span></p><p class=\"ds-cl-campo\"><span>Cliente</span><span>Você</span></p><p class=\"ds-cl-campo\"><span>Desenho</span><span>Rafael Favero</span></p><p class=\"ds-cl-campo\"><span>Escala</span><span>Sem escala</span></p><p class=\"ds-cl-campo\"><span>Unidade</span><span class=\"ds-cl-mm\">mm</span></p><p class=\"ds-cl-campo\"><span>Folha</span><span>1/4</span></p><a class=\"ds-cl-acao\" href=\"#\"><svg aria-hidden=\"true\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z\"/></svg> Mandar foto da peça</a></aside></div>",
+      "css": ".ds-cl-rolagem { max-width: 100%; overflow-x: auto; }\n.ds-carimbo-linha { display: grid; width: 59rem; height: 3.5rem; gap: 1px; background: var(--tinta, #15181b); border: 1.5px solid var(--tinta, #15181b); grid-template-columns: 2.75rem 9rem 8.75rem 5.5rem 6.75rem 5.5rem 3.75rem 3rem minmax(0, 1fr); color: var(--grafite, #50575e); font: 400 .8125rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-carimbo-linha > :not(.ds-cl-acao) { margin: 0; background: var(--papel, #f2f4f3); }\n.ds-cl-nome { display: flex; align-items: center; padding: 0 .375rem; font-size: .875rem; color: var(--tinta, #15181b); }\n.ds-cl-campo { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding: .25rem .375rem; }\n.ds-cl-campo span:first-child { font-size: .6875rem; line-height: .9; }\n.ds-cl-campo span:last-child { color: var(--tinta, #15181b); font-size: .75rem; line-height: 1.05; padding-top: .35em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }\n.ds-cl-mm { text-transform: none; }\n.ds-cl-acao { display: flex; align-items: center; gap: .6rem; padding: 0 .5rem; background: var(--vermelho, #d93430); color: var(--sobre-vermelho, #ffffff); font: italic 400 1rem/1 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; text-decoration: none; white-space: nowrap; }\n.ds-cl-acao svg { width: 20px; height: 20px; flex: none; }\n.ds-cl-acao:focus-visible { outline: 2px solid var(--tinta, #15181b); outline-offset: 3px; }\n@media (hover: hover) { .ds-cl-acao:hover { background: var(--vermelho-pressionado, #bb2d29); } }"
+    },
+    {
+      "name": "Legenda e rótulo de vista",
+      "kind": "custom",
+      "refersTo": "legenda",
+      "description": "Régua de 1px em grafite sob o desenho: a legenda de figura em letra técnica pequena vertical e o rótulo de vista em letra inclinada.",
+      "html": "<div class=\"ds-legendas\"><figure class=\"ds-legenda\"><figcaption><span>Trava do conector de combustível</span><span>Primeiro diedro, medidas em <span class=\"ds-legenda-mm\">mm</span></span><span>Arraste para girar.</span></figcaption></figure><div class=\"ds-vista\"><h3>Eu desenho em milímetros</h3><p>Cada medida vira cota.</p></div></div>",
+      "css": ".ds-legendas { display: grid; gap: 2rem; max-width: 40rem; color: var(--tinta, #15181b); background: var(--papel, #f2f4f3); font: 400 1.0625rem/1.6 var(--texto, Overpass, system-ui, sans-serif); }\n.ds-legenda { margin: 0; }\n.ds-legenda figcaption { display: grid; grid-template-columns: 1.65fr 1.55fr 1fr; gap: .35rem 1.5rem; padding-top: .375rem; border-top: 1px solid var(--grafite, #50575e); color: var(--grafite, #50575e); font: 400 .8125rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-legenda-mm { text-transform: none; }\n.ds-vista h3 { margin: 0; padding-top: .375rem; border-top: 1px solid var(--grafite, #50575e); font: italic 400 .9375rem/1.3 var(--letra, osifont, Overpass, sans-serif); text-transform: uppercase; letter-spacing: .06em; word-spacing: -.1em; }\n.ds-vista p { margin: .5rem 0 0; }"
+    },
+    {
+      "name": "Tipos de linha e hachura",
+      "kind": "custom",
+      "description": "O vocabulário do desenho em canvas, nos pesos construídos: visível, oculta, cota com setas e cifra, eixo, corte com a letra A, construção, camada e a hachura a 45° com passo de 3px.",
+      "html": "<svg class=\"ds-linhas\" viewBox=\"0 0 520 240\" role=\"img\" aria-label=\"Tipos de linha do desenho\"><defs><pattern id=\"ds-hachura\" width=\"3\" height=\"3\" patternUnits=\"userSpaceOnUse\" patternTransform=\"rotate(45)\"><line class=\"ds-l-hach\" x1=\"1.5\" y1=\"0\" x2=\"1.5\" y2=\"3\"/></pattern></defs><line class=\"ds-l-vis\" x1=\"20\" y1=\"22\" x2=\"200\" y2=\"22\"/><text x=\"216\" y=\"26\">VISÍVEL 1,6</text><line class=\"ds-l-oc\" x1=\"20\" y1=\"50\" x2=\"200\" y2=\"50\"/><text x=\"216\" y=\"54\">OCULTA 0,8</text><line class=\"ds-l-fina\" x1=\"20\" y1=\"94\" x2=\"20\" y2=\"77\"/><line class=\"ds-l-fina\" x1=\"200\" y1=\"94\" x2=\"200\" y2=\"77\"/><line class=\"ds-l-fina\" x1=\"20\" y1=\"80\" x2=\"200\" y2=\"80\"/><path class=\"ds-l-seta\" d=\"M20 80 L29 77 L29 83 Z M200 80 L191 77 L191 83 Z\"/><text class=\"ds-l-cifra\" x=\"110\" y=\"76\" text-anchor=\"middle\">32,8</text><text x=\"216\" y=\"84\">COTA 0,8</text><line class=\"ds-l-eixo\" x1=\"20\" y1=\"112\" x2=\"200\" y2=\"112\"/><text x=\"216\" y=\"116\">EIXO 0,8</text><line class=\"ds-l-corte\" x1=\"20\" y1=\"160\" x2=\"200\" y2=\"160\"/><path class=\"ds-l-corte-ponta\" d=\"M20 160 H28 M200 160 H192\"/><line class=\"ds-l-haste\" x1=\"20\" y1=\"160\" x2=\"20\" y2=\"148\"/><line class=\"ds-l-haste\" x1=\"200\" y1=\"160\" x2=\"200\" y2=\"148\"/><path class=\"ds-l-seta-t\" d=\"M20 146 L17 155 L23 155 Z M200 146 L197 155 L203 155 Z\"/><text class=\"ds-l-letra\" x=\"20\" y=\"142\" text-anchor=\"middle\">A</text><text class=\"ds-l-letra\" x=\"200\" y=\"142\" text-anchor=\"middle\">A</text><text x=\"216\" y=\"164\">CORTE 0,8</text><line class=\"ds-l-cons\" x1=\"20\" y1=\"196\" x2=\"200\" y2=\"196\"/><text x=\"216\" y=\"200\">CONSTRUÇÃO 1</text><g class=\"ds-l-cam\"><line x1=\"20\" y1=\"220\" x2=\"200\" y2=\"220\"/><line x1=\"20\" y1=\"221.5\" x2=\"200\" y2=\"221.5\"/><line x1=\"20\" y1=\"223\" x2=\"200\" y2=\"223\"/><line x1=\"20\" y1=\"224.5\" x2=\"200\" y2=\"224.5\"/><line x1=\"20\" y1=\"226\" x2=\"200\" y2=\"226\"/></g><text x=\"216\" y=\"227\">CAMADA 0,5</text><rect class=\"ds-l-secao\" x=\"400\" y=\"20\" width=\"100\" height=\"100\" fill=\"url(#ds-hachura)\"/><text x=\"450\" y=\"140\" text-anchor=\"middle\">HACHURA 1,1</text><text x=\"450\" y=\"155\" text-anchor=\"middle\">45°, PASSO 3</text></svg>",
+      "css": ".ds-linhas { display: block; width: 100%; max-width: 520px; height: auto; background: var(--papel, #f2f4f3); }\n.ds-linhas text { font: 400 11px var(--letra, osifont, Overpass, sans-serif); letter-spacing: .06em; fill: var(--grafite, #50575e); }\n.ds-linhas .ds-l-cifra { font-size: 13px; letter-spacing: 0; }\n.ds-linhas .ds-l-letra { font-size: 13px; letter-spacing: 0; fill: var(--tinta, #15181b); }\n.ds-l-vis { stroke: var(--tinta, #15181b); stroke-width: 1.6; stroke-linecap: round; }\n.ds-l-oc { stroke: var(--grafite, #50575e); stroke-width: .8; stroke-dasharray: 4 3; }\n.ds-l-fina { stroke: var(--grafite, #50575e); stroke-width: .8; }\n.ds-l-seta { fill: var(--grafite, #50575e); }\n.ds-l-eixo { stroke: var(--grafite, #50575e); stroke-width: .8; stroke-dasharray: 10 3 2 3; }\n.ds-l-corte { stroke: var(--tinta, #15181b); stroke-width: .8; stroke-dasharray: 10 3 2 3; }\n.ds-l-corte-ponta { stroke: var(--tinta, #15181b); stroke-width: 1.6; fill: none; }\n.ds-l-haste { stroke: var(--tinta, #15181b); stroke-width: .8; }\n.ds-l-seta-t { fill: var(--tinta, #15181b); }\n.ds-l-cons { stroke: var(--construcao, #7fb3dd); stroke-width: 1; stroke-linecap: round; }\n.ds-l-cam line { stroke: var(--grafite, #50575e); stroke-width: .5; }\n.ds-l-hach { stroke: var(--tinta, #15181b); stroke-width: 1.1; }\n.ds-l-secao { stroke: var(--tinta, #15181b); stroke-width: 1.6; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A Folha de Desenho Técnico",
+    "overview": "O site inteiro é a folha de desenho técnico da peça de quem visita, no padrão ABNT: papel sulfite frio, moldura em tinta com a margem de encadernação mais larga à esquerda, carimbo fixo no canto inferior direito e a peça real desenhada em primeiro diedro, com cotas em milímetros. A página conta o serviço pelo próprio desenho: a peça quebrada vira vista cotada, corte hachurado e camadas de impressão.\n\nA densidade é de prancha: muito papel livre, linha fina e precisa, pouca massa. O único campo pesado é a hachura a 45° do corte. A cor fica em três materiais de desenho (tinta, grafite e azul de construção), e o vermelho aparece uma vez por tela, sempre na ação. No escuro, a mesma folha vira cópia heliográfica, com papel azul e traço claro.\n\nO mundo recusa o padrão dos sites de impressão 3D: hero escuro com impressora brilhando, grade de cartões de serviço, passos numerados, FAQ em sanfona e bolha verde de chat flutuante. O movimento se resume a um momento, o desenho do hero se traçando e a perspectiva se imprimindo camada por camada; o resto da página fica parado.",
+    "keyCharacteristics": [
+      "Papel sulfite frio e traço em tinta; no escuro, cópia heliográfica em azul.",
+      "Moldura fixa com margem de encadernação e carimbo ABNT sempre à vista, preenchido ao vivo.",
+      "A peça real, lida do STL, desenhada em primeiro diedro com cotas em milímetros, corte A-A hachurado e perspectiva que se imprime em camadas.",
+      "Letra técnica ISO 3098 (osifont) no que pertence ao desenho; Overpass na leitura.",
+      "Um vermelho por tela, e ele é a ação.",
+      "Nenhuma sombra, nenhum cartão, nenhum canto arredondado."
+    ],
+    "rules": [
+      {
+        "name": "The Vermelho Único Rule",
+        "body": "Uma coisa vermelha por tela, e ela é a ação de mandar a foto. Quando uma ação vermelha do conteúdo está à vista, a ação do carimbo recua para papel e tinta; quando nenhuma está, ela volta ao vermelho. Desenho, títulos, links e ícones soltos nunca são vermelhos. A marca R é logo, fica isenta e aparece só no carimbo, no tamanho de marca.",
+        "section": "colors"
+      },
+      {
+        "name": "The Materiais de Prancha Rule",
+        "body": "Fora a ação, toda cor é um material de desenho com função fixa: tinta desenha e escreve, grafite mede e referencia, azul de construção esboça. A paleta é fechada; o que não for um desses materiais não entra na folha.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cópia Heliográfica Rule",
+        "body": "No escuro mudam só papel, tinta, grafite e azul de construção. Geometria, pesos de linha, letra e o vermelho da ação ficam iguais, e a ação ganha borda de 1,5px em tinta, porque o vermelho sobre o azul heliográfico fica em 2,62:1.",
+        "section": "colors"
+      },
+      {
+        "name": "The Letra Técnica Rule",
+        "body": "osifont em caixa alta só no que pertence ao desenho: títulos, marca, ação, cotas, legendas, carimbo e notas. Leitura corrida, rótulo de formulário, navegação e rodapé são sempre Overpass em caixa normal. Não existe terceira família.",
+        "section": "typography"
+      },
+      {
+        "name": "The Inclinada nos Títulos Rule",
+        "body": "Títulos (h1, h2, h3), a marca do topo e a ação usam a osifont itálica. Cotas, legendas, rótulos de vista do canvas e carimbo usam a osifont vertical.",
+        "section": "typography"
+      },
+      {
+        "name": "The Espaço Justo Rule",
+        "body": "A osifont tem espaço largo entre palavras, então toda composição nela aperta word-spacing: -.2em no h1, -.18em no h2, -.1em em h3, ação, marca, legendas e carimbo. A unidade \"mm\" nunca vai para caixa alta, nem dentro de texto em caixa alta.",
+        "section": "typography"
+      },
+      {
+        "name": "The Folha Contínua Rule",
+        "body": "Uma página é uma folha. Seções trocam de folha com a régua de 1px em grafite, de moldura a moldura, e nunca com cartão, faixa de fundo, sombra ou papel de outra cor.",
+        "section": "layout"
+      },
+      {
+        "name": "The Canto do Carimbo Rule",
+        "body": "O canto inferior direito pertence ao carimbo em todas as larguras. Nenhuma vista, legenda, campo ou foco termina embaixo dele; a reserva do main e o scroll-padding existem para isso.",
+        "section": "layout"
+      },
+      {
+        "name": "The Papel Sobre Papel Rule",
+        "body": "Nada flutua. O que fica por cima é papel com uma linha de tinta na borda, nunca uma sombra.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Dois Pesos Rule",
+        "body": "A interface tem dois pesos de linha, como o desenho: 1,5px em tinta contorna, 1px em grafite separa. O anel de foco de 2px é a única linha mais grossa e só aparece com foco de teclado.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Pesos ISO Rule",
+        "body": "A peça tem duas espessuras de traço, 1,6px e 0,8px, na razão 2:1 da ISO 128. Hachura (1,1px), construção (1px) e camada (0,5px) são as únicas outras, cada uma com um uso só.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do declarar toda cor como variável no :root e no bloco de esquema escuro, e ler essas variáveis no canvas; nenhum hex fora desses dois lugares, com a cor do papel repetida só nas duas meta theme-color.",
+      "Do manter o vermelho #d93430 só na ação \"Mandar foto da peça\", uma por tela, com a ação do carimbo recuando enquanto outra estiver à vista.",
+      "Do desenhar peça a partir de medida real, em primeiro diedro, com cotas em milímetros, vírgula decimal e uma casa.",
+      "Do usar os pesos do desenho: 1,6px na visível; 0,8px na oculta (4-3), na cota, no eixo (10-3-2-3) e no corte; 1,1px na hachura a 45° com passo de 3px; 0,5px na camada.",
+      "Do separar folhas com a régua de 1px em grafite de moldura a moldura e contornar peças de interface com 1,5px em tinta.",
+      "Do deixar o canto inferior direito para o carimbo, com conteúdo e foco fora dele.",
+      "Do pôr todo movimento dentro de prefers-reduced-motion: no-preference, mostrar o desenho pronto com movimento reduzido e usar IntersectionObserver no lugar do evento de rolagem.",
+      "Do usar ícones Phosphor de peso regular em SVG embutido, com fill currentColor e aria-hidden, em 18px, 20px ou 22px.",
+      "Do manter alvos de 44px, ação e campos com 48px, foco em anel de 2px em tinta e seleção, cursor de texto e barra de rolagem nas cores da folha."
+    ],
+    "donts": [
+      "Don't usar cartão, faixa de fundo, sombra, brilho, vidro ou degradê; a página é uma folha contínua.",
+      "Don't quadricular o papel nem pôr grade decorativa de fundo.",
+      "Don't pintar de vermelho o desenho, títulos, links ou ícones soltos; a marca R, no carimbo, é a única outra presença vermelha.",
+      "Don't copiar o degradê da marca R para elementos do site; ele pertence à marca.",
+      "Don't usar o azul de construção em texto ou em informação necessária; ele fica em 2,02:1 sobre o papel.",
+      "Don't compor texto corrido em osifont, nem títulos, cotas, legendas ou carimbo em Overpass, nem acrescentar uma terceira família.",
+      "Don't arredondar cantos.",
+      "Don't pôr rótulo pequeno acima de título; rótulo pequeno só existe dentro da célula do carimbo, sobre o valor.",
+      "Don't escrever \"mm\" em caixa alta.",
+      "Don't voltar ao padrão de site de impressão 3D: hero escuro com impressora brilhando, grade de cartões de serviço, passos numerados, FAQ em sanfona e bolha verde de chat flutuante."
+    ]
+  }
+}

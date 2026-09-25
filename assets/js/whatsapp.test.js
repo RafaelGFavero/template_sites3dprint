@@ -1,35 +1,35 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { buildWhatsappMessage, buildWhatsappUrl } from './whatsapp.js';
 
-test('mensagem completa lista todos os campos em ordem', () => {
-  const msg = buildWhatsappMessage({
-    nome: 'Ana', tipo: 'Peça de reposição', material: 'PETG',
-    quantidade: '2', temArquivo: 'Sim', descricao: 'Engrenagem 40 mm',
-  });
-  assert.equal(msg,
-    'Olá, RF Tecnologia 3D! Quero um orçamento.\n' +
-    'Nome: Ana\n' +
-    'Tipo de peça: Peça de reposição\n' +
-    'Material: PETG\n' +
-    'Quantidade: 2\n' +
-    'Tenho arquivo 3D: Sim\n' +
-    'Descrição: Engrenagem 40 mm');
+const LINK_PADRAO = 'https://wa.me/5517997912726?text=Ol%C3%A1%2C%20Rafael!%20Vim%20pelo%20site%20da%20RF%20Tecnologia%203D.%0ATenho%20uma%20pe%C3%A7a%20para%20fazer.%0AVou%20mandar%20as%20fotos%20aqui.';
+
+test('mensagem completa, na ordem', () => {
+  assert.equal(
+    buildWhatsappMessage({ nome: 'Ana', peca: 'trava do tanque do Compass', medida: '32 mm de largura' }),
+    'Olá, Rafael! Vim pelo site da RF Tecnologia 3D.\nMeu nome é Ana.\nA peça: trava do tanque do Compass\nMedida: 32 mm de largura\nVou mandar as fotos aqui.',
+  );
 });
 
-test('campos vazios recebem "não informado"', () => {
-  const msg = buildWhatsappMessage({ nome: 'Ana', tipo: '', material: '', quantidade: '', temArquivo: '', descricao: '   ' });
-  assert.match(msg, /Material: não informado/);
-  assert.match(msg, /Descrição: não informado/);
+test('sem nada preenchido sai a mensagem curta', () => {
+  assert.equal(
+    buildWhatsappMessage(),
+    'Olá, Rafael! Vim pelo site da RF Tecnologia 3D.\nTenho uma peça para fazer.\nVou mandar as fotos aqui.',
+  );
 });
 
-test('url aponta para o número da RF com texto codificado', () => {
-  const url = buildWhatsappUrl('Olá & tchau');
-  assert.equal(url, 'https://wa.me/5517997912726?text=Ol%C3%A1%20%26%20tchau');
+test('campo só com espaços conta como vazio', () => {
+  assert.equal(buildWhatsappMessage({ nome: '  ', peca: ' ', medida: '' }), buildWhatsappMessage());
 });
 
-test('chave ausente e nome só com espaços caem em "não informado"', () => {
-  const msg = buildWhatsappMessage({ nome: '  ', tipo: 'Protótipo', material: 'PLA', quantidade: '1', temArquivo: 'Sim' });
-  assert.match(msg, /Nome: não informado/);
-  assert.match(msg, /Descrição: não informado/);
+test('o link padrão é o mesmo gravado no HTML', () => {
+  const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
+  // hero, aviso do formulário, rodapé e carimbo
+  assert.deepEqual(html.match(/https:\/\/wa\.me\/[^"]*/g), Array(4).fill(LINK_PADRAO));
+  assert.equal(buildWhatsappUrl(buildWhatsappMessage()), LINK_PADRAO);
+});
+
+test('url codifica acento e &', () => {
+  assert.ok(buildWhatsappUrl('Olá & tchau').endsWith('?text=Ol%C3%A1%20%26%20tchau'));
 });
