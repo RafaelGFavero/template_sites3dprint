@@ -93,7 +93,6 @@ figcaption, .carimbo, .notas h3 {
   color: var(--grafite);
 }
 .unidade { text-transform: none; } /* símbolo de unidade fica em minúsculas */
-.so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } /* só para leitor de tela */
 
 .link, .aviso a, .rodape a { text-decoration: underline 1px; text-underline-offset: .2em; }
 .link { display: inline-flex; align-items: center; min-height: 44px; }

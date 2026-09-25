@@ -366,7 +366,7 @@
           "color": "{colors.tinta}",
           "dash": null,
           "cap": "round",
-          "uso": "Arestas visíveis, contorno da seção, tampa da impressão em andamento."
+          "uso": "Arestas visíveis, contorno da seção, tampa da impressão em andamento. Na perspectiva, afina com a escala abaixo de 4px por mm, até 0,8px, para as nervuras não se fundirem."
         },
         {
           "name": "oculta",

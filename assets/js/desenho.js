@@ -32,6 +32,10 @@ export function quadroHero(t, camadas) {
   };
 }
 
+// Largura da aresta visível da perspectiva: 1,6px a partir de 4px por mm; abaixo disso afina com a escala até 0,8px,
+// porque as nervuras da trava ficam a menos de 1,6px umas das outras e o traço cheio as funde num bloco.
+export const larguraAresta = (s) => TRACO.visivel * Math.min(1, Math.max(0.5, s / 4));
+
 export async function iniciar() {
   const principal = document.getElementById('desenho-principal');
   if (!principal) return;
@@ -88,9 +92,10 @@ const estiloVisivel = (ctx, cor, largura = TRACO.visivel, corTraco = cor.tinta) 
 // e `tinta` a força da aresta final; sem esses três, a peça sai pronta.
 function perspectiva(ctx, d, mapa, cor, { ate = d.camadas, esboco = 0, tinta = 1 } = {}) {
   const salto = Math.max(1, Math.ceil(1.5 / (d.camada * mapa.s)));
+  const largura = larguraAresta(mapa.s);
   if (esboco * (1 - tinta) > 0) {
     ctx.globalAlpha = esboco * (1 - tinta);
-    estiloVisivel(ctx, cor, TRACO.construcao, cor.construcao);
+    estiloVisivel(ctx, cor, Math.min(TRACO.construcao, largura), cor.construcao);
     tracar(ctx, d.iso.visiveis, mapa);
   }
   ctx.globalAlpha = 1;
@@ -98,7 +103,7 @@ function perspectiva(ctx, d, mapa, cor, { ate = d.camadas, esboco = 0, tinta = 1
   for (let k = 0; k < ate; k += salto) tracar(ctx, d.iso.camadas[k], mapa);
   if (tinta > 0) {
     ctx.globalAlpha = tinta;
-    estiloVisivel(ctx, cor);
+    estiloVisivel(ctx, cor, largura);
     tracar(ctx, d.iso.visiveis, mapa);
     ctx.globalAlpha = 1;
   }

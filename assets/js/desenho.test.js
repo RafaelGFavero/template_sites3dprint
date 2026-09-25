@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mm, quadroHero, FIM_HERO } from './desenho.js';
+import { mm, quadroHero, FIM_HERO, larguraAresta } from './desenho.js';
 
 test('cotas com vírgula e uma casa', () => {
   assert.equal(mm(32.8249), '32,8');
@@ -18,4 +18,12 @@ test('as camadas sobem em ritmo linear de 900 a 2600 ms, e a tinta vem depois', 
   assert.equal(quadroHero(1750, 132).ate, 66);
   assert.equal(quadroHero(2600, 132).ate, 132);
   assert.equal(quadroHero(2600, 132).tinta, 0);
+});
+
+test('a aresta da perspectiva tem 1,6px a partir de 4px por mm e afina com a escala até 0,8px', () => {
+  assert.equal(larguraAresta(4).toFixed(2), '1.60');
+  assert.equal(larguraAresta(9).toFixed(2), '1.60');
+  assert.equal(larguraAresta(3).toFixed(2), '1.20');
+  assert.equal(larguraAresta(2).toFixed(2), '0.80');
+  assert.equal(larguraAresta(1).toFixed(2), '0.80');
 });
