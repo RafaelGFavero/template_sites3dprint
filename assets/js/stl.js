@@ -2,7 +2,8 @@
 // (normal, three vertices, attribute). Units are whatever the file used (mm here).
 export function parseSTL(buffer) {
   const dv = new DataView(buffer);
-  const count = dv.getUint32(80, true);
+  const count = buffer.byteLength < 84 ? 0 : dv.getUint32(80, true); // shorter than the header: count 0 still fails below
+  if (84 + count * 50 > buffer.byteLength) throw new Error('STL truncado ou inválido');
   const positions = new Float32Array(count * 9);
   for (let i = 0; i < count; i++) {
     const o = 84 + i * 50 + 12;

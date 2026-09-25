@@ -42,7 +42,7 @@ Uma pessoa desenha e imprime: engenharia reversa a partir de foto e medida, mode
 
 ## Evidence on Hand
 
-- Caso real: trava do conector rápido da linha de combustível no tanque (Jeep Compass e Renegade, Fiat Toro e Mobi). Redesenhada a partir de cinco fotos da original, sem cota de fábrica, com medidas estimadas por proporção. Modelada no Blender, imprime sem suporte. Dois tamanhos (a amarela é 8 % menor). Arquivos em `assets/models/`, renders em `assets/img/`.
+- Caso real: trava do conector rápido da linha de combustível no tanque (Jeep Compass e Renegade, Fiat Toro e Mobi). Redesenhada a partir de cinco fotos da original, sem cota de fábrica, com medidas estimadas por proporção. Modelada no Blender, imprime sem suporte. Duas versões, azul e amarela (a amarela é 8 % menor). O STL da versão azul está em `assets/models/`, e o navegador gera os desenhos da página a partir dele.
 - Retrato de Rafael Favero (uso aprovado).
 - Arquivos da marca: arte completa em PNG transparente; ícone R em JPG com fundo branco.
 - Ausente, nunca inventar: fotos de peças prontas, depoimentos, nomes de clientes, preços, contagem de peças feitas, anos de mercado, certificações.

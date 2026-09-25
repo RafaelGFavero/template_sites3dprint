@@ -37,6 +37,7 @@ export async function iniciar() {
     const redesenhos = [];
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => redesenhos.forEach((f) => f()));
     montarHero(principal, parte, vistas, redesenhos);
+    for (const v of [vistas.frontal, vistas.superior, vistas.lateral]) corridas(parte, v); // trechos ocultos e visíveis calculados já aqui, fora do primeiro quadro da animação
     const estados = {
       foto: (c) => desenharFoto(c, parte, vistas.iso),
       cotas: (c) => desenharCotas(c, parte, vistas.frontal),

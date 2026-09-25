@@ -12,6 +12,14 @@ test('lê o STL binário da trava com todos os triângulos', () => {
   assert.equal(mesh.positions.length, 854 * 9);
 });
 
+test('STL truncado ou sem o cabeçalho inteiro é recusado', () => {
+  const mil = new ArrayBuffer(100);
+  new DataView(mil).setUint32(80, 1000, true); // diz ter 1000 triângulos e traz 100 bytes
+  assert.throws(() => parseSTL(mil), /STL truncado/);
+  assert.throws(() => parseSTL(cubeSTL().slice(0, 683)), /STL truncado/); // falta o último byte do cubo
+  assert.throws(() => parseSTL(new ArrayBuffer(40)), /STL truncado/); // nem os 84 bytes do cabeçalho
+});
+
 test('a caixa envolvente bate com a peça modelada (mm)', () => {
   const b = bounds(parseSTL(buffer));
   assert.equal(b.size.map((v) => v.toFixed(1)).join(' x '), '32.8 x 26.4 x 26.4');
@@ -37,10 +45,15 @@ test('a trava sobe em 132 camadas de 0,2 mm', () => {
   assert.equal(layerCount(parseSTL(buffer), 0.2), 132);
 });
 
+test('a camada incompleta do topo também conta: 1,05 mm de altura são 6 camadas de 0,2 mm', () => {
+  assert.equal(layerCount(parseSTL(cubeSTL(1.05)), 0.2), 6);
+});
+
 test('o corte A-A da trava (y = 12,8, pelo eixo do furo) fecha todos os segmentos em laços', () => {
   const segs = sliceAxis(parseSTL(buffer), 1, 12.8);
   const lacos = loops(segs);
   assert.equal(lacos.length, 2);
+  // um ponto por segmento vale neste plano vertical; não reusar em corte horizontal: em z = 0,1 há segmentos de menos de 1 µm
   assert.equal(lacos.reduce((n, l) => n + l.length, 0), segs.length / 4);
 });
 
@@ -52,8 +65,8 @@ test('corte em x devolve (y, z)', () => {
   assert.deepEqual(sliceAxis({ count: 1, positions: new Float32Array([0, 0, 0, 2, 4, 0, 2, 0, 6]) }, 0, 1), [2, 0, 0, 3]);
 });
 
-// Cubo unitário em STL binário: 12 triângulos, cada face quadrada dividida por uma diagonal.
-function cubeSTL() {
+// Cubo unitário em STL binário: 12 triângulos, cada face quadrada dividida por uma diagonal. `altura` estica o z.
+function cubeSTL(altura = 1) {
   const v = [[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]];
   const faces = [[0,2,1],[0,3,2],[4,5,6],[4,6,7],[0,1,5],[0,5,4],[1,2,6],[1,6,5],[2,3,7],[2,7,6],[3,0,4],[3,4,7]];
   const buf = new ArrayBuffer(84 + faces.length * 50);
@@ -61,7 +74,7 @@ function cubeSTL() {
   dv.setUint32(80, faces.length, true);
   faces.forEach((f, i) => {
     const o = 84 + i * 50;
-    f.forEach((vi, k) => v[vi].forEach((c, j) => dv.setFloat32(o + 12 + k * 12 + j * 4, c, true)));
+    f.forEach((vi, k) => v[vi].forEach((c, j) => dv.setFloat32(o + 12 + k * 12 + j * 4, j === 2 ? c * altura : c, true)));
   });
   return buf;
 }
