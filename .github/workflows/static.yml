@@ -36,6 +36,11 @@ jobs:
       - name: Stage public files
         # Only the site itself is published; docs, skills and tests stay in the repo.
         run: mkdir _site && cp -r index.html assets _site/ && rm -f _site/assets/js/*.test.js
+      - name: Refuse 3D models
+        # The part models are what the business sells; the site only ever gets drawings.
+        run: |
+          malhas=$(find _site -type f \( -iname '*.stl' -o -iname '*.3mf' -o -iname '*.obj' -o -iname '*.ply' -o -iname '*.glb' -o -iname '*.gltf' -o -iname '*.blend' -o -iname '*.step' -o -iname '*.stp' \))
+          if [ -n "$malhas" ]; then echo "::error::3D model in the site: $malhas"; exit 1; fi
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
