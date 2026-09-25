@@ -15,10 +15,10 @@ O JavaScript está dividido em módulos pequenos em `assets/js/`: `stl.js` lê o
 Na raiz do repositório:
 
 ```
-python -m http.server 8765
+python -m http.server 8765 --bind 127.0.0.1
 ```
 
-Depois abra `http://localhost:8765`. Precisa ser por um servidor: aberta direto pelo `file://`, a página perde os módulos JavaScript, que o navegador bloqueia, e fica sem o desenho. Qualquer servidor estático funciona.
+Depois abra `http://127.0.0.1:8765`. O `--bind` deixa o servidor só nesta máquina; sem ele, o `http.server` escuta em toda a rede local e expõe a pasta inteira, inclusive o `.git/`. Precisa ser por um servidor: aberta direto pelo `file://`, a página perde os módulos JavaScript, que o navegador bloqueia, e fica sem o desenho, sem o envio do pedido, sem o contador de folhas e sem a regra do vermelho único. Qualquer servidor estático funciona.
 
 ## Testar
 
@@ -30,7 +30,7 @@ O comando roda `node --test assets/js/*.test.js`. `stl.test.js` confere a leitur
 
 ## Trocar o número do WhatsApp
 
-O número dos links está em três lugares, e os três mudam juntos. O primeiro é a constante `WHATSAPP_NUMBER`, no topo de `assets/js/whatsapp.js`, que o formulário usa para montar o link. O segundo são os quatro links `https://wa.me/...` escritos no `index.html`: o botão do topo da página, o link "abra por aqui" que aparece quando o WhatsApp não abre, o do rodapé e o botão do carimbo. Os quatro são iguais ao link que o formulário gera quando ninguém preenche nada, com a mensagem curta já escrita. O terceiro é a constante `LINK_PADRAO`, em `assets/js/whatsapp.test.js`. O teste confere que os quatro links do HTML são iguais a ela e que o `whatsapp.js` gera exatamente esse link; se um dos três lugares ficar para trás, o `npm test` falha.
+O número dos links está em três lugares, e os três mudam juntos. O primeiro é a constante `WHATSAPP_NUMBER`, no topo de `assets/js/whatsapp.js`, que o formulário usa para montar o link. O segundo são os quatro links `https://wa.me/...` escritos no `index.html`: o botão do topo da página, o link "abra por aqui" que aparece abaixo do botão depois de cada envio, o do rodapé e o botão do carimbo. Os quatro são iguais ao link que o formulário gera quando ninguém preenche nada, com a mensagem curta já escrita. O terceiro é a constante `LINK_PADRAO`, em `assets/js/whatsapp.test.js`. O teste confere que os quatro links do HTML são iguais a ela e que o `whatsapp.js` gera exatamente esse link; se um dos três lugares ficar para trás, o `npm test` falha.
 
 Se o texto da mensagem padrão mudar, gere o link novo com
 
@@ -46,7 +46,7 @@ O telefone também aparece escrito no rodapé e no campo `telephone` do bloco JS
 
 Todo o desenho sai de `assets/models/trava-conector.stl`. O STL de outra peça precisa ser binário, em milímetros, com o Z para cima e a base apoiada em z = 0, do jeito que a peça vai para a mesa da impressora. A vista frontal é a peça vista do lado de -Y, e o eixo de simetria dela é desenhado em x = 0, então a peça precisa estar centrada em x. Ponha o arquivo em `assets/models/` com o mesmo nome, ou troque o caminho no `fetch` da função `iniciar()`, em `assets/js/desenho.js`.
 
-Duas constantes de `desenho.js` são medidas da trava e precisam ser refeitas na peça nova. `FURO` guarda o centro, o raio e a espessura da placa em volta do furo; dali saem as linhas de centro do furo nas vistas superior e lateral. `PLANO_AA` é o y do corte A-A. Na trava ele passa pelo eixo do furo, em y = 12,8, 0,05 mm fora do centro para não cair em cima de vértices da malha. Numa peça sem furo, as duas linhas de centro do furo precisam sair de `desenharTudo()`.
+Duas constantes de `desenho.js` são medidas da trava e precisam ser refeitas na peça nova. `FURO` guarda o centro, o raio e a espessura da placa em volta do furo; dali saem as linhas de centro do furo nas vistas superior e lateral. `PLANO_AA` é o y do corte A-A. Na trava ele passa pelo eixo do furo, em y = 12,8 (fica 0,05 mm fora do centro, para não cair em cima de vértices da malha). Numa peça sem furo, as duas linhas de centro do furo precisam sair de `desenharTudo()`.
 
 No `index.html` ficam os textos sobre a trava: as quatro notas ao lado do corte, o nome na legenda do desenho, os rótulos dos canvas para leitor de tela (os `aria-label`, que citam as medidas da trava e as 132 camadas) e as frases "A trava leva 132." e "A trava, por exemplo, imprime sem suporte." O campo Peça do carimbo começa com "Trava do conector", escrito no HTML e também em `PECA_PADRAO`, no `main.js`.
 
@@ -54,7 +54,7 @@ Em `assets/js/stl.test.js`, os números medidos da trava viraram expectativa: 85
 
 ## Imagens e a origem de cada uma
 
-As imagens ficam em `assets/img/`. `marca-r.png` é o R da marca, recortado da arte original do logo que o dono forneceu, com fundo transparente, e `favicon-32.png` e `apple-touch-icon.png` foram gerados a partir dele. `rafael-favero.webp` é o retrato que o Rafael forneceu, com uso aprovado em 24/09/2026. `og.png` é a imagem que aparece quando alguém compartilha o link: uma captura do próprio site, o topo da página a 1200 × 630 px com movimento reduzido, para o desenho sair pronto.
+As imagens ficam em `assets/img/`. `marca-r.png` é o R da marca, recortado da arte original do logo que o dono forneceu, com fundo transparente, e `favicon-32.png` e `apple-touch-icon.png` foram gerados a partir dele. `rafael-favero.webp` é o retrato que o Rafael forneceu, com uso aprovado em 24/09/2026. `og.png` é a imagem que aparece quando alguém compartilha o link: uma captura do próprio site, o topo da página a 1200 × 630 px com movimento reduzido, para o desenho sair pronto, e sem a navegação do topo nem a dica de arrastar, que não fazem sentido numa imagem parada.
 
 Cada PNG leva a própria origem gravada dentro do arquivo, num bloco de texto. A ferramenta não grava dentro de WebP, então a origem do retrato fica ao lado dele, em `rafael-favero.webp.json`. Para ler a origem de uma imagem ou listar as que estão sem, no PowerShell:
 
@@ -65,7 +65,7 @@ Cada PNG leva a própria origem gravada dentro do arquivo, num bloco de texto. A
 
 No Git Bash, no Linux ou no macOS, o comando é `sh .claude/skills/impeccable/scripts/impeccable` com os mesmos argumentos. Uma imagem nova recebe a origem com `embed-prompt <arquivo> --prompt "de onde ela veio"`.
 
-Para gerar a `og.png` de novo, suba o servidor local e capture a janela de 1200 × 630 no Chrome com movimento reduzido, depois que as fontes carregarem. O Playwright não faz parte do repositório; o trecho abaixo, salvo como `.mjs` numa pasta com o `playwright-core` instalado e rodado da raiz do repositório, faz a captura:
+Para gerar a `og.png` de novo, suba o servidor local e capture a janela de 1200 × 630 no Chrome com movimento reduzido, depois que as fontes carregarem, escondendo a navegação do topo e a dica de arrastar só nessa captura. O Playwright não faz parte do repositório; o trecho abaixo, salvo como `.mjs` numa pasta com o `playwright-core` instalado e rodado da raiz do repositório, faz a captura:
 
 ```js
 import { chromium } from 'playwright-core';
@@ -74,6 +74,7 @@ const p = await b.newPage({ viewport: { width: 1200, height: 630 }, reducedMotio
 await p.goto('http://127.0.0.1:8765/', { waitUntil: 'networkidle' });
 await p.evaluate(() => document.fonts.ready);
 await p.waitForTimeout(800);
+await p.addStyleTag({ content: '.topo nav, #desenho-dica { visibility: hidden; }' });
 await p.screenshot({ path: 'assets/img/og.png' });
 await b.close();
 ```
@@ -88,7 +89,7 @@ Os ícones são da Phosphor, peso regular, copiados como SVG para dentro do `ind
 
 ## Publicação
 
-O workflow `.github/workflows/static.yml` publica no GitHub Pages a cada push na branch `main`, e também pode ser disparado à mão pela aba Actions. Ele copia só o `index.html` e a pasta `assets/`, tira os arquivos de teste (`assets/js/*.test.js`) e publica o que sobrou; documentação, skills e plano ficam só no repositório. Como não há build, o que está commitado na `main` é o que vai para o ar, em https://rafaelgfavero.github.io/template_sites3dprint/. Esse endereço está escrito no `<head>` do `index.html`, na tag `og:image` e no bloco JSON-LD, e os dois precisam mudar se o site mudar de endereço.
+O workflow `.github/workflows/static.yml` publica no GitHub Pages a cada push na branch `main`, e também pode ser disparado à mão pela aba Actions. Ele copia só o `index.html` e a pasta `assets/`, tira os arquivos de teste (`assets/js/*.test.js`) e publica o que sobrou; documentação, skills e plano ficam só no repositório. Como não há build, o `index.html` e a pasta `assets/` commitados na `main` são exatamente o que vai para o ar, em https://rafaelgfavero.github.io/template_sites3dprint/. Esse endereço está escrito no `<head>` do `index.html`, na tag `og:image` e no bloco JSON-LD, e os dois precisam mudar se o site mudar de endereço.
 
 ## Arquivos de design e skills
 

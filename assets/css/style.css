@@ -25,7 +25,13 @@
 @media (prefers-color-scheme: dark) {
   :root { --papel: #17355f; --tinta: #eef3f8; --grafite: #b9c9dc; --construcao: #6f9fd0; }
 }
-@media (min-width: 1024px) { :root { --moldura: 12px; --margem: 28px; --carimbo-h: 0px; --reserva: 11rem; scroll-padding-bottom: 12.5rem; /* foco nunca cai sob o carimbo */ } }
+@media (min-width: 1024px) {
+  :root { --moldura: 12px; --margem: 28px; --carimbo-h: 0px; --carimbo-reserva: 11rem; --reserva: var(--carimbo-reserva); scroll-padding-bottom: calc(var(--carimbo-reserva) + 1.5rem); /* foco nunca cai sob o carimbo */ }
+}
+/* laptop baixo: o carimbo vira uma linha (3.5rem) e a reserva do hero acompanha; a legenda cabe em três linhas */
+@media (min-width: 1024px) and (max-height: 760px) {
+  :root { --carimbo-reserva: 5rem; --legenda-h: 4.25rem; }
+}
 
 /* base */
 
@@ -67,8 +73,10 @@ h1, h2 {
   text-wrap: balance;
 }
 h1 { font-size: clamp(2rem, .25rem + 3.2vw, 3rem); line-height: 1.05; }
+@media (min-width: 1024px) { h1 { font-size: clamp(2.75rem, .8rem + 3vw, 3.7rem); } } /* duas linhas em seis colunas de 1024 a 1600: a segunda linha mede 9,5em */
 h2 { font-size: clamp(1.5rem, .5rem + 1.6vw, 2.25rem); line-height: 1.1; }
 h3 { font: 400 1.125rem/1.3 var(--letra); text-transform: uppercase; letter-spacing: .04em; word-spacing: -.1em; }
+.estados h3, .notas h3, .mandar h3 { font-style: italic; }
 .lead { font-size: 1.1875rem; }
 
 /* letra técnica pequena: só no que pertence ao desenho */
@@ -147,12 +155,11 @@ figcaption, .carimbo, .notas h3 {
 }
 .pular:focus-visible { translate: 0 0; }
 
-/* contêiner: a área útil da folha, centrada dentro da moldura */
+/* contêiner: seções de largura inteira; o conteúdo (até 82.5rem) é centrado pelo padding, e as réguas de folha alcançam a moldura */
 
 .topo, .folha, .rodape {
-  max-width: 82.5rem;
-  margin-inline: auto;
-  padding-inline: calc(var(--margem) + clamp(1rem, 4vw, 3.5rem)) calc(var(--moldura) + clamp(1rem, 4vw, 3.5rem));
+  --centro: max(0px, (100% - 82.5rem) / 2);
+  padding-inline: calc(var(--margem) + clamp(1rem, 4vw, 3.5rem) + var(--centro)) calc(var(--moldura) + clamp(1rem, 4vw, 3.5rem) + var(--centro));
 }
 
 /* topo */
@@ -194,10 +201,21 @@ figcaption, .carimbo, .notas h3 {
 main { padding-bottom: var(--reserva); }
 
 .folha {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   row-gap: 2.5rem;
-  padding-block: clamp(5rem, 10vw, 8rem);
+  padding-block: clamp(3.5rem, 8vw, 5rem);
+}
+/* troca de folha: uma régua de 1px de moldura a moldura */
+.folha + .folha::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc(var(--margem) + 1.5px);
+  right: calc(var(--moldura) + 1.5px);
+  height: 1px;
+  background: var(--grafite);
 }
 .hero { padding-top: var(--hero-topo); }
 main > .folha:last-child { padding-bottom: 0; }
@@ -227,16 +245,21 @@ figcaption {
 }
 
 @media (min-width: 1024px) {
-  .hero-texto { grid-column: 1 / 6; }
+  .hero-texto { grid-column: 1 / 7; align-self: start; padding-top: 1rem; } /* a manchete alinha com o topo do desenho, sem flutuar */
   .desenho {
-    grid-column: 6 / -1;
+    grid-column: 7 / -1;
     justify-self: center;
     align-self: start; /* a caixa da figura é o desenho mais a legenda, não a altura da linha da grade */
-    /* a base da figura fica pelo menos 11rem acima do fim da tela: o canto do carimbo é livre de vistas */
-    width: min(100%, calc((100svh - var(--topo-h) - var(--hero-topo) - 11rem - var(--legenda-h)) * 4 / 3));
+    /* a base da figura fica acima da reserva do carimbo: o canto do carimbo é livre de vistas */
+    --desenho-l: calc((100svh - var(--topo-h) - var(--hero-topo) - var(--carimbo-reserva) - var(--legenda-h)) * 4 / 3);
+    width: min(100%, var(--desenho-l));
   }
   .desenho canvas { aspect-ratio: 4 / 3; }
   .desenho figcaption { grid-template-columns: 1.65fr 1.55fr 1fr; }
+}
+/* piso de 34rem para a prova: só quando a altura da tela deixa a legenda acima do carimbo */
+@media (min-width: 1024px) and (min-height: 650px) {
+  .desenho { width: min(100%, max(34rem, var(--desenho-l))); }
 }
 
 /* 2 como eu faço */
@@ -249,9 +272,10 @@ figcaption {
   gap: 1.5rem 1.5rem;
 }
 @media (min-width: 768px) { .estados { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.estado { width: 100%; aspect-ratio: 1 / 1; border: 1px solid var(--grafite); }
-.estados h3 { margin-top: 1rem; }
-.estados p { margin-top: .375rem; }
+.estado { width: 100%; aspect-ratio: 1 / 1; border: 0; }
+/* rótulo de vista, como a legenda do hero: régua de 1px sob o desenho e letra técnica inclinada */
+.estados h3 { margin-top: .5rem; padding-top: .375rem; border-top: 1px solid var(--grafite); font-size: .9375rem; letter-spacing: .06em; }
+.estados p { margin-top: .5rem; }
 
 .caso { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 2.5rem; margin-top: 1.5rem; }
 .corte canvas { width: 100%; aspect-ratio: 4 / 3; }
@@ -412,4 +436,20 @@ figcaption {
   .campo-unidade { grid-area: unidade; }
   .campo-folha { grid-area: folha; }
   .carimbo-acao { grid-area: acao; border-width: 0; } /* aqui os filetes fazem a borda */
+}
+
+@media (min-width: 1024px) and (max-height: 760px) {
+  .carimbo {
+    height: 3.5rem;
+    background: var(--papel);
+    gap: .5rem;
+    padding: 0 .5rem;
+    align-items: center;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+  .carimbo-nome, .carimbo-campo:not(.campo-folha) { display: none; }
+  .carimbo-marca { grid-area: auto; width: 1.75rem; height: auto; padding: 0; }
+  .campo-folha { grid-area: auto; }
+  .carimbo-acao { grid-area: auto; border-width: 1.5px; }
 }

@@ -6,7 +6,7 @@ import { VISTAS, orbita, ISO, recortaAbaixo, mm } from './vistas.js';
 const CAMADA = 0.2;
 const FURO = { x: 0, y: 12.75, raio: 5.5, placa: 1.6 }; // das notas de projeto da peça; a placa em volta do furo, medida na malha
 const PLANO_AA = 12.8; // y do corte A-A: pelo eixo do furo, 0,05 mm fora do centro para não passar por vértices
-const TRACO = { visivel: 1.6, oculta: 0.8, cota: 0.8, construcao: 1, corte: 0.8, hachura: 0.7, camada: 0.5 };
+const TRACO = { visivel: 1.6, oculta: 0.8, cota: 0.8, construcao: 1, corte: 0.8, hachura: 1.1, camada: 0.5 };
 const FONTE = { cota: '13px osifont', rotulo: '11px osifont' };
 const COTA = 22; // px do contorno à linha de cota
 const ESP_COTA = COTA + 14; // px que a cota vertical ocupa à esquerda de uma vista: linha, 4px de folga e as cifras giradas
@@ -345,7 +345,7 @@ function hachurar(ctx, caminho, [x0, y0, x1, y1], cor) {
   ctx.save(); ctx.clip(caminho, 'evenodd');
   ctx.strokeStyle = cor; ctx.lineWidth = TRACO.hachura; ctx.lineCap = 'butt'; ctx.setLineDash([]);
   ctx.beginPath();
-  for (let c = x0 + y0; c <= x1 + y1; c += 5 * Math.SQRT2) { ctx.moveTo(c - y1, y1); ctx.lineTo(c - y0, y0); }
+  for (let c = x0 + y0; c <= x1 + y1; c += 3 * Math.SQRT2) { ctx.moveTo(c - y1, y1); ctx.lineTo(c - y0, y0); } // passo de 3px: o corte é um campo denso
   ctx.stroke(); ctx.restore();
 }
 
@@ -459,7 +459,7 @@ function montarHero(canvas, parte, { frontal, superior, lateral, iso }, redesenh
       for (const n of nomes) tracar(ctx, corridas(parte, tres[n]).ocultos, comp[n]);
       ctx.globalAlpha = 1;
     }
-    estiloVisivel(ctx, cor); // a linha-mestra em peso cheio por cima das faces, desde o primeiro quadro
+    estiloVisivel(ctx, cor); // as arestas visíveis em peso cheio, por cima dos tracejados, desde o primeiro quadro
     nomes.forEach((n, k) => tracar(ctx, corridas(parte, tres[n]).visiveis, comp[n], est.p[k]));
     if (est.alfa > 0) {
       ctx.globalAlpha = est.alfa;

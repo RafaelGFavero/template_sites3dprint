@@ -3,14 +3,18 @@ import { buildWhatsappMessage, buildWhatsappUrl } from './whatsapp.js';
 const PECA_PADRAO = 'Trava do conector';
 const CLIENTE_PADRAO = 'Você';
 
-export function acompanharFolha(secoes, alvo, rodape) {
-  const marcar = (n) => { alvo.textContent = `${n}/${secoes.length}`; };
+export function acompanharFolha(secoes, alvo, rodape, topo) {
+  let atual = 1, inicio = false, fim = false;
+  const marcar = () => { alvo.textContent = `${fim ? secoes.length : inicio ? 1 : atual}/${secoes.length}`; };
   const io = new IntersectionObserver((entradas) => {
-    for (const e of entradas) if (e.isIntersecting) marcar(e.target.dataset.folha);
+    for (const e of entradas) if (e.isIntersecting) atual = e.target.dataset.folha;
+    marcar();
   }, { rootMargin: '-45% 0px -45% 0px' });
   secoes.forEach((s) => io.observe(s));
-  // Em tela baixa, no fim da página a faixa do meio cai entre a última folha e o rodapé: rodapé à vista é a última folha.
-  new IntersectionObserver(([e]) => { if (e.isIntersecting) marcar(secoes.length); }).observe(rodape);
+  // Topo à vista é a primeira folha e rodapé à vista é a última, enquanto estiverem à vista: cobre as telas altas,
+  // em que a faixa do meio cai fora da folha 1 no início e entre a folha 4 e o rodapé no fim.
+  new IntersectionObserver(([e]) => { inicio = e.isIntersecting; marcar(); }).observe(topo);
+  new IntersectionObserver(([e]) => { fim = e.isIntersecting; marcar(); }).observe(rodape);
 }
 
 export function carimboAoVivo(form, peca, cliente) {
@@ -53,7 +57,7 @@ export function vermelhoUnico(acoes, carimbo) {
 
 if (typeof document !== 'undefined') {
   const $ = (s) => document.querySelector(s);
-  acompanharFolha([...document.querySelectorAll('[data-folha]')], $('[data-carimbo="folha"]'), $('.rodape'));
+  acompanharFolha([...document.querySelectorAll('[data-folha]')], $('[data-carimbo="folha"]'), $('.rodape'), $('.topo'));
   carimboAoVivo($('#pedido-form'), $('[data-carimbo="peca"]'), $('[data-carimbo="cliente"]'));
   enviarPedido($('#pedido-form'), $('#pedido-aviso'), $('#pedido-link'));
   vermelhoUnico([...document.querySelectorAll('main .acao')], $('.carimbo'));

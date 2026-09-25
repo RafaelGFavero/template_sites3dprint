@@ -31,5 +31,5 @@ test('o link padrão é o mesmo gravado no HTML', () => {
 });
 
 test('url codifica acento e &', () => {
-  assert.equal(buildWhatsappUrl('Olá & tchau'), 'https://wa.me/5517997912726?text=Ol%C3%A1%20%26%20tchau');
+  assert.ok(buildWhatsappUrl('Olá & tchau').endsWith('?text=Ol%C3%A1%20%26%20tchau'));
 });
