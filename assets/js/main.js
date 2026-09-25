@@ -54,4 +54,5 @@ if (typeof document !== 'undefined') {
   carimboAoVivo($('#pedido-form'), $('[data-carimbo="peca"]'), $('[data-carimbo="cliente"]'));
   enviarPedido($('#pedido-form'), $('#pedido-aviso'), $('#pedido-link'));
   vermelhoUnico([...document.querySelectorAll('main .acao')], $('.carimbo'));
+  import('./desenho.js').then((m) => m.iniciar());
 }
