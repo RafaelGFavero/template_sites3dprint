@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { buildWhatsappMessage, buildWhatsappUrl } from './whatsapp.js';
 
 const LINK_PADRAO = 'https://wa.me/5517997912726?text=Ol%C3%A1%2C%20Rafael!%20Vim%20pelo%20site%20da%20RF%20Tecnologia%203D.%0ATenho%20uma%20pe%C3%A7a%20para%20fazer.%0AVou%20mandar%20as%20fotos%20aqui.';
@@ -23,6 +24,9 @@ test('campo só com espaços conta como vazio', () => {
 });
 
 test('o link padrão é o mesmo gravado no HTML', () => {
+  const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
+  // hero, aviso do formulário, rodapé e carimbo
+  assert.deepEqual(html.match(/https:\/\/wa\.me\/[^"]*/g), Array(4).fill(LINK_PADRAO));
   assert.equal(buildWhatsappUrl(buildWhatsappMessage()), LINK_PADRAO);
 });
 
