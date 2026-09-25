@@ -117,9 +117,9 @@ function encaixarComCotas(vista, W, H, m, eixo = 0) {
 }
 
 // Algoritmo do pintor: cada face de frente, de trás para a frente, é preenchida com papel e recebe as arestas
-// que a tocam. `p` traça cada aresta só até essa fração do comprimento; `h` recorta a peça abaixo dessa altura
-// (a impressão em andamento) e fecha a tampa; `camadas` traça as linhas de camada nas faces visíveis.
-function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = false } = {}) {
+// que a tocam. `h` recorta a peça abaixo dessa altura (a impressão em andamento) e fecha a tampa; `camadas`
+// traça as linhas de camada nas faces visíveis.
+function pintar(ctx, parte, vista, mapa, cor, { h = Infinity, camadas = false } = {}) {
   const { mesh, todas, porFace, caixa } = parte, P = mesh.positions;
   const { pv, ordem, desenha, proj } = vista;
   const M = (q) => ponto(mapa, q);
@@ -155,7 +155,6 @@ function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = f
       }
       ctx.strokeStyle = cor.grafite; ctx.lineWidth = TRACO.camada; ctx.stroke();
     }
-    if (p <= 0) continue;
     ctx.beginPath();
     for (const i of porFace[f]) {
       if (!desenha[i]) continue;
@@ -164,10 +163,8 @@ function pintar(ctx, parte, vista, mapa, cor, { p = 1, h = Infinity, camadas = f
         if (a[2] > h && b[2] > h) continue;
         if (a[2] > h) a = cortaEm(b, a, h); else if (b[2] > h) b = cortaEm(a, b, h);
       }
-      let A = proj(...a), B = proj(...b);
-      if (A[0] > B[0] || (A[0] === B[0] && A[1] > B[1])) [A, B] = [B, A]; // traça da esquerda para a direita
-      ctx.moveTo(...M(A));
-      ctx.lineTo(...M([A[0] + p * (B[0] - A[0]), A[1] + p * (B[1] - A[1])]));
+      ctx.moveTo(...M(proj(...a)));
+      ctx.lineTo(...M(proj(...b)));
     }
     ctx.strokeStyle = cor.tinta; ctx.lineWidth = TRACO.visivel; ctx.stroke();
   }
@@ -456,8 +453,6 @@ function montarHero(canvas, parte, { frontal, superior, lateral, iso }, redesenh
 
   function desenharTudo(est) {
     const cor = cores(), ctx = contexto(canvas, cor.papel), { s } = comp;
-    // as faces só ocultam (p: 0, sem traçar aresta por aresta); toda a tinta vem das corridas visíveis e ocultas
-    nomes.forEach((n) => pintar(ctx, parte, tres[n], comp[n], cor, { p: 0 }));
     if (est.alfa > 0) { // os tracejados ficam por baixo da tinta: onde uma oculta coincide com uma visível, vence a visível
       ctx.globalAlpha = est.alfa;
       estiloOculta(ctx, cor);
@@ -572,7 +567,6 @@ function desenharFoto(canvas, parte, iso) {
 function desenharCotas(canvas, parte, frontal) {
   const W = canvas.clientWidth, cor = cores(), ctx = contexto(canvas, cor.papel);
   const mapa = encaixarComCotas(frontal, W, W, 0.08 * W, EIXO), { ocultos, visiveis } = corridas(parte, frontal);
-  pintar(ctx, parte, frontal, mapa, cor, { p: 0 }); // as faces só ocultam; a tinta vem das corridas
   estiloOculta(ctx, cor); tracar(ctx, ocultos, mapa);
   estiloVisivel(ctx, cor); tracar(ctx, visiveis, mapa);
   linhaDeCentro(ctx, cor, ponto(mapa, [0, -(parte.caixa.max[2] + EIXO)]), ponto(mapa, [0, EIXO]));

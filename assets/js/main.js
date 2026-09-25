@@ -3,11 +3,14 @@ import { buildWhatsappMessage, buildWhatsappUrl } from './whatsapp.js';
 const PECA_PADRAO = 'Trava do conector';
 const CLIENTE_PADRAO = 'Você';
 
-export function acompanharFolha(secoes, alvo) {
+export function acompanharFolha(secoes, alvo, rodape) {
+  const marcar = (n) => { alvo.textContent = `${n}/${secoes.length}`; };
   const io = new IntersectionObserver((entradas) => {
-    for (const e of entradas) if (e.isIntersecting) alvo.textContent = `${e.target.dataset.folha}/${secoes.length}`;
+    for (const e of entradas) if (e.isIntersecting) marcar(e.target.dataset.folha);
   }, { rootMargin: '-45% 0px -45% 0px' });
   secoes.forEach((s) => io.observe(s));
+  // Em tela baixa, no fim da página a faixa do meio cai entre a última folha e o rodapé: rodapé à vista é a última folha.
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) marcar(secoes.length); }).observe(rodape);
 }
 
 export function carimboAoVivo(form, peca, cliente) {
@@ -50,7 +53,7 @@ export function vermelhoUnico(acoes, carimbo) {
 
 if (typeof document !== 'undefined') {
   const $ = (s) => document.querySelector(s);
-  acompanharFolha([...document.querySelectorAll('[data-folha]')], $('[data-carimbo="folha"]'));
+  acompanharFolha([...document.querySelectorAll('[data-folha]')], $('[data-carimbo="folha"]'), $('.rodape'));
   carimboAoVivo($('#pedido-form'), $('[data-carimbo="peca"]'), $('[data-carimbo="cliente"]'));
   enviarPedido($('#pedido-form'), $('#pedido-aviso'), $('#pedido-link'));
   vermelhoUnico([...document.querySelectorAll('main .acao')], $('.carimbo'));
