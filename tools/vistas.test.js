@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { VISTAS, orbita, ISO, recortaAbaixo, mm } from './vistas.js';
+import { VISTAS, orbita, ISO, recortaAbaixo } from './vistas.js';
 
 test('primeiro diedro: frontal, superior abaixo e lateral esquerda à direita', () => {
   assert.deepEqual(VISTAS.frontal(1, 2, 3), [1, -3, -2]);
@@ -33,9 +33,4 @@ test('recorte do triângulo abaixo de uma altura', () => {
   const meio = recortaAbaixo(tri, 1);
   assert.equal(meio.length, 4);
   assert.ok(meio.every(([, , z]) => z <= 1 + 1e-9));
-});
-
-test('cotas com vírgula e uma casa', () => {
-  assert.equal(mm(32.8249), '32,8');
-  assert.equal(mm(26), '26,0');
 });

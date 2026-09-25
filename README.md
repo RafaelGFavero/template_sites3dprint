@@ -26,7 +26,7 @@ Depois abra `http://127.0.0.1:8765`. O `--bind` deixa o servidor só nesta máqu
 npm test
 ```
 
-O comando roda `node --test assets/js/*.test.js`. `stl.test.js` confere a leitura e o fatiamento da malha, `vistas.test.js` as projeções e `whatsapp.test.js` a mensagem e o link do WhatsApp, inclusive os quatro links gravados no `index.html`. Não há nada para instalar, porque o `package.json` não tem dependências. Os testes foram rodados no Node 24.
+O comando roda `node --test assets/js/*.test.js tools/*.test.js`. Em `tools/`, `stl.test.js` confere a leitura e o fatiamento da malha, `vistas.test.js` as projeções e `desenhos.test.js` o traço que a ferramenta gera. Os testes com a trava de verdade leem o STL de `../impressao-3d/saida/trava_conector_azul.stl` e são pulados onde ele não existe; um deles confere que o `assets/desenhos.json` do repositório é o que esse STL gera. Em `assets/js/`, `whatsapp.test.js` confere a mensagem e o link do WhatsApp, inclusive os quatro links gravados no `index.html`, e `sem-malha.test.js` falha se aparecer um modelo 3D em `assets/`. Não há nada para instalar, porque o `package.json` não tem dependências. Os testes foram rodados no Node 24.
 
 ## Trocar o número do WhatsApp
 
@@ -44,13 +44,19 @@ O telefone também aparece escrito no rodapé e no campo `telephone` do bloco JS
 
 ## Trocar a peça desenhada
 
-Todo o desenho sai de `assets/models/trava-conector.stl`. O STL de outra peça precisa ser binário, em milímetros, com o Z para cima e a base apoiada em z = 0, do jeito que a peça vai para a mesa da impressora. A vista frontal é a peça vista do lado de -Y, e o eixo de simetria dela é desenhado em x = 0, então a peça precisa estar centrada em x. Ponha o arquivo em `assets/models/` com o mesmo nome, ou troque o caminho no `fetch` da função `iniciar()`, em `assets/js/desenho.js`.
+O traço de todos os desenhos está em `assets/desenhos.json`, gerado a partir do STL da peça. O STL é o modelo que se vende e fica fora deste repositório, que é público. O `.gitignore` recusa arquivos de modelo 3D, um teste falha se aparecer um em `assets/` e o deploy para com erro se encontrar um no que vai publicar. O STL de outra peça precisa ser binário, em milímetros, com o Z para cima e a base apoiada em z = 0, do jeito que a peça vai para a mesa da impressora. A vista frontal é a peça vista do lado de -Y, e o eixo de simetria dela é desenhado em x = 0, então a peça precisa estar centrada em x. Gere o traço com
 
-Duas constantes de `desenho.js` são medidas da trava e precisam ser refeitas na peça nova. `FURO` guarda o centro, o raio e a espessura da placa em volta do furo; dali saem as linhas de centro do furo nas vistas superior e lateral. `PLANO_AA` é o y do corte A-A. Na trava ele passa pelo eixo do furo, em y = 12,8 (fica 0,05 mm fora do centro, para não cair em cima de vértices da malha). Numa peça sem furo, as duas linhas de centro do furo precisam sair de `desenharTudo()`.
+```
+npm run desenhos -- caminho/da/peca.stl
+```
+
+Sem o caminho, a ferramenta lê `../impressao-3d/saida/trava_conector_azul.stl`, que é a constante `STL_PADRAO` de `tools/desenhos.js`. O JSON gerado entra no commit, e o STL nunca.
+
+Duas medidas da trava precisam ser refeitas na peça nova. `PLANO_AA`, em `tools/desenhos.js`, é o y do corte A-A. Na trava ele passa pelo eixo do furo, em y = 12,8, e fica 0,05 mm fora do centro para não cair em cima de vértices da malha; a ferramenta recusa um plano que não corta a peça. `FURO`, em `assets/js/desenho.js`, guarda o centro, o raio e a espessura da placa em volta do furo, e dali saem as linhas de centro do furo nas vistas superior e lateral. Numa peça sem furo, essas duas linhas de centro precisam sair de `desenharTudo()`.
 
 No `index.html` ficam os textos sobre a trava: as quatro notas ao lado do corte, o nome na legenda do desenho, os rótulos dos canvas para leitor de tela (os `aria-label`, que citam as medidas da trava e as 132 camadas) e as frases "A trava leva 132." e "A trava, por exemplo, imprime sem suporte." O campo Peça do carimbo começa com "Trava do conector", escrito no HTML e também em `PECA_PADRAO`, no `main.js`.
 
-Em `assets/js/stl.test.js`, os números medidos da trava viraram expectativa: 854 triângulos, caixa de 32,8 × 26,4 × 26,4 mm, 132 camadas de 0,2 mm e o corte A-A em y = 12,8 fechando em dois laços. Meça a peça nova, troque esses valores e o plano do corte, e rode `npm test`. Depois gere de novo a imagem de compartilhamento, que mostra o desenho, e revise o caso descrito no `PRODUCT.md`.
+Em `tools/stl.test.js`, os números medidos da trava viraram expectativa: 854 triângulos, caixa de 32,8 × 26,4 × 26,4 mm, 132 camadas de 0,2 mm e o corte A-A em y = 12,8 fechando em dois laços. Meça a peça nova, troque esses valores e o plano do corte, aponte `STL_PADRAO` para ela, gere o traço e rode `npm test`. Depois gere de novo a imagem de compartilhamento, que mostra o desenho, e revise o caso descrito no `PRODUCT.md`.
 
 ## Imagens e a origem de cada uma
 
@@ -89,7 +95,7 @@ Os ícones são da Phosphor, peso regular, copiados como SVG para dentro do `ind
 
 ## Publicação
 
-O workflow `.github/workflows/static.yml` publica no GitHub Pages a cada push na branch `main`, e também pode ser disparado à mão pela aba Actions. Ele copia só o `index.html` e a pasta `assets/`, tira os arquivos de teste (`assets/js/*.test.js`) e publica o que sobrou; documentação, skills e plano ficam só no repositório. Como não há build, o `index.html` e a pasta `assets/` commitados na `main` vão para o ar como estão, menos os testes, em https://rafaelgfavero.github.io/template_sites3dprint/. Esse endereço está escrito no `<head>` do `index.html`, nas tags `og:url` e `og:image` e no bloco JSON-LD, e os três precisam mudar se o site mudar de endereço.
+O workflow `.github/workflows/static.yml` publica no GitHub Pages a cada push na branch `main`, e também pode ser disparado à mão pela aba Actions. Ele copia só o `index.html` e a pasta `assets/`, tira os arquivos de teste (`assets/js/*.test.js`), para com erro se encontrar um modelo 3D e publica o que sobrou; documentação, skills e plano ficam só no repositório. Como não há build, o `index.html` e a pasta `assets/` commitados na `main` vão para o ar como estão, menos os testes, em https://rafaelgfavero.github.io/template_sites3dprint/. Esse endereço está escrito no `<head>` do `index.html`, nas tags `og:url` e `og:image` e no bloco JSON-LD, e os três precisam mudar se o site mudar de endereço.
 
 ## Arquivos de design e skills
 
