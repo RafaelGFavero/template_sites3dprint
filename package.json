@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test assets/js/*.test.js"
+    "test": "node --test assets/js/*.test.js tools/*.test.js",
+    "desenhos": "node tools/desenhos.js"
   }
 }

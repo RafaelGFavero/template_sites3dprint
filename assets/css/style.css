@@ -18,7 +18,7 @@
   --moldura: 6px; --margem: 6px; --carimbo-h: 64px;
   --topo-h: 64px;
   --hero-topo: clamp(3rem, 7svh, 6rem);
-  --legenda-h: 4.5rem; /* legenda empilhada em três linhas sob o desenho, com folga */
+  --legenda-h: 4.5rem; /* legenda empilhada em duas linhas sob o desenho, com uma linha de folga acima do carimbo */
   --reserva: calc(var(--carimbo-h) + 2rem);
 }
 @media (prefers-color-scheme: dark) {
@@ -93,7 +93,6 @@ figcaption, .carimbo, .notas h3 {
   color: var(--grafite);
 }
 .unidade { text-transform: none; } /* símbolo de unidade fica em minúsculas */
-.so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } /* só para leitor de tela */
 
 .link, .aviso a, .rodape a { text-decoration: underline 1px; text-underline-offset: .2em; }
 .link { display: inline-flex; align-items: center; min-height: 44px; }
@@ -263,8 +262,8 @@ figcaption {
     width: min(100%, var(--desenho-l));
   }
   .desenho canvas { aspect-ratio: 4 / 3; }
-  .desenho figcaption { grid-template-columns: 1.65fr 1.55fr 1fr; }
-  /* figura estreita (menos de 41.5rem): a legenda empilha em três linhas em vez de quebrar dentro de cada célula */
+  .desenho figcaption { grid-template-columns: 1.65fr 2.55fr; }
+  /* figura estreita (menos de 41.5rem): a legenda empilha em duas linhas em vez de quebrar dentro de cada célula */
   @container (width < 41.5rem) {
     .desenho figcaption { grid-template-columns: minmax(0, 1fr); gap: 0; }
   }

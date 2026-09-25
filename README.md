@@ -1,14 +1,14 @@
 # Site da RF Tecnologia 3D
 
-Site de uma página da RF Tecnologia 3D. Rafael Favero redesenha e imprime em 3D peças plásticas que não se vendem mais avulsas, e o site existe para quem tem a peça quebrada na mão mandar a foto pelo WhatsApp. A página imita uma folha de desenho técnico. A peça de exemplo é a trava do conector rápido da linha de combustível, uma peça real, desenhada a partir do próprio arquivo STL em três vistas cotadas no primeiro diedro, com o corte A-A e uma perspectiva que se imprime camada por camada quando a página abre. O pedido sai como mensagem pronta no WhatsApp. Não há back-end: o formulário só monta o texto e abre a conversa.
+Site de uma página da RF Tecnologia 3D. Rafael Favero redesenha e imprime em 3D peças plásticas que não se vendem mais avulsas, e o site existe para quem tem a peça quebrada na mão mandar a foto pelo WhatsApp. A página imita uma folha de desenho técnico. A peça de exemplo é a trava do conector rápido da linha de combustível, uma peça real, desenhada a partir do arquivo STL em três vistas cotadas no primeiro diedro, com o corte A-A e uma perspectiva que se imprime camada por camada quando a página abre. O STL é o modelo que se vende. Ele fica fora do site e deste repositório, e a página recebe só o traço dos desenhos. O pedido sai como mensagem pronta no WhatsApp. Não há back-end: o formulário só monta o texto e abre a conversa.
 
 ## Como o código está organizado
 
-É HTML, CSS e JavaScript puros, sem framework, sem etapa de build e sem dependência para instalar. Quase todo o texto da página fica no `index.html`; as exceções são os rótulos desenhados no canvas, em `desenho.js`, e a mensagem do WhatsApp, em `whatsapp.js`.
+É HTML, CSS e JavaScript puros, sem framework, sem etapa de build e sem dependência para instalar. O traço dos desenhos já vem pronto em `assets/desenhos.json`, gerado uma vez por `tools/desenhos.js` e guardado no repositório. Quase todo o texto da página fica no `index.html`; as exceções são os rótulos desenhados no canvas, em `desenho.js`, e a mensagem do WhatsApp, em `whatsapp.js`.
 
 O visual está em `assets/css/style.css`. As cores são variáveis declaradas no `:root` e no bloco `prefers-color-scheme: dark`, onde a folha vira uma cópia heliográfica, e nenhum código hexadecimal aparece no CSS fora desses dois lugares. O canvas lê as mesmas variáveis a cada desenho. A cor do papel também está repetida nas duas `<meta name="theme-color">` do `index.html`, que precisam mudar junto com ela.
 
-O JavaScript está dividido em módulos pequenos em `assets/js/`: `stl.js` lê o STL binário e fatia a malha, `vistas.js` faz as projeções, `desenho.js` desenha a peça nos canvas (o desenho do topo da página, os quatro quadros de "Da foto à peça impressa" e o corte A-A), `whatsapp.js` monta a mensagem e o link, e `main.js` cuida do resto: o contador de folhas e os campos do carimbo, o envio do pedido e a regra de um só botão vermelho por tela.
+O JavaScript da página está em `assets/js/`: `desenho.js` desenha a peça nos canvas a partir do `desenhos.json` (o desenho do topo da página, os quatro quadros de "Da foto à peça impressa" e o corte A-A), `whatsapp.js` monta a mensagem e o link, e `main.js` cuida do resto: o contador de folhas e os campos do carimbo, o envio do pedido e a regra de um só botão vermelho por tela. A ferramenta que gera o JSON fica em `tools/`, fora do que o site publica: `stl.js` lê o STL binário e fatia a malha, `vistas.js` faz as projeções e `desenhos.js` separa as linhas visíveis das ocultas e grava o traço 2D de cada desenho.
 
 ## Rodar localmente
 
@@ -26,7 +26,7 @@ Depois abra `http://127.0.0.1:8765`. O `--bind` deixa o servidor só nesta máqu
 npm test
 ```
 
-O comando roda `node --test assets/js/*.test.js`. `stl.test.js` confere a leitura e o fatiamento da malha, `vistas.test.js` as projeções e `whatsapp.test.js` a mensagem e o link do WhatsApp, inclusive os quatro links gravados no `index.html`. Não há nada para instalar, porque o `package.json` não tem dependências. Os testes foram rodados no Node 24.
+O comando roda `node --test assets/js/*.test.js tools/*.test.js`. Em `tools/`, `stl.test.js` confere a leitura e o fatiamento da malha, `vistas.test.js` as projeções e `desenhos.test.js` o traço que a ferramenta gera. Os testes com a trava de verdade leem o STL de `../impressao-3d/saida/trava_conector_azul.stl` e são pulados onde ele não existe; um deles confere que o `assets/desenhos.json` do repositório é o que esse STL gera. Em `assets/js/`, `whatsapp.test.js` confere a mensagem e o link do WhatsApp, inclusive os quatro links gravados no `index.html`, `desenho.test.js` confere as cotas, o roteiro da abertura do hero e a largura da aresta da perspectiva, e `sem-malha.test.js` falha se aparecer um modelo 3D em `assets/`. Não há nada para instalar, porque o `package.json` não tem dependências. Os testes foram rodados no Node 24. Gerar os desenhos precisa do Node 24.2 ou mais novo (na linha 22, do 22.18 em diante): a ferramenta usa `import.meta.main` para saber que foi rodada direto, e num Node sem ele o `npm run desenhos` termina sem erro e sem gravar nada.
 
 ## Trocar o número do WhatsApp
 
@@ -44,17 +44,23 @@ O telefone também aparece escrito no rodapé e no campo `telephone` do bloco JS
 
 ## Trocar a peça desenhada
 
-Todo o desenho sai de `assets/models/trava-conector.stl`. O STL de outra peça precisa ser binário, em milímetros, com o Z para cima e a base apoiada em z = 0, do jeito que a peça vai para a mesa da impressora. A vista frontal é a peça vista do lado de -Y, e o eixo de simetria dela é desenhado em x = 0, então a peça precisa estar centrada em x. Ponha o arquivo em `assets/models/` com o mesmo nome, ou troque o caminho no `fetch` da função `iniciar()`, em `assets/js/desenho.js`.
+O traço de todos os desenhos está em `assets/desenhos.json`, gerado a partir do STL da peça. O STL é o modelo que se vende e fica fora deste repositório, que é público. O `.gitignore` recusa arquivos de modelo 3D, um teste falha se aparecer um em `assets/` e o deploy para com erro se encontrar um no que vai publicar. O STL de outra peça precisa ser binário, em milímetros, com o Z para cima e a base apoiada em z = 0, do jeito que a peça vai para a mesa da impressora. A vista frontal é a peça vista do lado de -Y, e o eixo de simetria dela é desenhado em x = 0, então a peça precisa estar centrada em x. Gere o traço com
 
-Duas constantes de `desenho.js` são medidas da trava e precisam ser refeitas na peça nova. `FURO` guarda o centro, o raio e a espessura da placa em volta do furo; dali saem as linhas de centro do furo nas vistas superior e lateral. `PLANO_AA` é o y do corte A-A. Na trava ele passa pelo eixo do furo, em y = 12,8 (fica 0,05 mm fora do centro, para não cair em cima de vértices da malha). Numa peça sem furo, as duas linhas de centro do furo precisam sair de `desenharTudo()`.
+```
+npm run desenhos -- caminho/da/peca.stl
+```
+
+Sem o caminho, a ferramenta lê `../impressao-3d/saida/trava_conector_azul.stl`, que é a constante `STL_PADRAO` de `tools/desenhos.js`. O JSON gerado entra no commit, e o STL nunca.
+
+Duas medidas da trava precisam ser refeitas na peça nova. `PLANO_AA`, em `tools/desenhos.js`, é o y do corte A-A. Na trava ele passa pelo eixo do furo, em y = 12,8, e fica 0,05 mm fora do centro para não cair em cima de vértices da malha; a ferramenta recusa um plano que não corta a peça. `FURO`, em `assets/js/desenho.js`, guarda o centro, o raio e a espessura da placa em volta do furo, e dali saem as linhas de centro do furo nas vistas superior e lateral. Numa peça sem furo, essas duas linhas de centro precisam sair de `desenharTudo()`.
 
 No `index.html` ficam os textos sobre a trava: as quatro notas ao lado do corte, o nome na legenda do desenho, os rótulos dos canvas para leitor de tela (os `aria-label`, que citam as medidas da trava e as 132 camadas) e as frases "A trava leva 132." e "A trava, por exemplo, imprime sem suporte." O campo Peça do carimbo começa com "Trava do conector", escrito no HTML e também em `PECA_PADRAO`, no `main.js`.
 
-Em `assets/js/stl.test.js`, os números medidos da trava viraram expectativa: 854 triângulos, caixa de 32,8 × 26,4 × 26,4 mm, 132 camadas de 0,2 mm e o corte A-A em y = 12,8 fechando em dois laços. Meça a peça nova, troque esses valores e o plano do corte, e rode `npm test`. Depois gere de novo a imagem de compartilhamento, que mostra o desenho, e revise o caso descrito no `PRODUCT.md`.
+Em `tools/stl.test.js`, os números medidos da trava viraram expectativa: 854 triângulos, caixa de 32,8 × 26,4 × 26,4 mm, 132 camadas de 0,2 mm e o corte A-A em y = 12,8 fechando em dois laços. Meça a peça nova, troque esses valores e o plano do corte, aponte `STL_PADRAO` para ela, gere o traço e rode `npm test`. Depois gere de novo a imagem de compartilhamento, que mostra o desenho, e revise o caso descrito no `PRODUCT.md`.
 
 ## Imagens e a origem de cada uma
 
-As imagens ficam em `assets/img/`. `marca-r.png` é o R da marca, recortado da arte original do logo que o dono forneceu, com fundo transparente, e `favicon-32.png` e `apple-touch-icon.png` foram gerados a partir dele. `rafael-favero.webp` é o retrato que o Rafael forneceu, com uso aprovado em 24/09/2026. `og.png` é a imagem que aparece quando alguém compartilha o link: uma captura do próprio site, o topo da página a 1200 × 630 px com movimento reduzido, para o desenho sair pronto, e sem a navegação do topo nem a dica de arrastar, que não fazem sentido numa imagem parada.
+As imagens ficam em `assets/img/`. `marca-r.png` é o R da marca, recortado da arte original do logo que o dono forneceu, com fundo transparente, e `favicon-32.png` e `apple-touch-icon.png` foram gerados a partir dele. `rafael-favero.webp` é o retrato que o Rafael forneceu, com uso aprovado em 24/09/2026. `og.png` é a imagem que aparece quando alguém compartilha o link: uma captura do próprio site, o topo da página a 1200 × 630 px com movimento reduzido, para o desenho sair pronto, e sem a navegação do topo, que não faz sentido numa imagem parada.
 
 Cada PNG leva a própria origem gravada dentro do arquivo, num bloco de texto. A ferramenta não grava dentro de WebP, então a origem do retrato fica ao lado dele, em `rafael-favero.webp.json`. Para ler a origem de uma imagem ou listar as que estão sem, no PowerShell:
 
@@ -65,7 +71,7 @@ Cada PNG leva a própria origem gravada dentro do arquivo, num bloco de texto. A
 
 No Git Bash, no Linux ou no macOS, o comando é `sh .claude/skills/impeccable/scripts/impeccable` com os mesmos argumentos. Uma imagem nova recebe a origem com `embed-prompt <arquivo> --prompt "de onde ela veio"`. O texto precisa ser só ASCII, sem acento: o bloco de texto do PNG é Latin-1, e um texto acentuado acaba gravado como bytes UTF-8 fora da especificação.
 
-Para gerar a `og.png` de novo, suba o servidor local e capture a janela de 1200 × 630 no Chrome com movimento reduzido, depois que as fontes carregarem, escondendo a navegação do topo, a dica de arrastar e a régua da troca de folha só nessa captura. O Playwright não faz parte do repositório; o trecho abaixo, salvo como `.mjs` numa pasta com o `playwright-core` instalado e rodado da raiz do repositório, faz a captura:
+Para gerar a `og.png` de novo, suba o servidor local e capture a janela de 1200 × 630 no Chrome com movimento reduzido, depois que as fontes carregarem, escondendo a navegação do topo e a régua da troca de folha só nessa captura. O Playwright não faz parte do repositório; o trecho abaixo, salvo como `.mjs` numa pasta com o `playwright-core` instalado e rodado da raiz do repositório, faz a captura:
 
 ```js
 import { chromium } from 'playwright-core';
@@ -74,7 +80,7 @@ const p = await b.newPage({ viewport: { width: 1200, height: 630 }, reducedMotio
 await p.goto('http://127.0.0.1:8765/', { waitUntil: 'networkidle' });
 await p.evaluate(() => document.fonts.ready);
 await p.waitForTimeout(800);
-await p.addStyleTag({ content: '.topo nav, #desenho-dica, .folha + .folha::before { visibility: hidden; }' });
+await p.addStyleTag({ content: '.topo nav, .folha + .folha::before { visibility: hidden; }' });
 await p.screenshot({ path: 'assets/img/og.png' });
 await b.close();
 ```
@@ -89,7 +95,7 @@ Os ícones são da Phosphor, peso regular, copiados como SVG para dentro do `ind
 
 ## Publicação
 
-O workflow `.github/workflows/static.yml` publica no GitHub Pages a cada push na branch `main`, e também pode ser disparado à mão pela aba Actions. Ele copia só o `index.html` e a pasta `assets/`, tira os arquivos de teste (`assets/js/*.test.js`) e publica o que sobrou; documentação, skills e plano ficam só no repositório. Como não há build, o `index.html` e a pasta `assets/` commitados na `main` vão para o ar como estão, menos os testes, em https://rafaelgfavero.github.io/template_sites3dprint/. Esse endereço está escrito no `<head>` do `index.html`, nas tags `og:url` e `og:image` e no bloco JSON-LD, e os três precisam mudar se o site mudar de endereço.
+O workflow `.github/workflows/static.yml` publica no GitHub Pages a cada push na branch `main`, e também pode ser disparado à mão pela aba Actions. Ele copia só o `index.html` e a pasta `assets/`, tira os arquivos de teste (`assets/js/*.test.js`), para com erro se encontrar um modelo 3D e publica o que sobrou; documentação, skills e plano ficam só no repositório. Como não há build, o `index.html` e a pasta `assets/` commitados na `main` vão para o ar como estão, menos os testes, em https://rafaelgfavero.github.io/template_sites3dprint/. Esse endereço está escrito no `<head>` do `index.html`, nas tags `og:url` e `og:image` e no bloco JSON-LD, e os três precisam mudar se o site mudar de endereço.
 
 ## Arquivos de design e skills
 

@@ -224,7 +224,7 @@ O mundo recusa o padrão dos sites de impressão 3D: hero escuro com impressora 
 **Key Characteristics:**
 - Papel sulfite frio e traço em tinta; no escuro, cópia heliográfica em azul.
 - Moldura fixa com margem de encadernação e carimbo ABNT sempre à vista, preenchido ao vivo.
-- A peça real, lida do STL, desenhada em primeiro diedro com cotas em milímetros, corte A-A hachurado e perspectiva que se imprime em camadas.
+- A peça real, desenhada a partir do STL fora do site, em primeiro diedro com cotas em milímetros, corte A-A hachurado e perspectiva que se imprime em camadas.
 - Letra técnica ISO 3098 (osifont) no que pertence ao desenho; Overpass na leitura.
 - Um vermelho por tela, e ele é a ação.
 - Nenhuma sombra, nenhum cartão, nenhum canto arredondado.
@@ -239,7 +239,7 @@ Paleta de prancha: três materiais de desenho sobre papel frio e um único verme
 - **Branco sobre Vermelho** (#ffffff): texto e ícone dentro da ação vermelha, e em nenhum outro lugar.
 
 ### Secondary
-- **Azul de Construção** (#7fb3dd): o azul não fotográfico do esboço. Desenha só as linhas de construção do quadro "Você manda a foto" e o fundo da seleção de texto, com tinta por cima (7,97:1). Sobre o papel fica em 2,02:1, por isso nunca carrega texto nem informação que precise ser lida.
+- **Azul de Construção** (#7fb3dd): o azul não fotográfico do esboço. Desenha as linhas de construção do quadro "Você manda a foto", o esboço da perspectiva na abertura do hero, que some sob a tinta no fim, e o fundo da seleção de texto, com tinta por cima (7,97:1). Sobre o papel fica em 2,02:1, por isso nunca carrega texto nem informação que precise ser lida.
 - **Azul de Construção da Cópia** (#6f9fd0): o mesmo material no esquema escuro, 4,41:1 sobre o azul heliográfico.
 
 ### Neutral
@@ -306,7 +306,7 @@ A página é uma folha contínua dentro de uma moldura fixa. As seções são fo
 
 ## Elevation & Depth
 
-Plano, sem nenhuma sombra, brilho, desfoque ou degradê; não existe vocabulário de sombra. A profundidade é ordem de sobreposição de papel sobre papel, sempre marcada por uma linha de tinta. A moldura fixa (camada 2) traz um contorno de 28px na cor do papel que apaga o que rola pela margem. O carimbo (camada 3) tem fundo de papel, filete de 1,5px em tinta no topo e, no desktop, uma faixa de papel de 1.5rem à esquerda para que nada encoste nele. O link de pular (camada 4) é papel com borda de tinta. Dentro do desenho vale o algoritmo do pintor: cada face é preenchida com papel, de trás para a frente, e o que fica atrás some sob o que está na frente; as linhas ocultas são traçadas antes da tinta, para que a visível vença onde as duas coincidem.
+Plano, sem nenhuma sombra, brilho, desfoque ou degradê; não existe vocabulário de sombra. A profundidade é ordem de sobreposição de papel sobre papel, sempre marcada por uma linha de tinta. A moldura fixa (camada 2) traz um contorno de 28px na cor do papel que apaga o que rola pela margem. O carimbo (camada 3) tem fundo de papel, filete de 1,5px em tinta no topo e, no desktop, uma faixa de papel de 1.5rem à esquerda para que nada encoste nele. O link de pular (camada 4) é papel com borda de tinta. Dentro do desenho, o que fica atrás já chega separado em linha oculta, calculado fora do site; as linhas ocultas são traçadas antes da tinta, para que a visível vença onde as duas coincidem.
 
 ### Named Rules
 **The Papel Sobre Papel Rule.** Nada flutua. O que fica por cima é papel com uma linha de tinta na borda, nunca uma sombra.
@@ -358,17 +358,16 @@ Linhas de preenchimento de formulário técnico, sem caixa.
 - **Pular para o conteúdo:** escondido acima da tela, desce com o foco; papel, borda de 1,5px em tinta, .9375rem, alvo de 44px.
 
 ### Desenho da peça
-A assinatura do sistema: a peça real, lida do STL em milímetros no navegador e desenhada em canvas em primeiro diedro (ABNT NBR 10067).
+A assinatura do sistema: a peça real, desenhada em canvas em primeiro diedro (ABNT NBR 10067). O traço vem pronto de `assets/desenhos.json`, que `tools/desenhos.js` calcula do STL na máquina do autor. A malha nunca chega ao navegador, e por isso o desenho não gira.
 - **Composição:** frontal no alto à esquerda, superior abaixo dela, lateral esquerda à direita da frontal e perspectiva isométrica no quadrante de baixo à direita, com uma escala só para as três vistas e margem de 6%.
-- **Pesos de linha (px):** visível 1,6 em tinta, com pontas redondas; oculta 0,8 em grafite, traço 4 e vão 3; cota e linha de chamada 0,8 em grafite; eixo 0,8 em grafite, traço-ponto 10-3-2-3, centrado para que dois eixos se cruzem num traço; corte 0,8 em tinta, traço-ponto, com pontas de 8px em 1,6; construção 1 no azul de construção; hachura 1,1 em tinta; camada de impressão 0,5 em grafite, nunca a menos de 1,5px uma da outra.
+- **Pesos de linha (px):** visível 1,6 em tinta, com pontas redondas; na perspectiva, a visível afina com a escala abaixo de 4px por mm, até 0,8, para as nervuras não se fundirem; oculta 0,8 em grafite, traço 4 e vão 3; cota e linha de chamada 0,8 em grafite; eixo 0,8 em grafite, traço-ponto 10-3-2-3, centrado para que dois eixos se cruzem num traço; corte 0,8 em tinta, traço-ponto, com pontas de 8px em 1,6; construção 1 no azul de construção (o esboço da abertura do hero afina junto com a aresta da perspectiva, até 0,8); hachura 1,1 em tinta; camada de impressão 0,5 em grafite, nunca a menos de 1,5px uma da outra.
 - **Cotas:** linha de cota a 22px do contorno; linhas de chamada com 2px de folga do contorno e 3px além da cota; setas cheias de 9px por 6px; cifra 4px acima da linha, girada na cota vertical, com vírgula decimal e uma casa (26,4 e 32,8) e sem unidade, que fica na legenda e no carimbo.
 - **Eixos e corte:** linhas de centro passam 3mm além do contorno; a linha de corte A-A passa 4mm, com setas no sentido de quem olha e a letra A em tinta junto de cada seta.
 - **Rótulos:** FRONTAL, SUPERIOR, LATERAL ESQUERDA e PERSPECTIVA em grafite, centrados sob cada vista.
-- **Faces e cor:** faces preenchidas com papel de trás para a frente; o canvas pinta o papel antes de traçar, então o desenho segue legível com cores forçadas. As cores são lidas das variáveis a cada desenho, e trocar o esquema redesenha tudo. Densidade de pixel até 2.
-- **Movimento:** o único momento autoral da página. Quando 40% do canvas entra na tela, as arestas visíveis das três vistas se traçam em 460ms cada, começando em 0, 120 e 240ms, na curva cubic-bezier(0.23, 1, 0.32, 1); ocultas, cotas, eixos, corte e rótulos aparecem de 600 a 1100ms na mesma curva; a perspectiva se imprime camada por camada, em ritmo linear, de 900 a 2600ms. Com movimento reduzido o desenho já aparece pronto.
-- **Interação:** arrastar dentro do quadrante da perspectiva gira a peça (0,5° de azimute e 0,3° de elevação por pixel, elevação entre 10° e 70°), com o cursor de mão; as setas do teclado giram 15° e 5°. O canvas recebe foco, e a rolagem vertical por toque continua livre. A legenda avisa "Arraste para girar." e, só para leitor de tela, as setas.
+- **Linhas ocultas e cor:** as arestas chegam separadas em visíveis e ocultas, já fundidas onde são colineares; o canvas pinta o papel antes de traçar, então o desenho segue legível com cores forçadas. As cores são lidas das variáveis a cada desenho, e trocar o esquema redesenha tudo. Densidade de pixel até 2.
+- **Movimento:** o único momento autoral da página. Quando 40% do canvas entra na tela, as arestas visíveis das três vistas se traçam em 460ms cada, começando em 0, 120 e 240ms, na curva cubic-bezier(0.23, 1, 0.32, 1); ocultas, cotas, eixos, corte e rótulos aparecem de 600 a 1100ms na mesma curva; o esboço da perspectiva aparece em azul de construção de 900 a 1100ms, as linhas de camada sobem por cima dele em ritmo linear de 900 a 2600ms e as arestas ganham a tinta de 2600 a 2850ms, na mesma curva. Com movimento reduzido o desenho já aparece pronto.
 
-**The Pesos ISO Rule.** A peça tem duas espessuras de traço, 1,6px e 0,8px, na razão 2:1 da ISO 128. Hachura (1,1px), construção (1px) e camada (0,5px) são as únicas outras, cada uma com um uso só.
+**The Pesos ISO Rule.** A peça tem duas espessuras de traço, 1,6px e 0,8px, na razão 2:1 da ISO 128. Hachura (1,1px), construção (1px) e camada (0,5px) são as únicas outras, cada uma com um uso só. Na perspectiva pequena, a visível afina até 0,8px, na proporção da escala abaixo de 4px por mm; o esboço da abertura acompanha essa largura quando ela fica abaixo de 1px.
 
 ### Vistas de detalhe
 Quatro quadros quadrados da mesma peça, um por etapa do serviço.
@@ -381,7 +380,7 @@ Quatro quadros quadrados da mesma peça, um por etapa do serviço.
 - **Hachura:** linhas a 45°, subindo para a direita, de 1,1px em tinta com passo de 3px, recortadas pela área cortada. É o campo mais denso da página, e o mesmo padrão marca a base na mesa.
 
 ### Legendas, rótulos e notas
-- **Legenda de figura:** régua de 1px em grafite em cima, .5rem abaixo do desenho e .375rem de folga até a letra; letra técnica pequena, vertical, em grafite. No hero do desktop são três partes lado a lado (1.65fr, 1.55fr e 1fr), empilhadas quando a figura tem menos de 41.5rem.
+- **Legenda de figura:** régua de 1px em grafite em cima, .5rem abaixo do desenho e .375rem de folga até a letra; letra técnica pequena, vertical, em grafite. No hero do desktop são duas partes lado a lado (1.65fr e 2.55fr), empilhadas quando a figura tem menos de 41.5rem.
 - **Rótulo de vista:** o h3 de cada quadro, osifont itálica .9375rem em tinta, com a mesma régua de 1px.
 - **Notas:** título NOTAS na letra pequena inclinada; lista numerada com o número em osifont .8125rem em grafite numa coluna de 1.5rem e o texto em Overpass .9375rem, com .75rem entre as notas.
 - **Lista "O que mandar":** marcador quadrado em grafite, .5rem entre os itens.

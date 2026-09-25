@@ -35,5 +35,3 @@ export function recortaAbaixo(tri, h) {
   }
   return out;
 }
-
-export const mm = (valor) => valor.toFixed(1).replace('.', ',');

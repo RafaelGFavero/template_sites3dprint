@@ -2,12 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { parseSTL, bounds, featureEdgeList, sliceAxis, loops, layerCount } from './stl.js';
+import { cubeSTL } from './cubo.js';
+import { STL_PADRAO } from './desenhos.js';
 
 // O STL da trava é o modelo que se vende e fica fora do repositório, que é público. Os testes com a peça
 // real rodam onde ele existe e são pulados no resto.
-const STL = new URL('../../../impressao-3d/saida/trava_conector_azul.stl', import.meta.url);
-const semSTL = !existsSync(STL) && 'sem o STL da trava em ../impressao-3d/saida';
-const buffer = semSTL ? null : new Uint8Array(readFileSync(STL)).buffer;
+const semSTL = !existsSync(STL_PADRAO) && 'sem o STL da trava em ../impressao-3d/saida';
+const buffer = semSTL ? null : new Uint8Array(readFileSync(STL_PADRAO)).buffer;
 
 test('lê o STL binário da trava com todos os triângulos', { skip: semSTL }, () => {
   const mesh = parseSTL(buffer);
@@ -67,17 +68,3 @@ test('cadeia aberta não vira laço', () => {
 test('corte em x devolve (y, z)', () => {
   assert.deepEqual(sliceAxis({ count: 1, positions: new Float32Array([0, 0, 0, 2, 4, 0, 2, 0, 6]) }, 0, 1), [2, 0, 0, 3]);
 });
-
-// Cubo unitário em STL binário: 12 triângulos, cada face quadrada dividida por uma diagonal. `altura` estica o z.
-function cubeSTL(altura = 1) {
-  const v = [[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]];
-  const faces = [[0,2,1],[0,3,2],[4,5,6],[4,6,7],[0,1,5],[0,5,4],[1,2,6],[1,6,5],[2,3,7],[2,7,6],[3,0,4],[3,4,7]];
-  const buf = new ArrayBuffer(84 + faces.length * 50);
-  const dv = new DataView(buf);
-  dv.setUint32(80, faces.length, true);
-  faces.forEach((f, i) => {
-    const o = 84 + i * 50;
-    f.forEach((vi, k) => v[vi].forEach((c, j) => dv.setFloat32(o + 12 + k * 12 + j * 4, j === 2 ? c * altura : c, true)));
-  });
-  return buf;
-}
